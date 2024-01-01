@@ -1,0 +1,55 @@
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  gap: 20px;
+}
+
+.data-control {
+  width: 320px;
+}
+
+.layout-view {
+  display: flex;
+  flex-direction: column;
+  flex: 2;
+  background-color: #fff;
+  border: 1px var(--layout-border-color) solid;
+  overflow: hidden;
+}
+
+.draggable-items {
+  margin: 0;
+  padding: 0;
+}
+
+.draggable-items li {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  border-radius: 12px;
+  background-color: var(--primary-05a);
+  color: var(--primary);
+  border: 1px var(--outline) solid;
+  margin: 8px 0;
+  box-sizing: border-box;
+  padding: 0 16px;
+}
+
+.draggable-items li:hover {
+  background-color: var(--primary-08a);
+}
+
+.draggable-items li.dragged {
+  background-color: var(--primary-13a);
+}
+
+.tab-content {
+  background-color: var(--surface);
+}

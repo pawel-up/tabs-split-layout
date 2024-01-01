@@ -1,0 +1,126 @@
+html,
+body,
+.app {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  overflow: hidden;
+}
+
+.demo-container {
+  height: 100%;
+  display: flex;
+}
+
+.monit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.monit > .content {
+  border: 1px #4CAF50 solid;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.file-browser {
+  width: 320px;
+  overflow: auto;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+.dir-request {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fs-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fs-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  padding: 0 12px;
+  cursor: default;
+  user-select: none;
+}
+
+.fs-entry:hover {
+  background-color: #e3f2fd;
+}
+
+.fs-entry:active {
+  background-color: #BBDEFB;
+}
+
+.action-buttons {
+  display: flex;
+}
+
+.layout-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: var(--surface);
+  border: 1px var(--layout-border-color) solid;
+  overflow: hidden;
+}
+
+.fs-entry .label {
+  display: block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.tab-content {
+  overflow: auto;
+  display: block;
+  background-color: var(--surface);
+}
+
+.text-file {
+  flex: 1;
+}
+
+.split-view {
+  overflow: hidden;
+}
+
+
+@media (prefers-color-scheme: dark) {
+  .fs-entry:hover {
+    background-color: #003053;
+  }
+  
+  .fs-entry:active {
+    background-color: #003764;
+  }
+}

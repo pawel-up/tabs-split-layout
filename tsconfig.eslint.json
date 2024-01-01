@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    "demo/**/*.ts",
+    "test/**/*.ts",
+    "web-test-runner.config.mjs",
+    "web-dev-server.config.mjs"
+  ],
+}

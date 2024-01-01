@@ -1,0 +1,134 @@
+:root {
+  --dot-size: 1px;
+  --dot-space: 7px;
+
+  --surface: #FFFBFE;
+  --on-surface: #1C1B1F;
+  --inverse-on-surface: #F4EFF4;
+  --inverse-surface: #322F35;
+  --surface-variant: #E7E0EC;
+  --on-surface-variant: #49454F;
+  --outline: #79747E;
+  --on-background: #1C1B1F;
+  --primary: #6750a4;
+  --on-primary: #ffffff;
+  --primary-05a: #6750a40d;
+  --primary-08a: #6750a414;
+  --primary-10a: #6750a41a;
+  --primary-13a: #6750a421;
+  --layout-border-color: #E0E0E0;
+
+  --elevation-0: 0 0 0 0;
+  --elevation-1: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --elevation-2: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --elevation-3: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
+  --elevation-4: 0px 6px 10px 4px rgba(0, 0, 0, 0.15), 0px 2px 3px rgba(0, 0, 0, 0.3);
+  --elevation-5: 0px 8px 12px 6px rgba(0, 0, 0, 0.15), 0px 4px 4px rgba(0, 0, 0, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #1C1B1F;
+    --on-surface: #E6E1E5;
+    --inverse-on-surface: #313033;
+    --inverse-surface: #E6E1E5;
+    --surface-variant: #49454F;
+    --on-surface-variant: #CAC4D0;
+    --outline: #938F99;
+    --on-background: #1C1B1F;
+    --primary: #D0BCFF;
+    --on-primary: #381E72;
+
+    --primary-05a: #D0BCFF0d;
+    --primary-08a: #D0BCFF14;
+    --primary-10a: #D0BCFF1a;
+    --primary-13a: #D0BCFF21;
+    --layout-border-color: var(--outline);
+
+    --elevation-1: 0px 1px 3px 1px rgba(0, 0, 0, 0.15), 0px 1px 2px rgba(0, 0, 0, 0.3);
+    --elevation-2: 0px 2px 6px 2px rgba(0, 0, 0, 0.15), 0px 1px 2px rgba(0, 0, 0, 0.3);
+    --elevation-3: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
+    --elevation-4: 0px 6px 10px 4px rgba(0, 0, 0, 0.15), 0px 2px 3px rgba(0, 0, 0, 0.3);
+    --elevation-5: 0px 8px 12px 6px rgba(0, 0, 0, 0.15), 0px 4px 4px rgba(0, 0, 0, 0.3);
+
+    /* split view */
+    --tabs-split-layout-tablist-background-color: var(--surface-variant);
+    --tabs-split-layout-tab-color: var(--on-surface-variant);
+    --tabs-split-layout-tab-color-hover: var(--on-surface-variant);
+    --tabs-split-layout-tab-color-focus: var(--on-surface-variant);
+    --tabs-split-layout-tab-color-selected: var(--on-surface-variant);
+
+    --tabs-split-layout-tab-background-color-hover: rgb(255 255 255 / 8%);
+    --tabs-split-layout-tab-background-color-focus: rgb(255 255 255 / 10%);
+    --tabs-split-layout-tab-background-color-selected: rgb(0 0 0 / 71%);
+    --tabs-split-layout-tab-outline-color: var(--inverse-surface);
+    --tabs-split-layout-tab-divider-color: var(--outline);
+    --tabs-split-layout-drag-region-background-color: #fff;
+
+    --tabs-split-layout-tab-close-hover-background: #49454F;
+  }
+
+  body .split-view.active {
+    /* This is pare of the demo page, not the tabs layout. */
+    outline: 4px #2196f3e8 solid;
+  }
+}
+
+html,
+body {
+  margin: 0;
+  font-family: 'Roboto', 'Noto', sans-serif;
+  font-size: 16px;
+  background-color: var(--surface);
+  color: var(--on-surface);
+  background-image: radial-gradient(var(--inverse-on-surface) 1px, transparent 0);
+  background-size: var(--dot-space) var(--dot-space);
+}
+
+header {
+  background-color: var(--surface-variant);
+  color: var(--on-surface-variant);
+  display: flex;
+  align-items: center;
+
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 0 24px;
+  border-radius: 40px;
+}
+
+main {
+  border-radius: 40px;
+  padding: 24px;
+}
+
+.demo .app {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+[direction="horizontal"] > .split-view:not(:last-of-type) {
+  border-right: 1px var(--layout-border-color) solid;
+}
+
+[direction="vertical"] > .split-view:not(:last-of-type) {
+  border-bottom: 1px var(--layout-border-color) solid;
+}
+
+.split-view.active {
+  outline: 4px #2196f32e solid;
+  outline-offset: -4px;
+}
+
+.tab-content {
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-content[hidden] {
+  display: none;
+}

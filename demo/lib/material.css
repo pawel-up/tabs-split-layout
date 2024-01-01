@@ -1,0 +1,103 @@
+button {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  padding: 0 24px;
+  margin: 8px;
+  font-size: 14px;
+}
+
+button:focus-visible {
+  outline: -webkit-focus-ring-color solid 2px;
+  outline-offset: 2px;
+}
+
+button.prefix-icon {
+  padding-left: 16px;
+}
+
+button.suffix-icon {
+  padding-right: 16px;
+}
+
+button.filled {
+  background-color: var(--primary);
+  color: var(--on-primary);
+  border: none;
+  box-shadow: var(--elevation-0);
+  transition: box-shadow 0.3s ease-in-out;
+  position: relative;
+}
+
+button.filled:hover {
+  box-shadow: var(--elevation-1);
+}
+
+button.filled:hover::before {
+  content: '';
+  inset: 0;
+  position: absolute;
+  background: var(--primary-08a);
+  border-radius: inherit;
+}
+
+button.filled:focus::before {
+  content: '';
+  inset: 0;
+  position: absolute;
+  background: var(--primary-10a);
+  border-radius: inherit;
+}
+
+button.outlined {
+  border: 1px var(--outline) solid;
+  background-color: transparent;
+  color: var(--primary);
+}
+
+button.outlined:hover {
+  background: var(--primary-08a);
+}
+
+button.outlined:focus {
+  background: var(--primary-10a);
+  border: 1px var(--primary) solid;
+}
+
+button.icon-button.outlined {
+  min-width: 40px;
+  width: 40px;
+  height: 40px;
+  color: var(--inverse-surface);
+  padding: 0;
+  margin: 0;
+}
+
+button.icon-button.text {
+  background-color: transparent;
+  color: var(--inverse-surface);
+  padding: 0;
+  margin: 0;
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  border: none;
+}
+
+button.icon-button.text:hover {
+  background: var(--primary-08a);
+}
+
+button.icon-button.text:focus {
+  background: var(--primary-10a);
+}
+
+.dir-toggle {
+  transform: rotate(0deg);
+  transition: transform 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.opened > .dir-toggle {
+  transform: rotate(90deg);
+}

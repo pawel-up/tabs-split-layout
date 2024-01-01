@@ -1,0 +1,111 @@
+{
+  "env": {
+    "es2021": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "@open-wc",
+    "prettier",
+    "eslint:recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "settings": {
+    "import/resolver": {
+      "typescript": true,
+      "node": true
+    },
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts"]
+    }
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "deprecation"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module",
+    "project": "./tsconfig.eslint.json"
+  },
+  "rules": {
+    "no-unused-vars": "off",
+    "no-continue": "off",
+    "no-plusplus": "off",
+    "no-shadow": "off",
+    "deprecation/deprecation": "warn",
+    "@typescript-eslint/no-shadow": "error",
+    "@typescript-eslint/explicit-function-return-type": "error",
+    "class-methods-use-this": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error"
+    ],
+    "import/no-unresolved": "error",
+    "import/extensions": "off",
+    "import/no-cycle": [2, { "maxDepth": 1 }]
+  },
+  "overrides": [
+    {
+      "files": [
+        "src/pages/**/*.ts",
+        "src/bindings/**/*.ts"
+      ],
+      "rules": {
+        "class-methods-use-this": "off"
+      },
+      "env": {
+        "node": false,
+        "browser": true
+      }
+    },
+    {
+      "files": [
+        "src/elements/**/*.ts"
+      ],
+      "rules": {
+        "class-methods-use-this": "off"
+      },
+      "env": {
+        "node": false,
+        "browser": true
+      }
+    },
+    {
+      "files": [ "src/**/*.ts" ],
+      "rules": {
+        "no-useless-constructor": "off",
+        "no-empty-function": "off",
+        "no-use-before-define": "off",
+        "no-dupe-class-members": "off"
+      }
+    },
+    {
+      "files": [ "**/*.js" ],
+      "rules": {
+        "@typescript-eslint/explicit-function-return-type": "off"
+      }
+    },
+    {
+      "files": ["demo/**", "dev/**", "test/**"],
+      "rules": {
+        "import/no-extraneous-dependencies": "off",
+        "no-console": "off",
+        "max-classes-per-file": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/ban-ts-comment": "off"
+      }
+    }
+  ],
+  "globals": {
+    "EventListener": true,
+    "Prism": true,
+    "RequestInit": true,
+    "WorkerType": true,
+    "FormDataEntryValue": true,
+    "MutationObserverInit": true,
+    "ScrollToOptions": true,
+    "NodeListOf": true,
+    "GlobalEventHandlers": true
+  }
+}

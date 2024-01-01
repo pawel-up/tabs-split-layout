@@ -1,0 +1,2266 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "src/SplitItem.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "SplitItem",
+          "members": [
+            {
+              "kind": "field",
+              "name": "kind",
+              "type": {
+                "text": "string"
+              },
+              "default": "''"
+            },
+            {
+              "kind": "field",
+              "name": "key",
+              "type": {
+                "text": "string"
+              },
+              "default": "''"
+            },
+            {
+              "kind": "field",
+              "name": "parent",
+              "type": {
+                "text": "string | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "default": "''"
+            },
+            {
+              "kind": "field",
+              "name": "pinned",
+              "type": {
+                "text": "boolean | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "index",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "icon",
+              "type": {
+                "text": "SVGTemplateResult | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "persistent",
+              "type": {
+                "text": "boolean | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "loading",
+              "type": {
+                "text": "boolean | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "isDirty",
+              "type": {
+                "text": "boolean | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "unknown | undefined"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "new",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "schema",
+                  "type": {
+                    "text": "ISplitItem"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "toJSON",
+              "return": {
+                "type": {
+                  "text": "ISplitItem"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getParents",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setLabel",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "value",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The new value of the label. Empty values are ignored."
+                },
+                {
+                  "name": "trigger",
+                  "default": "true",
+                  "description": "Whether to trigger side effects (requesting a view update and notifying change)"
+                }
+              ],
+              "description": "Updates the label and triggers side effects like layout and view update."
+            },
+            {
+              "kind": "method",
+              "name": "updateView",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "notifyChange",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "SplitItem",
+          "declaration": {
+            "name": "SplitItem",
+            "module": "src/SplitItem.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/SplitPanel.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "The class represents a panel model for the split layout.\nA panel can only hold other panels or layout items. When a panel\ndefines both, items are ignored.\n\nA panel can render ony one item at a time. TO view more items \nthe application needs to add panels to this panel and distribute items among them.",
+          "name": "SplitPanel",
+          "members": [
+            {
+              "kind": "field",
+              "name": "key",
+              "default": "globalThis.crypto.randomUUID()",
+              "description": "The key used as an internal reference to the definitions map."
+            },
+            {
+              "kind": "field",
+              "name": "layout",
+              "type": {
+                "text": "SplitDirection"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "items",
+              "type": {
+                "text": "IPanelObject[]"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "selected",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "The item being rendered in the panel.\nNote, this is the `key` of the item and not the `id` of the item."
+            },
+            {
+              "kind": "field",
+              "name": "state",
+              "type": {
+                "text": "PanelState"
+              },
+              "description": "The current state of the panel."
+            },
+            {
+              "kind": "field",
+              "name": "hasPanels",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "hasItems",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "fromLayout",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": "SplitPanel"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "manager",
+                  "type": {
+                    "text": "TabsLayout"
+                  }
+                },
+                {
+                  "name": "layout",
+                  "default": "SplitDirection.horizontal"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "new",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "schema",
+                  "type": {
+                    "text": "ISplitPanel"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "toJSON",
+              "return": {
+                "type": {
+                  "text": "ISplitPanel"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getParent",
+              "return": {
+                "type": {
+                  "text": "SplitPanel | undefined"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "canDrop",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "sortedItems",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "nextIndex",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "description": "Finds an index where to put an item.\nThis finds \"holes\" in items where an index is not set for a given position.\nIn this case the resulting index is the missing index.\nOtherwise it returns next after the highest index."
+            },
+            {
+              "kind": "method",
+              "name": "hasItem",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to test."
+                }
+              ],
+              "description": "Checks whether this panel contains an item"
+            },
+            {
+              "kind": "method",
+              "name": "addItem",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "ISplitItem | SplitItem"
+                  },
+                  "description": "The item to add"
+                },
+                {
+                  "name": "opts",
+                  "default": "{}",
+                  "type": {
+                    "text": "TabsLayoutAddOptions"
+                  },
+                  "description": "Layout adding item options"
+                }
+              ],
+              "description": "Adds an item to the layout."
+            },
+            {
+              "kind": "method",
+              "name": "splitByRegion",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "SplitPanel"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "region",
+                  "type": {
+                    "text": "SplitRegion"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "split",
+              "return": {
+                "type": {
+                  "text": "SplitPanel[]"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "opts",
+                  "default": "{}",
+                  "type": {
+                    "text": "SplitPanelSplitOptions"
+                  }
+                }
+              ],
+              "description": "Splits this panel into 2 panels.\nThis to be used when the panel has no other panels. Only items are allowed.\nIt produces 2 new panels and moves the items to the first one leaving the other one available."
+            },
+            {
+              "kind": "method",
+              "name": "unsplit",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "decreaseIndex",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "fromIndex",
+                  "type": {
+                    "text": "number"
+                  },
+                  "description": "The minimal index to affect."
+                }
+              ],
+              "description": "Decreases items index by 1 to all items with index at least equal to `fromIndex`."
+            },
+            {
+              "kind": "method",
+              "name": "increaseIndex",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "fromIndex",
+                  "type": {
+                    "text": "number"
+                  },
+                  "description": "The minimal index to affect."
+                }
+              ],
+              "description": "Increases items index by 1 to all items with index at least equal to `fromIndex`."
+            },
+            {
+              "kind": "method",
+              "name": "removeChildItem",
+              "return": {
+                "type": {
+                  "text": "SplitItem | undefined"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "SplitItem"
+                  }
+                },
+                {
+                  "name": "opts",
+                  "default": "{}",
+                  "type": {
+                    "text": "SplitPanelRemoveItemOptions"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "removeItem",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The `key` of the item."
+                },
+                {
+                  "name": "opts",
+                  "optional": true,
+                  "type": {
+                    "text": "SplitPanelRemoveItemOptions"
+                  }
+                }
+              ],
+              "description": "Removes an item from the layout"
+            },
+            {
+              "kind": "method",
+              "name": "removeRelative",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to perform a relative operation from."
+                },
+                {
+                  "name": "dir",
+                  "default": "SplitCloseDirection.both",
+                  "type": {
+                    "text": "SplitCloseDirection"
+                  },
+                  "description": "The direction to which close other items. Default to both directions leaving only the `key` item"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "removePanel",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "id",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "opts",
+                  "default": "{}",
+                  "type": {
+                    "text": "SplitPanelRemoveItemOptions"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "clearItems",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "opts",
+                  "optional": true,
+                  "type": {
+                    "text": "SplitPanelRemoveItemOptions"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "moveItem",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The item key"
+                },
+                {
+                  "name": "opts",
+                  "default": "{}",
+                  "type": {
+                    "text": "TabsLayoutAddOptions"
+                  }
+                },
+                {
+                  "description": "The new index. When not set it moves the item to the end.",
+                  "name": "toIndex"
+                }
+              ],
+              "description": "Moves an item to a new index."
+            },
+            {
+              "kind": "method",
+              "name": "moveToRegion",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "SplitItem"
+                  }
+                },
+                {
+                  "name": "region",
+                  "type": {
+                    "text": "SplitRegion"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "moveToIndex",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "SplitItem"
+                  }
+                },
+                {
+                  "name": "index",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "moveToEnd",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "SplitItem"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "updateView",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "addPanel",
+              "return": {
+                "type": {
+                  "text": "SplitPanel"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "layout",
+                  "default": "SplitDirection.horizontal"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "panelTemplate",
+              "return": {
+                "type": {
+                  "text": "TemplateResult | undefined"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "panel",
+                  "type": {
+                    "text": "SplitPanel"
+                  }
+                },
+                {
+                  "name": "itemCallback",
+                  "type": {
+                    "text": "SplitItemRenderCallback"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "itemTemplate",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "SplitItem"
+                  }
+                },
+                {
+                  "name": "visible",
+                  "type": {
+                    "text": "boolean"
+                  }
+                },
+                {
+                  "name": "itemCallback",
+                  "type": {
+                    "text": "SplitItemRenderCallback"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "SplitPanel",
+          "declaration": {
+            "name": "SplitPanel",
+            "module": "src/SplitPanel.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/SplitView.styles.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "module": "src/SplitView.styles.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/SplitView.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "SplitView",
+          "members": [
+            {
+              "kind": "field",
+              "name": "layout",
+              "type": {
+                "text": "SplitDirection"
+              },
+              "description": "The layout direction.",
+              "deprecated": "Rename this to `direction`.",
+              "attribute": "layout",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "key",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "The identifier of this view.",
+              "attribute": "key",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "dragTypes",
+              "type": {
+                "text": "string[] | undefined"
+              },
+              "attribute": "dragTypes"
+            },
+            {
+              "kind": "field",
+              "name": "inDrag",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "protected",
+              "default": "false",
+              "description": "Whether dragging is occurring over the element"
+            },
+            {
+              "kind": "field",
+              "name": "dragRegion",
+              "type": {
+                "text": "SplitRegion | undefined"
+              },
+              "privacy": "protected",
+              "description": "The region the drag is leaning to."
+            },
+            {
+              "kind": "field",
+              "name": "panel",
+              "type": {
+                "text": "SplitPanel | undefined"
+              },
+              "description": "A reference to the split panel that owns this view.",
+              "attribute": "panel"
+            },
+            {
+              "kind": "field",
+              "name": "constrain",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "When set it adds the `overflow` hidden on the container that holds the tab contents.",
+              "attribute": "constrain",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "handleDragEnter",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleDragOver",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleDrop",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleDragleave",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleDragEnd",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getDropRegionFromEvent",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "SplitRegion | undefined"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getDropRegion",
+              "return": {
+                "type": {
+                  "text": "SplitRegion | undefined"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "element",
+                  "type": {
+                    "text": "HTMLElement"
+                  }
+                },
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "findLayout",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "SplitView | undefined"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "hasDropTypes",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "dt",
+                  "type": {
+                    "text": "DataTransfer"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "panelCanDrop",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleTabDragStart",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleTabsDragEnter",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleTabsDragover",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleTabDrop",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "moveTab",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "fromLayout",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "toLayout",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "toIndex",
+                  "optional": true,
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "findTab",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "HTMLElement | undefined"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleTabClick",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleTabPointerDown",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "PointerEvent"
+                  }
+                }
+              ],
+              "description": "Closes a panel with right pointer configuration"
+            },
+            {
+              "kind": "method",
+              "name": "handleTabClose",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleTabTouchStart",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "TouchEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "closeTab",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleTabKeyDown",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "KeyboardEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleCloseKeydown",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "KeyboardEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "dragRegionTemplate",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "TemplateResult | typeof nothing"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "tabsTemplate",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "TemplateResult | string"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "tabTemplate",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "SplitItem"
+                  }
+                },
+                {
+                  "name": "last",
+                  "type": {
+                    "text": "boolean"
+                  }
+                },
+                {
+                  "name": "nextKey",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "datadrop",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "closetab",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "layout",
+              "type": {
+                "text": "SplitDirection"
+              },
+              "description": "The layout direction.",
+              "deprecated": "Rename this to `direction`.",
+              "fieldName": "layout"
+            },
+            {
+              "name": "key",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "The identifier of this view.",
+              "fieldName": "key"
+            },
+            {
+              "name": "dragTypes",
+              "type": {
+                "text": "string[] | undefined"
+              },
+              "fieldName": "dragTypes"
+            },
+            {
+              "name": "panel",
+              "type": {
+                "text": "SplitPanel | undefined"
+              },
+              "description": "A reference to the split panel that owns this view.",
+              "fieldName": "panel"
+            },
+            {
+              "name": "constrain",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "When set it adds the `overflow` hidden on the container that holds the tab contents.",
+              "fieldName": "constrain"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "SplitView",
+            "module": "src/SplitView.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/TabsLayout.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Split layout manager creates a view where the application can put \"items\" into\nand render them inside \"panels\". The application can create as many panels as needed.\nPanels can be layout vertically or horizontally.\n\n## Basic usage\n\n```javascript\nconst layout = new TabsLayout({\n stateCallback: async (state: ITabsLayout): Promise<void> => { \n   localStorage.setItem('layout', JSON.stringify(state));\n }\n});\nconst restored = await readStoredState(); // a function that reads the state from the store\nawait layout.initialize(restored);\n\nconst content = layout.render((itemToRender: SplitItem): TemplateResult => { return html`...` });\n```\n\nEach time the layout configuration change the optional `stateCallback` function \nis called.\nIt's not mandatory to set this callback function but if you want the state to\npersist you have to serialize the manager manually when needed.\nSince the manage implement the `toJSON()` method it is safe to pass the instance of the manager\nto a idb store or serialize with `JSON.stringify()`.",
+          "name": "TabsLayout",
+          "members": [
+            {
+              "kind": "field",
+              "name": "definitions",
+              "default": "new Map<string, LayoutObject>()",
+              "description": "The list of all definitions of panels and items."
+            },
+            {
+              "kind": "field",
+              "name": "items",
+              "type": {
+                "text": "IPanelObject[]"
+              },
+              "default": "[]",
+              "description": "Holds an ordered list of panels in the layout.\nThough, this interface is consistent with other panels, it can only keep panels, not items."
+            },
+            {
+              "kind": "field",
+              "name": "activeInternal",
+              "type": {
+                "text": "string | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "active",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "The key of the panel that is marked as \"active\", that is, \nthe panel the user last interacted with."
+            },
+            {
+              "kind": "field",
+              "name": "activeObject",
+              "type": {
+                "text": "LayoutObject | undefined"
+              },
+              "description": "Returns an object that is marked as active or undefined if none is marked as active."
+            },
+            {
+              "kind": "field",
+              "name": "activePanel",
+              "type": {
+                "text": "SplitPanel | undefined"
+              },
+              "description": "An active panel that the user last interacted with."
+            },
+            {
+              "kind": "field",
+              "name": "activeItem",
+              "type": {
+                "text": "SplitItem | undefined"
+              },
+              "description": "An active panel item that the user last interacted with."
+            },
+            {
+              "kind": "field",
+              "name": "isDirty",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "protected",
+              "default": "false",
+              "description": "Whether the manager is dirty, that is, a change ocurred\nwhile storing the layout."
+            },
+            {
+              "kind": "field",
+              "name": "storing",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "protected",
+              "default": "false",
+              "description": "A flag that determines that the state is being stored in the store."
+            },
+            {
+              "kind": "field",
+              "name": "debouncer",
+              "type": {
+                "text": "number | undefined"
+              },
+              "privacy": "protected",
+              "description": "The value of the debouncer timeout."
+            },
+            {
+              "kind": "method",
+              "name": "initialize",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "optional": true,
+                  "type": {
+                    "text": "ITabsLayout"
+                  },
+                  "description": "A state to restore. When not set an empty layout is rendered."
+                }
+              ],
+              "description": "Initializes the split layout manager.\nWhen passed the `state` parameter it restores the previously serialized state."
+            },
+            {
+              "kind": "method",
+              "name": "reset",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "dispose",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Clears the state and disposes of all resources."
+            },
+            {
+              "kind": "method",
+              "name": "new",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "ITabsLayout"
+                  },
+                  "description": "the state to set."
+                }
+              ],
+              "description": "Overrides the current state.\nNote, this operation does not call the `stateCallback()` callback."
+            },
+            {
+              "kind": "method",
+              "name": "toJSON",
+              "return": {
+                "type": {
+                  "text": "ITabsLayout"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "scheduleStore",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Schedules a layout store operation in a debouncer.\nOnce active all other request to store the layout are ignored until \nthe timeout is triggered."
+            },
+            {
+              "kind": "method",
+              "name": "storeLayout",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              },
+              "description": "This function is called automatically when the store configuration\nchange. There's no need to call it manually unless you want to trigger\nthe storing state flow. However, at that moment the state is already stored\n(unless there was an error)."
+            },
+            {
+              "kind": "method",
+              "name": "handleFocusIn",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "setActive",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "panelOrItemKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "the key of the panel or item that is active."
+                }
+              ],
+              "description": "Sets an active panel or item."
+            },
+            {
+              "kind": "method",
+              "name": "findViewFromEvent",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "SplitView | undefined"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "findView",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "panelKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The panel key to search for the view for."
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getParents",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "itemOrPanelKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the panel or an item."
+                }
+              ],
+              "description": "Finds parents an item or another panel is anchored to.\nAn item can have multiple parents. A panel can only have a single parent."
+            },
+            {
+              "kind": "method",
+              "name": "findPanel",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "panelKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The id of the panel."
+                }
+              ],
+              "description": "Finds a panel by id."
+            },
+            {
+              "kind": "method",
+              "name": "findItem",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "itemKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The id of the panel item."
+                }
+              ],
+              "description": "Finds a panel item by id."
+            },
+            {
+              "kind": "method",
+              "name": "notifyChange",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Informs the screen that something has changed"
+            },
+            {
+              "kind": "method",
+              "name": "dispatchNameItem",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "SplitItem"
+                  },
+                  "description": "The item to notify."
+                }
+              ],
+              "description": "Dispatches the `nameitem` event.\nThe detail object has the item to be added to the items.\nThe event handler can manipulate properties of the item, except for the index which will be set by the manager.\n\nNote, use the `requestNameUpdate()` when requesting a name update. The other method includes side\neffects like updating the view."
+            },
+            {
+              "kind": "method",
+              "name": "notifyTabClose",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "itemKey",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "panel",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Do not call this method from the outside of the layout manager logic.\nIt is a way to communicate a tab was closed."
+            },
+            {
+              "kind": "method",
+              "name": "updateView",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "panelKey",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The id of the panel. When not set it uses the active panel"
+                }
+              ],
+              "description": "Requests an update on the view element."
+            },
+            {
+              "kind": "method",
+              "name": "requestNameUpdate",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "itemKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item."
+                }
+              ],
+              "description": "Requests to dispatch the `nameitem` event so the application can update the name of the tab."
+            },
+            {
+              "kind": "method",
+              "name": "requestNameUpdateByParent",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "parentValue",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the `parent` property to look for."
+                }
+              ],
+              "description": "Dispatches the `nameitem` event so the application \ncan update the name of an item that has a specific `parent`."
+            },
+            {
+              "kind": "method",
+              "name": "setItemLabel",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "itemKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to rename"
+                },
+                {
+                  "name": "label",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The label to set. It won't trigger side effects if the label is the same."
+                }
+              ],
+              "description": "A shortcut to rename an item."
+            },
+            {
+              "kind": "method",
+              "name": "addPanel",
+              "return": {
+                "type": {
+                  "text": "SplitPanel"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "opts",
+                  "default": "{}",
+                  "type": {
+                    "text": "SplitPanelAddOptions"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "addItem",
+              "return": {
+                "type": {
+                  "text": "SplitItem"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "ISplitItem"
+                  },
+                  "description": "The item to add."
+                }
+              ],
+              "description": "Adds an item to the active panel.\n\nTo add an item to a specific panel find a reference to \nthe panel instance and call `addItem()` there."
+            },
+            {
+              "kind": "method",
+              "name": "removeItem",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to remove."
+                }
+              ],
+              "description": "Removes an item from the layout. This means removing an item from all panels.\nIf you want to remove an item from a specific panel then find the panel first and then call `removeItem()`."
+            },
+            {
+              "kind": "method",
+              "name": "moveItem",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "fromPanelKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The id of the source panel of the item"
+                },
+                {
+                  "name": "toPanelKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The id of the target panel of the item"
+                },
+                {
+                  "name": "itemKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item"
+                },
+                {
+                  "name": "opts",
+                  "optional": true,
+                  "type": {
+                    "text": "TabsLayoutAddOptions"
+                  }
+                },
+                {
+                  "description": "The index to which add the item. Default as the last.",
+                  "name": "toIndex"
+                }
+              ],
+              "description": "Moves a tab between panels or inside a panel"
+            },
+            {
+              "kind": "method",
+              "name": "panelIterator",
+              "return": {
+                "type": {
+                  "text": "Generator<SplitPanel>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "parentPanel",
+                  "optional": true,
+                  "type": {
+                    "text": "SplitPanel"
+                  },
+                  "description": "The parent TabsLayout to start the iteration from."
+                }
+              ],
+              "description": "Iterates over panels from the root. \nThis iterates the panels structure in order defined in the `items` array on \neach panel."
+            },
+            {
+              "kind": "method",
+              "name": "parentItemsIterator",
+              "return": {
+                "type": {
+                  "text": "Generator<SplitItem>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the `parent` property of a `SplitItem` to include in the iteration"
+                },
+                {
+                  "name": "parentPanel",
+                  "optional": true,
+                  "type": {
+                    "text": "SplitPanel"
+                  },
+                  "description": "The `SplitPanel` to start the iteration from."
+                }
+              ],
+              "description": "Iterates over items that have specific `parent` property set.\n\nThis is useful to close multiple object that belong to a parent."
+            },
+            {
+              "kind": "method",
+              "name": "removeByParent",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "parentValue",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the parent to search for."
+                }
+              ],
+              "description": "Finds all items in all panels that have specified parent."
+            },
+            {
+              "kind": "method",
+              "name": "hasItem",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "itemKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to check"
+                }
+              ],
+              "description": "Checks whether the item with the given key is already managed by the manager."
+            },
+            {
+              "kind": "method",
+              "name": "selectItem",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "itemKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to set selected in the view."
+                },
+                {
+                  "name": "panelKey",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The optional panel key. When not set it finds the first panel the item is on."
+                }
+              ],
+              "description": "Selects an item in a panel.\n\nWhen the parent is give then it tries to select the item on that panel.\nOtherwise it checks whether the item is in the current panel and if so it selects it.\nOtherwise, it selects the item on a first panel the item is in."
+            },
+            {
+              "kind": "method",
+              "name": "isEmpty",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "description": "Checks whether the manager has at least one panel that has items.\n\nThis is useful to render the empty state when no items are added."
+            }
+          ],
+          "events": [
+            {
+              "name": "change",
+              "type": {
+                "text": "Event"
+              },
+              "description": "When the layout configuration change. This is the best time to perform DOM update."
+            },
+            {
+              "name": "nameitem",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "When the layout requests to name an item. This usually happens then a code calls the `requestNameUpdate()` method after the item's name changed."
+            },
+            {
+              "name": "closetab",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "When a tab wa closed via a user interaction."
+            }
+          ],
+          "superclass": {
+            "name": "EventTarget",
+            "module": "src/TabsLayout.ts"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "TabsLayout",
+          "declaration": {
+            "name": "TabsLayout",
+            "module": "src/TabsLayout.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/type.ts",
+      "declarations": [],
+      "exports": []
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/define/split-view.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "SplitViewElement",
+          "members": [],
+          "superclass": {
+            "name": "Element",
+            "module": "/src/SplitView.js"
+          },
+          "tagName": "split-view",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "SplitViewElement",
+          "declaration": {
+            "name": "SplitViewElement",
+            "module": "src/define/split-view.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "split-view",
+          "declaration": {
+            "name": "SplitViewElement",
+            "module": "src/define/split-view.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/lib/icons.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "iconWrapper",
+          "return": {
+            "type": {
+              "text": ""
+            }
+          },
+          "parameters": [
+            {
+              "name": "tpl",
+              "type": {
+                "text": "SVGTemplateResult"
+              },
+              "description": "Icon definition"
+            },
+            {
+              "name": "width",
+              "default": "24"
+            },
+            {
+              "name": "height",
+              "default": "24"
+            },
+            {
+              "name": "top",
+              "default": "0"
+            },
+            {
+              "name": "left",
+              "default": "0"
+            }
+          ],
+          "description": "Wraps icon into an SVG container."
+        },
+        {
+          "kind": "variable",
+          "name": "close"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "iconWrapper",
+          "declaration": {
+            "name": "iconWrapper",
+            "module": "src/lib/icons.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "close",
+          "declaration": {
+            "name": "close",
+            "module": "src/lib/icons.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/lib/math/MissingIndexes.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "missingIndexes",
+          "return": {
+            "type": {
+              "text": "number[]"
+            }
+          },
+          "parameters": [
+            {
+              "name": "list",
+              "type": {
+                "text": "number[]"
+              }
+            },
+            {
+              "name": "desiredSize",
+              "default": "list.length"
+            }
+          ],
+          "description": "Takes the array and reads which indexes are missing.\n\n## Example\n\n```javascript\nconst input = [0, 1, 3, 6, 7];\nlet result = missingIndexes(input);\nconsole.log(result); // -> [2, 5]\nresult = missingIndexes(input, 9);\nconsole.log(result); // -> [2, 5, 8, 9]\n```"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "missingIndexes",
+            "module": "src/lib/math/MissingIndexes.ts"
+          }
+        }
+      ]
+    }
+  ]
+}
