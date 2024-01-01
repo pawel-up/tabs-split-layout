@@ -115,7 +115,7 @@ Consider the state as an immutable object. Changing any property of the `State` 
 Instead, find an item you want to update, make a clone of it, change its properties, create the update transaction, and commit the changes through the manager.
 
 ```ts
-const transaction = state.transaction();
+const transaction = layout.transaction();
 const item = transaction.get('1');  // returns an item for the given key.
 item.label = 'Other label';
 layout.commit(transaction);

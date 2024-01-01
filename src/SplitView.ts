@@ -7,7 +7,7 @@ import { LayoutDirection, SplitRegion } from "./Enum.js";
 import { close as closeIcon } from './lib/icons.js';
 import type { Panel } from "./Panel.js";
 import type { Item } from "./Item.js";
-import type { State } from "./State.js";
+import type { Manager } from "./Manager.js";
 import SplitViewLib from './lib/SplitView.lib.js';
 import Interactions from './lib/Interactions.js';
 import { StateHelper } from "./StateHelper.js";
@@ -81,7 +81,7 @@ export default class SplitView extends LitElement {
    * Set the `key` property to inform which panel is being rendered.
    * The panel is computed when both values are set.
    */
-  @property({ type: Object }) state?: State;
+  @property({ type: Object }) manager?: Manager;
 
   @property({ type: Array }) dragTypes?: string[];
 
@@ -108,9 +108,9 @@ export default class SplitView extends LitElement {
    * trigger an update.
    */
   get panel(): Panel | null {
-    const { key, state: layoutState } = this;
-    if (key && layoutState) {
-      return layoutState.panel(key);
+    const { key, manager } = this;
+    if (key && manager) {
+      return manager.state.panel(key);
     }
     return null;
   }
@@ -177,8 +177,8 @@ export default class SplitView extends LitElement {
   }
 
   protected override willUpdate(cp: PropertyValues<this>): void {
-    if (cp.has('state')) {
-      this[handleStateChange](cp.get('state'));
+    if (cp.has('manager')) {
+      this[handleStateChange](cp.get('manager'));
     }
     super.willUpdate(cp);
   }
@@ -227,13 +227,13 @@ export default class SplitView extends LitElement {
    * 
    * @param old The old state object, if any, to remove event listeners.
    */
-  [handleStateChange](old?: State): void {
+  [handleStateChange](old?: Manager): void {
     if (old) {
-      old.removeEventListener('change', this[handleStateUpdate]);
+      old.state.removeEventListener('change', this[handleStateUpdate]);
     }
-    const { state: layoutState } = this;
-    if (layoutState) {
-      layoutState.addEventListener('change', this[handleStateUpdate]);
+    const { manager } = this;
+    if (manager) {
+      manager.state.addEventListener('change', this[handleStateUpdate]);
     }
   }
 
@@ -340,8 +340,8 @@ export default class SplitView extends LitElement {
    */
   [handleTabDragStart](e: DragEvent): void {
     const dt = e.dataTransfer as DataTransfer;
-    const { key, state: layoutState } = this;
-    if (!key || !layoutState) {
+    const { key, manager } = this;
+    if (!key || !manager) {
       return;
     }
     const tab = SplitViewLib.findTab(e);
@@ -353,7 +353,7 @@ export default class SplitView extends LitElement {
     if (!itemKey) {
       return;
     }
-    const item = layoutState.item(itemKey);
+    const item = manager.state.item(itemKey);
     if (!item) {
       return;
     }
@@ -382,8 +382,8 @@ export default class SplitView extends LitElement {
   }
 
   [handleTabListDrop](e: DragEvent): void {
-    const { key, state: layoutState } = this;
-    if (!this[panelCanDrop](e) || !key || !layoutState) {
+    const { key, manager } = this;
+    if (!this[panelCanDrop](e) || !key || !manager) {
       return;
     }
     e.stopPropagation();
@@ -401,14 +401,14 @@ export default class SplitView extends LitElement {
     if (movingTab) {
       if (e.shiftKey) {
         // with the shift key it adds the existing item to another panel.
-        const item = layoutState.item(itemKey);
+        const item = manager.state.item(itemKey);
         if (!item) {
           // This likely belongs to another state. Should we support this? How?
           return;
         }
-        StateHelper.createItem(layoutState, key, item, { index: toIndex });
+        StateHelper.createItem(manager, key, item, { index: toIndex });
       } else {
-        StateHelper.moveItem(layoutState, srcPanelKey, key, itemKey, {
+        StateHelper.moveItem(manager, srcPanelKey, key, itemKey, {
           index: toIndex,
         });
       }
@@ -422,7 +422,7 @@ export default class SplitView extends LitElement {
     if (custom) {
       def.custom = JSON.parse(custom);
     }
-    StateHelper.createItem(layoutState, key, def, { index: toIndex });
+    StateHelper.createItem(manager, key, def, { index: toIndex });
   }
 
   /**
@@ -431,8 +431,8 @@ export default class SplitView extends LitElement {
    * or moves an item between panels.
    */
   [handleElementDrop](e: DragEvent): void {
-    const { key, state: layoutState } = this;
-    if (!key || !layoutState || !this[panelCanDrop](e)) {
+    const { key, manager } = this;
+    if (!key || !manager || !this[panelCanDrop](e)) {
       return;
     }
     e.preventDefault();
@@ -447,15 +447,15 @@ export default class SplitView extends LitElement {
     if (srcPanelKey) {
       if (e.shiftKey) {
         // with the shift key it adds the existing item to another panel.
-        const item = layoutState.item(itemKey);
+        const item = manager.state.item(itemKey);
         if (!item) {
           // This likely belongs to another state. Should we support this? How?
           return;
         }
-        StateHelper.createItem(layoutState, key, item, { region: this.dragRegion });
+        StateHelper.createItem(manager, key, item, { region: this.dragRegion });
       } else {
         // moving within the same panel, but to another region, or between panels.
-        StateHelper.moveItem(layoutState, srcPanelKey, key, itemKey, {
+        StateHelper.moveItem(manager, srcPanelKey, key, itemKey, {
           region: this.dragRegion,
         });
       }
@@ -469,7 +469,7 @@ export default class SplitView extends LitElement {
     if (custom) {
       def.custom = JSON.parse(custom);
     }
-    StateHelper.createItem(layoutState, key, def, { region: this.dragRegion });
+    StateHelper.createItem(manager, key, def, { region: this.dragRegion });
   }
 
   /**
@@ -552,12 +552,12 @@ export default class SplitView extends LitElement {
    * Selects a given tab in the current panel.
    */
   selectTab(itemKey: string): void {
-    const { key, state: layoutState } = this;
-    if (!key || !layoutState) {
+    const { key, manager } = this;
+    if (!key || !manager) {
       throw new Error(`The "state" or "key" is not set.`);
     }
     try {
-      StateHelper.selectItem(layoutState, itemKey, key);
+      StateHelper.selectItem(manager, itemKey, key);
       this[notifyContentResize](key);
       this[activateTab](itemKey);
     } catch (e) {
@@ -570,11 +570,11 @@ export default class SplitView extends LitElement {
    * @param itemKey The key of the item to close.
    */
   closeTab(itemKey: string): void {
-    const { state: layoutState, key } = this;
-    if (!layoutState || !key) {
+    const { manager, key } = this;
+    if (!manager || !key) {
       return;
     }
-    StateHelper.removeItem(layoutState, itemKey, key);
+    StateHelper.removeItem(manager, itemKey, key);
     this[notifyTabClosed](itemKey);
   }
 
@@ -646,8 +646,8 @@ export default class SplitView extends LitElement {
    * Activates the first tab on the list, if any.
    */
   activateFirst(): void {
-    const { panel, state: layoutState } = this;
-    if (!panel || !layoutState) {
+    const { panel } = this;
+    if (!panel) {
       return;
     }
     const items = panel.sortedItems();
@@ -656,16 +656,14 @@ export default class SplitView extends LitElement {
     }
     const { key } = items[0];
     this.selectTab(key);
-    // StateHelper.selectItem(layoutState, key, panel.key);
-    // this[activateTab](key);
   }
 
   /**
    * Activates the last tab on the list, if any.
    */
   activateLast(): void {
-    const { panel, state: layoutState } = this;
-    if (!panel || !layoutState) {
+    const { panel } = this;
+    if (!panel) {
       return;
     }
     const items = panel.sortedItems();
@@ -674,8 +672,6 @@ export default class SplitView extends LitElement {
     }
     const { key } = items[items.length - 1];
     this.selectTab(key);
-    // StateHelper.selectItem(layoutState, key, panel.key);
-    // this[activateTab](key);
   }
 
   /**
@@ -690,8 +686,8 @@ export default class SplitView extends LitElement {
   }
 
   async [increaseDecreaseSelected](delta: number): Promise<void> {
-    const { panel, state: layoutState } = this;
-    if (!panel || !layoutState) {
+    const { panel } = this;
+    if (!panel) {
       return;
     }
     const items = panel.sortedItems();
@@ -703,8 +699,6 @@ export default class SplitView extends LitElement {
     const nextIndex = (currentIndex + delta + offset) % items.length;
     const { key } = items[nextIndex];
     this.selectTab(key);
-    // StateHelper.selectItem(layoutState, key, panel.key);
-    // this[activateTab](key);
   }
 
   async [activateTab](key: string): Promise<void> {

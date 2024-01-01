@@ -1,7 +1,7 @@
 import { TransactionError } from "./transaction/TransactionError.js";
 import type { Item, SerializedItem } from "./Item.js";
-import type { State } from "./State.js";
 import type { TabsLayoutAddOptions } from "./type.js";
+import type { Manager } from "./Manager.js";
 
 /**
  * A class that contains a common interactions 
@@ -15,7 +15,7 @@ export class StateHelper {
    * @param key The key of the item to remove.
    * @throws When the item was not found.
    */
-  static removeItem(state: State, key: string): void;
+  static removeItem(manager: Manager, key: string): void;
 
   /**
    * Creates a transaction and removes an item from a specific parent.
@@ -28,7 +28,7 @@ export class StateHelper {
    * @throws When the parent was not found.
    * @throws When the parent has no item on it.
    */
-  static removeItem(state: State, key: string, parent: string): void;
+  static removeItem(manager: Manager, key: string, parent: string): void;
 
   /**
    * Creates a transaction and removes an item from the state.
@@ -42,8 +42,8 @@ export class StateHelper {
    * @throws When the parent was not found.
    * @throws When the parent has no item on it.
    */
-  static removeItem(state: State, key: string, parent?: string): void {
-    const tx = state.transaction();
+  static removeItem(manager: Manager, key: string, parent?: string): void {
+    const tx = manager.transaction();
     const item = tx.state.item(key);
     if (!item) {
       throw new TransactionError(`The item to remove is not in the state.`);
@@ -83,8 +83,8 @@ export class StateHelper {
    * @throws When the parent panel already has the item selected.
    * 
    */
-  static selectItem(state: State, key: string, parent: string): void {
-    const tx = state.transaction();
+  static selectItem(manager: Manager, key: string, parent: string): void {
+    const tx = manager.transaction();
     const panel = tx.state.panel(parent);
     if (!panel) {
       throw new TransactionError(`The parent panel does not exist on the state.`);
@@ -108,11 +108,11 @@ export class StateHelper {
    * @param opts Move options.
    * @throws When an error occurs, e.i., when panels do not exists, or the item does not exist.
    */
-  static moveItem(state: State, fromParent: string, toParent: string, key: string, opts?: TabsLayoutAddOptions): void {
+  static moveItem(manager: Manager, fromParent: string, toParent: string, key: string, opts?: TabsLayoutAddOptions): void {
     if (fromParent === toParent) {
-      this.moveItemWithinPanel(state, fromParent, key, opts);
+      this.moveItemWithinPanel(manager, fromParent, key, opts);
     } else {
-      this.moveItemBetweenPanels(state, fromParent, toParent, key, opts);
+      this.moveItemBetweenPanels(manager, fromParent, toParent, key, opts);
     }
   }
 
@@ -124,8 +124,8 @@ export class StateHelper {
    * @param key The key of the item to move.
    * @param opts Item manipulation options.
    */
-  static moveItemWithinPanel(state: State, parent: string, key: string, opts?: TabsLayoutAddOptions): void {
-    const tx = state.transaction();
+  static moveItemWithinPanel(manager: Manager, parent: string, key: string, opts?: TabsLayoutAddOptions): void {
+    const tx = manager.transaction();
     const panel = tx.state.panel(parent);
     if (!panel) {
       throw new TransactionError(`The source panel of the move operation does not exist.`);
@@ -144,8 +144,8 @@ export class StateHelper {
    * @param toIndex The position on which to insert the item at. When not set, adds it to the end of items.
    * @throws When an error occurs, e.i., when panels do not exists, or the item does not exist.
    */
-  static moveItemBetweenPanels(state: State, fromParent: string, toParent: string, key: string, opts?: TabsLayoutAddOptions): void {
-    const tx = state.transaction();
+  static moveItemBetweenPanels(manager: Manager, fromParent: string, toParent: string, key: string, opts?: TabsLayoutAddOptions): void {
+    const tx = manager.transaction();
     const from = tx.state.panel(fromParent);
     const to = fromParent === toParent ? from : tx.state.panel(toParent);
     if (!from) {
@@ -185,14 +185,14 @@ export class StateHelper {
    * @param item 
    * @param opts 
    */
-  static createItem(state: State, parent: string, item: Partial<SerializedItem>, opts?: TabsLayoutAddOptions): Item {
-    const tx = state.transaction();
+  static createItem(manager: Manager, parent: string, item: Partial<SerializedItem>, opts?: TabsLayoutAddOptions): Item {
+    const tx = manager.transaction();
     const panel = tx.state.panel(parent);
     if (!panel) {
       throw new TransactionError(`The parent panel of the add operation does not exist.`);
     }
     const created = panel.addItem(item, opts);
     tx.commit();
-    return state.item(created.key) as Item;
+    return tx.currentState.item(created.key) as Item;
   }
 }

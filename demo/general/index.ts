@@ -82,25 +82,25 @@ class ComponentDemoPage extends DemoPage {
 
   protected handleAddItem(): void {
     const kind = 'data#item';
-    const { state } = this;
+    const { state, layout } = this;
     let panel = state.activePanel();
     if (!panel) {
-      const tx = state.transaction();
+      const tx = layout.transaction();
       panel = tx.state.addPanel();
       tx.commit();
       panel = state.panel(panel.key)!;
     }
-    StateHelper.createItem(state, panel.key, { label: '', custom: { kind } });
+    StateHelper.createItem(layout, panel.key, { label: '', custom: { kind } });
   }
 
   protected handleReset(): void {
-    const tx = this.state.transaction();
+    const tx = this.layout.transaction();
     tx.reset();
     tx.commit();
   }
 
   protected handleClose2Left(): void {
-    const tx = this.state.transaction();
+    const tx = this.layout.transaction();
     const panel = tx.state.activePanel();
     if (!panel) {
       throw new Error(`The state has no panels.`)
@@ -113,7 +113,7 @@ class ComponentDemoPage extends DemoPage {
   }
 
   protected handleClose2Right(): void {
-    const tx = this.state.transaction();
+    const tx = this.layout.transaction();
     const panel = tx.state.activePanel();
     if (!panel) {
       throw new Error(`The state has no panels.`)
@@ -126,7 +126,7 @@ class ComponentDemoPage extends DemoPage {
   }
 
   protected handleClose(): void {
-    const tx = this.state.transaction();
+    const tx = this.layout.transaction();
     const panel = tx.state.activePanel();
     if (!panel) {
       throw new Error(`The state has no panels.`)
@@ -142,7 +142,7 @@ class ComponentDemoPage extends DemoPage {
   }
 
   protected handleMoveLeft(): void {
-    const tx = this.state.transaction();
+    const tx = this.layout.transaction();
     const panel = tx.state.activePanel();
     if (!panel) {
       throw new Error(`The state has no panels.`)
@@ -165,7 +165,7 @@ class ComponentDemoPage extends DemoPage {
   }
 
   protected handleMoveRight(): void {
-    const tx = this.state.transaction();
+    const tx = this.layout.transaction();
     const panel = tx.state.activePanel();
     if (!panel) {
       throw new Error(`The state has no panels.`)

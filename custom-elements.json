@@ -4,35 +4,26 @@
   "modules": [
     {
       "kind": "javascript-module",
-      "path": "src/SplitItem.ts",
+      "path": "src/Enum.ts",
+      "declarations": [],
+      "exports": []
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/Item.ts",
       "declarations": [
         {
           "kind": "class",
-          "description": "",
-          "name": "SplitItem",
+          "description": "An item represents a single tab inside a layout panel.\n\nThe item is an abstract object and is not aware of the content the tab is rendering.\nIt is used to generate tabs and to make a space for the content.",
+          "name": "Item",
           "members": [
             {
               "kind": "field",
-              "name": "kind",
+              "name": "custom",
               "type": {
-                "text": "string"
+                "text": "object"
               },
-              "default": "''"
-            },
-            {
-              "kind": "field",
-              "name": "key",
-              "type": {
-                "text": "string"
-              },
-              "default": "''"
-            },
-            {
-              "kind": "field",
-              "name": "parent",
-              "type": {
-                "text": "string | undefined"
-              }
+              "default": "{}"
             },
             {
               "kind": "field",
@@ -86,15 +77,9 @@
               }
             },
             {
-              "kind": "field",
-              "name": "value",
-              "type": {
-                "text": "unknown | undefined"
-              }
-            },
-            {
               "kind": "method",
               "name": "new",
+              "privacy": "protected",
               "return": {
                 "type": {
                   "text": "void"
@@ -104,18 +89,26 @@
                 {
                   "name": "schema",
                   "type": {
-                    "text": "ISplitItem"
+                    "text": "SerializedItem"
                   }
                 }
-              ]
+              ],
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
             },
             {
               "kind": "method",
               "name": "toJSON",
               "return": {
                 "type": {
-                  "text": "ISplitItem"
+                  "text": "SerializedItem"
                 }
+              },
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
               }
             },
             {
@@ -125,11 +118,108 @@
                 "type": {
                   "text": ""
                 }
+              },
+              "description": "Finds parents of an item.\n\nAn `Item` can have multiple parents as the same item can be opened in different\nsplit panels.\n\nIt may return an empty array only when the item was removed from the state."
+            },
+            {
+              "kind": "field",
+              "name": "key",
+              "type": {
+                "text": "string"
+              },
+              "description": "The key of the object. \nEach object need a unique key inside the layout.",
+              "default": "key",
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
               }
             },
             {
+              "kind": "field",
+              "name": "type",
+              "type": {
+                "text": "LayoutObjectType"
+              },
+              "description": "The type of the object.\nThis is to compare object using this property and not the \n`instance of`.",
+              "default": "type",
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "layoutState",
+              "type": {
+                "text": "State"
+              },
+              "privacy": "protected",
+              "description": "A reference to the state object.",
+              "default": "state",
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "LayoutObject",
+            "module": "/src/LayoutObject.js"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "Item",
+          "declaration": {
+            "name": "Item",
+            "module": "src/Item.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/LayoutObject.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A base class for objects held in the layout.",
+          "name": "LayoutObject",
+          "members": [
+            {
+              "kind": "field",
+              "name": "key",
+              "type": {
+                "text": "string"
+              },
+              "description": "The key of the object. \nEach object need a unique key inside the layout.",
+              "default": "key"
+            },
+            {
+              "kind": "field",
+              "name": "type",
+              "type": {
+                "text": "LayoutObjectType"
+              },
+              "description": "The type of the object.\nThis is to compare object using this property and not the \n`instance of`.",
+              "default": "type"
+            },
+            {
+              "kind": "field",
+              "name": "layoutState",
+              "type": {
+                "text": "State"
+              },
+              "privacy": "protected",
+              "description": "A reference to the state object.",
+              "default": "state"
+            },
+            {
               "kind": "method",
-              "name": "setLabel",
+              "name": "new",
+              "privacy": "protected",
               "return": {
                 "type": {
                   "text": "void"
@@ -137,35 +227,19 @@
               },
               "parameters": [
                 {
-                  "name": "value",
+                  "name": "schema",
                   "type": {
-                    "text": "string"
-                  },
-                  "description": "The new value of the label. Empty values are ignored."
-                },
-                {
-                  "name": "trigger",
-                  "default": "true",
-                  "description": "Whether to trigger side effects (requesting a view update and notifying change)"
+                    "text": "SerializedLayoutObject"
+                  }
                 }
-              ],
-              "description": "Updates the label and triggers side effects like layout and view update."
+              ]
             },
             {
               "kind": "method",
-              "name": "updateView",
+              "name": "toJSON",
               "return": {
                 "type": {
-                  "text": "void"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "notifyChange",
-              "return": {
-                "type": {
-                  "text": "void"
+                  "text": "SerializedLayoutObject"
                 }
               }
             }
@@ -175,51 +249,380 @@
       "exports": [
         {
           "kind": "js",
-          "name": "SplitItem",
+          "name": "LayoutObject",
           "declaration": {
-            "name": "SplitItem",
-            "module": "src/SplitItem.ts"
+            "name": "LayoutObject",
+            "module": "src/LayoutObject.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/SplitPanel.ts",
+      "path": "src/Manager.ts",
       "declarations": [
         {
+          "kind": "variable",
+          "name": "handleStateChange"
+        },
+        {
+          "kind": "variable",
+          "name": "handleStateRender"
+        },
+        {
+          "kind": "variable",
+          "name": "handleFocusIn"
+        },
+        {
+          "kind": "variable",
+          "name": "findViewFromEvent"
+        },
+        {
+          "kind": "variable",
+          "name": "notifyRender"
+        },
+        {
+          "kind": "variable",
+          "name": "dispatchStateChange"
+        },
+        {
+          "kind": "variable",
+          "name": "computeManualRendering"
+        },
+        {
+          "kind": "variable",
+          "name": "renderLayout"
+        },
+        {
           "kind": "class",
-          "description": "The class represents a panel model for the split layout.\nA panel can only hold other panels or layout items. When a panel\ndefines both, items are ignored.\n\nA panel can render ony one item at a time. TO view more items \nthe application needs to add panels to this panel and distribute items among them.",
-          "name": "SplitPanel",
+          "description": "The layout manager that manages the rendering process, user interactions,\nand all the mechanics of representing the sate as the split layout.",
+          "name": "Manager",
           "members": [
             {
               "kind": "field",
-              "name": "key",
-              "default": "globalThis.crypto.randomUUID()",
-              "description": "The key used as an internal reference to the definitions map."
+              "name": "view",
+              "type": {
+                "text": "View"
+              },
+              "privacy": "protected",
+              "default": "new View(this.opts)"
             },
             {
               "kind": "field",
-              "name": "layout",
+              "name": "state",
               "type": {
-                "text": "SplitDirection"
+                "text": "State"
+              },
+              "privacy": "protected",
+              "description": "The state object used to represent the layout.",
+              "default": "state"
+            },
+            {
+              "kind": "field",
+              "name": "opts",
+              "type": {
+                "text": "ManagerInit"
+              },
+              "privacy": "protected",
+              "description": "The configuration options."
+            },
+            {
+              "kind": "field",
+              "name": "#manualRendering",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
               }
             },
             {
               "kind": "field",
-              "name": "items",
+              "name": "manualRendering",
               "type": {
-                "text": "IPanelObject[]"
-              },
-              "default": "[]"
+                "text": "boolean"
+              }
             },
             {
               "kind": "field",
-              "name": "selected",
+              "name": "#renderRoot",
+              "privacy": "private",
               "type": {
-                "text": "string | undefined"
+                "text": "HTMLElement | null"
               },
-              "description": "The item being rendered in the panel.\nNote, this is the `key` of the item and not the `id` of the item."
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "renderRoot",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "description": "The reference to an element where the Manager should render the layout.\nThis is only used when the `render` and `parent` properties are set on the \nManager's configuration object."
+            },
+            {
+              "kind": "method",
+              "name": "connect",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "parent",
+                  "default": "document.body",
+                  "type": {
+                    "text": "EventTarget"
+                  },
+                  "description": "The parent on which to handle events. It should be the parent of the layout view."
+                }
+              ],
+              "description": "Initializes global events that are used when managing the view."
+            },
+            {
+              "kind": "method",
+              "name": "disconnect",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "parent",
+                  "default": "document.body",
+                  "type": {
+                    "text": "EventTarget"
+                  },
+                  "description": "Previously set parent."
+                }
+              ],
+              "description": "Removes events listeners previously set with the `connect()` method."
+            },
+            {
+              "kind": "method",
+              "name": "[computeManualRendering]",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "description": "Since options don't change after setting them, we compute the \nvalue for `#manualRendering` once.\nThe manual rendering is when `parent` and `render` options \nare not set."
+            },
+            {
+              "kind": "method",
+              "name": "[handleFocusIn]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "[findViewFromEvent]",
+              "return": {
+                "type": {
+                  "text": "SplitView | undefined"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "[notifyRender]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "[dispatchStateChange]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "[handleStateChange]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "[handleStateRender]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "findView",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "panelKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The panel key to search for."
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "[renderLayout]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Called when the Manager takes over the rendering process.\nIt render the view into the configured parent."
+            },
+            {
+              "kind": "field"
+            }
+          ],
+          "events": [
+            {
+              "name": "render",
+              "type": {
+                "text": "Event"
+              },
+              "description": "An event dispatched when the hosting application should trigger DOM update. Note, the event is not dispatched when auto rendering is used."
+            },
+            {
+              "name": "change",
+              "type": {
+                "text": "StateEvent"
+              },
+              "description": "When the state has changed through a user interaction or otherwise internal processing the the state should be stored by the application."
+            }
+          ],
+          "superclass": {
+            "name": "EventTarget",
+            "module": "src/Manager.ts"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "handleStateChange",
+          "declaration": {
+            "name": "handleStateChange",
+            "module": "src/Manager.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleStateRender",
+          "declaration": {
+            "name": "handleStateRender",
+            "module": "src/Manager.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleFocusIn",
+          "declaration": {
+            "name": "handleFocusIn",
+            "module": "src/Manager.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "findViewFromEvent",
+          "declaration": {
+            "name": "findViewFromEvent",
+            "module": "src/Manager.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "notifyRender",
+          "declaration": {
+            "name": "notifyRender",
+            "module": "src/Manager.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "dispatchStateChange",
+          "declaration": {
+            "name": "dispatchStateChange",
+            "module": "src/Manager.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "computeManualRendering",
+          "declaration": {
+            "name": "computeManualRendering",
+            "module": "src/Manager.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "renderLayout",
+          "declaration": {
+            "name": "renderLayout",
+            "module": "src/Manager.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Manager",
+          "declaration": {
+            "name": "Manager",
+            "module": "src/Manager.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/Panel.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A panel represents a section in the layout that hosts tabs.\nThe layout can have multiple panes deeply embedded in either horizontal or vertical direction.\n\nCharacteristics:\n\n- A panel can either hold items or panels, never both.\n- Only one item can be rendered in a panel that holds items.\n- All panels are rendered in a panel that holds panels.",
+          "name": "Panel",
+          "members": [
+            {
+              "kind": "field",
+              "name": "direction",
+              "type": {
+                "text": "LayoutDirection"
+              },
+              "description": "The direction the panel splits.\nIt only has meaning when the panel is holding other panels."
             },
             {
               "kind": "field",
@@ -231,43 +634,41 @@
             },
             {
               "kind": "field",
+              "name": "selected",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "The `key` of the item being rendered in the panel.\nOnly one item can be rendered in a panel that holds items."
+            },
+            {
+              "kind": "field",
+              "name": "items",
+              "type": {
+                "text": "PanelObject[]"
+              },
+              "default": "[]",
+              "description": "The items or panels held by this panel."
+            },
+            {
+              "kind": "field",
               "name": "hasPanels",
               "type": {
                 "text": "boolean"
-              }
+              },
+              "description": "Checks whether this panel has other panels on it.\nIf so, this also means that the `hasItems` is `false`."
             },
             {
               "kind": "field",
               "name": "hasItems",
               "type": {
                 "text": "boolean"
-              }
-            },
-            {
-              "kind": "method",
-              "name": "fromLayout",
-              "static": true,
-              "return": {
-                "type": {
-                  "text": "SplitPanel"
-                }
               },
-              "parameters": [
-                {
-                  "name": "manager",
-                  "type": {
-                    "text": "TabsLayout"
-                  }
-                },
-                {
-                  "name": "layout",
-                  "default": "SplitDirection.horizontal"
-                }
-              ]
+              "description": "Checks whether this panel has items on it.\nIf so, this also means that the `hasPanels` is `false`."
             },
             {
               "kind": "method",
               "name": "new",
+              "privacy": "protected",
               "return": {
                 "type": {
                   "text": "void"
@@ -277,18 +678,26 @@
                 {
                   "name": "schema",
                   "type": {
-                    "text": "ISplitPanel"
+                    "text": "SerializedPanel"
                   }
                 }
-              ]
+              ],
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
             },
             {
               "kind": "method",
               "name": "toJSON",
               "return": {
                 "type": {
-                  "text": "ISplitPanel"
+                  "text": "SerializedPanel"
                 }
+              },
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
               }
             },
             {
@@ -296,37 +705,10 @@
               "name": "getParent",
               "return": {
                 "type": {
-                  "text": "SplitPanel | undefined"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "canDrop",
-              "return": {
-                "type": {
-                  "text": ""
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "sortedItems",
-              "return": {
-                "type": {
-                  "text": ""
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "nextIndex",
-              "return": {
-                "type": {
                   "text": ""
                 }
               },
-              "description": "Finds an index where to put an item.\nThis finds \"holes\" in items where an index is not set for a given position.\nIn this case the resulting index is the missing index.\nOtherwise it returns next after the highest index."
+              "description": "Finds and returns a parent panel of this panel.\nIt returns `null` when the panel is the root panel (at the top of the state)\nor when the panel was removed from the state."
             },
             {
               "kind": "method",
@@ -349,7 +731,34 @@
             },
             {
               "kind": "method",
-              "name": "addItem",
+              "name": "sortedItems",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "canDrop",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "hasSiblings",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "isSibling",
               "return": {
                 "type": {
                   "text": ""
@@ -357,407 +766,105 @@
               },
               "parameters": [
                 {
-                  "name": "item",
+                  "name": "other",
                   "type": {
-                    "text": "ISplitItem | SplitItem"
+                    "text": "string"
                   },
-                  "description": "The item to add"
-                },
-                {
-                  "name": "opts",
-                  "default": "{}",
-                  "type": {
-                    "text": "TabsLayoutAddOptions"
-                  },
-                  "description": "Layout adding item options"
+                  "description": "The key of the other panel."
                 }
-              ],
-              "description": "Adds an item to the layout."
+              ]
             },
             {
               "kind": "method",
-              "name": "splitByRegion",
+              "name": "itemIndex",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Finds the index of an item on the items array\nafter ordering them according to the `sortedItems()`.\nThis can be used to read the position of the rendered tab\nin the view."
+            },
+            {
+              "kind": "method",
+              "name": "[Symbol.iterator]",
+              "return": {
+                "type": {
+                  "text": "Generator<Item>"
+                }
+              },
+              "description": "The default iterator for the panel. Yields items in order."
+            },
+            {
+              "kind": "field",
+              "name": "key",
+              "type": {
+                "text": "string"
+              },
+              "description": "The key of the object. \nEach object need a unique key inside the layout.",
+              "default": "key",
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "type",
+              "type": {
+                "text": "LayoutObjectType"
+              },
+              "description": "The type of the object.\nThis is to compare object using this property and not the \n`instance of`.",
+              "default": "type",
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "layoutState",
+              "type": {
+                "text": "State"
+              },
               "privacy": "protected",
-              "return": {
-                "type": {
-                  "text": "SplitPanel"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "region",
-                  "type": {
-                    "text": "SplitRegion"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "split",
-              "return": {
-                "type": {
-                  "text": "SplitPanel[]"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "opts",
-                  "default": "{}",
-                  "type": {
-                    "text": "SplitPanelSplitOptions"
-                  }
-                }
-              ],
-              "description": "Splits this panel into 2 panels.\nThis to be used when the panel has no other panels. Only items are allowed.\nIt produces 2 new panels and moves the items to the first one leaving the other one available."
-            },
-            {
-              "kind": "method",
-              "name": "unsplit",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
+              "description": "A reference to the state object.",
+              "default": "state",
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
               }
-            },
-            {
-              "kind": "method",
-              "name": "decreaseIndex",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "fromIndex",
-                  "type": {
-                    "text": "number"
-                  },
-                  "description": "The minimal index to affect."
-                }
-              ],
-              "description": "Decreases items index by 1 to all items with index at least equal to `fromIndex`."
-            },
-            {
-              "kind": "method",
-              "name": "increaseIndex",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "fromIndex",
-                  "type": {
-                    "text": "number"
-                  },
-                  "description": "The minimal index to affect."
-                }
-              ],
-              "description": "Increases items index by 1 to all items with index at least equal to `fromIndex`."
-            },
-            {
-              "kind": "method",
-              "name": "removeChildItem",
-              "return": {
-                "type": {
-                  "text": "SplitItem | undefined"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "item",
-                  "type": {
-                    "text": "SplitItem"
-                  }
-                },
-                {
-                  "name": "opts",
-                  "default": "{}",
-                  "type": {
-                    "text": "SplitPanelRemoveItemOptions"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "removeItem",
-              "return": {
-                "type": {
-                  "text": ""
-                }
-              },
-              "parameters": [
-                {
-                  "name": "key",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The `key` of the item."
-                },
-                {
-                  "name": "opts",
-                  "optional": true,
-                  "type": {
-                    "text": "SplitPanelRemoveItemOptions"
-                  }
-                }
-              ],
-              "description": "Removes an item from the layout"
-            },
-            {
-              "kind": "method",
-              "name": "removeRelative",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "key",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The key of the item to perform a relative operation from."
-                },
-                {
-                  "name": "dir",
-                  "default": "SplitCloseDirection.both",
-                  "type": {
-                    "text": "SplitCloseDirection"
-                  },
-                  "description": "The direction to which close other items. Default to both directions leaving only the `key` item"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "removePanel",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "id",
-                  "type": {
-                    "text": "string"
-                  }
-                },
-                {
-                  "name": "opts",
-                  "default": "{}",
-                  "type": {
-                    "text": "SplitPanelRemoveItemOptions"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "clearItems",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "opts",
-                  "optional": true,
-                  "type": {
-                    "text": "SplitPanelRemoveItemOptions"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "moveItem",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "key",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The item key"
-                },
-                {
-                  "name": "opts",
-                  "default": "{}",
-                  "type": {
-                    "text": "TabsLayoutAddOptions"
-                  }
-                },
-                {
-                  "description": "The new index. When not set it moves the item to the end.",
-                  "name": "toIndex"
-                }
-              ],
-              "description": "Moves an item to a new index."
-            },
-            {
-              "kind": "method",
-              "name": "moveToRegion",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "item",
-                  "type": {
-                    "text": "SplitItem"
-                  }
-                },
-                {
-                  "name": "region",
-                  "type": {
-                    "text": "SplitRegion"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "moveToIndex",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "item",
-                  "type": {
-                    "text": "SplitItem"
-                  }
-                },
-                {
-                  "name": "index",
-                  "type": {
-                    "text": "number"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "moveToEnd",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "item",
-                  "type": {
-                    "text": "SplitItem"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "updateView",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "addPanel",
-              "return": {
-                "type": {
-                  "text": "SplitPanel"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "layout",
-                  "default": "SplitDirection.horizontal"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "panelTemplate",
-              "return": {
-                "type": {
-                  "text": "TemplateResult | undefined"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "panel",
-                  "type": {
-                    "text": "SplitPanel"
-                  }
-                },
-                {
-                  "name": "itemCallback",
-                  "type": {
-                    "text": "SplitItemRenderCallback"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "itemTemplate",
-              "return": {
-                "type": {
-                  "text": "TemplateResult"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "item",
-                  "type": {
-                    "text": "SplitItem"
-                  }
-                },
-                {
-                  "name": "visible",
-                  "type": {
-                    "text": "boolean"
-                  }
-                },
-                {
-                  "name": "itemCallback",
-                  "type": {
-                    "text": "SplitItemRenderCallback"
-                  }
-                }
-              ]
             }
-          ]
+          ],
+          "superclass": {
+            "name": "LayoutObject",
+            "module": "/src/LayoutObject.js"
+          }
         }
       ],
       "exports": [
         {
           "kind": "js",
-          "name": "SplitPanel",
+          "name": "Panel",
           "declaration": {
-            "name": "SplitPanel",
-            "module": "src/SplitPanel.ts"
+            "name": "Panel",
+            "module": "src/Panel.ts"
           }
         }
       ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/PanelObject.ts",
+      "declarations": [],
+      "exports": []
     },
     {
       "kind": "javascript-module",
@@ -778,19 +885,134 @@
       "path": "src/SplitView.ts",
       "declarations": [
         {
+          "kind": "variable",
+          "name": "handleStateChange"
+        },
+        {
+          "kind": "variable",
+          "name": "handleStateUpdate"
+        },
+        {
+          "kind": "variable",
+          "name": "handleElementDragOver"
+        },
+        {
+          "kind": "variable",
+          "name": "handleElementDrop"
+        },
+        {
+          "kind": "variable",
+          "name": "notifyTabClosed"
+        },
+        {
+          "kind": "variable",
+          "name": "closeTabFromEvent"
+        },
+        {
+          "kind": "variable",
+          "name": "handleDocumentDragleave"
+        },
+        {
+          "kind": "variable",
+          "name": "handleDocumentDragEnd"
+        },
+        {
+          "kind": "variable",
+          "name": "handleTabDragStart"
+        },
+        {
+          "kind": "variable",
+          "name": "handleTabClick"
+        },
+        {
+          "kind": "variable",
+          "name": "notifyContentResize"
+        },
+        {
+          "kind": "variable",
+          "name": "handleTabPointerDown"
+        },
+        {
+          "kind": "variable",
+          "name": "handleTabCloseClick"
+        },
+        {
+          "kind": "variable",
+          "name": "handleTabTouchStart"
+        },
+        {
+          "kind": "variable",
+          "name": "handleTabKeyDown"
+        },
+        {
+          "kind": "variable",
+          "name": "handleTabListDragover"
+        },
+        {
+          "kind": "variable",
+          "name": "handleTabListDrop"
+        },
+        {
+          "kind": "variable",
+          "name": "panelCanDrop"
+        },
+        {
+          "kind": "variable",
+          "name": "hasDropTypes"
+        },
+        {
+          "kind": "variable",
+          "name": "increaseDecreaseSelected"
+        },
+        {
+          "kind": "variable",
+          "name": "handleTabListFocus"
+        },
+        {
+          "kind": "variable",
+          "name": "activateTab"
+        },
+        {
+          "kind": "variable",
+          "name": "notifyContextualMenu"
+        },
+        {
+          "kind": "variable",
+          "name": "mutationObserver"
+        },
+        {
+          "kind": "variable",
+          "name": "handleMutationChange"
+        },
+        {
+          "kind": "variable",
+          "name": "registerPanel"
+        },
+        {
+          "kind": "variable",
+          "name": "unregisterPanel"
+        },
+        {
+          "kind": "variable",
+          "name": "setupPanels"
+        },
+        {
+          "kind": "variable",
+          "name": "registeredPanels"
+        },
+        {
           "kind": "class",
-          "description": "",
+          "description": "A split layout element.\n\nIt works with the `State` instance to render layout for a panel.\n\n## Accessibility\n\nThe `[role=tablist]` element should have the `aria-label` set on it. It receives a default value but it also \ncan be set by the author when setting `data-aria-label` on the element.\n\nThe tab panels (rendered items) should have the `[role=\"tabpanel\"]` attribute set. If not, the view\nwon't make a connection between the `tab` and the `tabpanel`. Once the `[role=\"tabpanel\"]` is detected\nit adds the `aria-controls` attribute to the `[role=tab]` element. During this process, the `id` might be set\non the `[role=\"tabpanel\"]` element, if not already set.",
           "name": "SplitView",
           "members": [
             {
               "kind": "field",
-              "name": "layout",
+              "name": "direction",
               "type": {
-                "text": "SplitDirection"
+                "text": "LayoutDirection | undefined"
               },
               "description": "The layout direction.",
-              "deprecated": "Rename this to `direction`.",
-              "attribute": "layout",
+              "attribute": "direction",
               "reflects": true
             },
             {
@@ -799,9 +1021,18 @@
               "type": {
                 "text": "string | undefined"
               },
-              "description": "The identifier of this view.",
+              "description": "The identifier of this view. It is the key of the panel that generated the view.\nFor the view to generate any layout, the `state` property must be set.",
               "attribute": "key",
               "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "state",
+              "type": {
+                "text": "State | undefined"
+              },
+              "description": "A reference to the layout state object.\nSet the `key` property to inform which panel is being rendered.\nThe panel is computed when both values are set.",
+              "attribute": "state"
             },
             {
               "kind": "field",
@@ -819,7 +1050,7 @@
               },
               "privacy": "protected",
               "default": "false",
-              "description": "Whether dragging is occurring over the element"
+              "description": "Whether dragging is occurring over the element."
             },
             {
               "kind": "field",
@@ -828,16 +1059,7 @@
                 "text": "SplitRegion | undefined"
               },
               "privacy": "protected",
-              "description": "The region the drag is leaning to."
-            },
-            {
-              "kind": "field",
-              "name": "panel",
-              "type": {
-                "text": "SplitPanel | undefined"
-              },
-              "description": "A reference to the split panel that owns this view.",
-              "attribute": "panel"
+              "description": "The drop region the current drag is leaning to."
             },
             {
               "kind": "field",
@@ -851,9 +1073,85 @@
               "reflects": true
             },
             {
+              "kind": "field",
+              "name": "panel",
+              "type": {
+                "text": "Panel | null"
+              },
+              "description": "Reads the current panel for the given `state` and `key`.\nDo not cache this property as it may change outside of the \nscope of state management of a lit element, which won't \ntrigger an update."
+            },
+            {
+              "kind": "field",
+              "name": "tabListAriaLabel",
+              "type": {
+                "text": "string"
+              },
+              "description": "Gets a computed value of the `aria-label` to be set on the `[role=tablist]`.\nBy default is sets \"Available tabs\" but if `data-aria-label` is set on this element\nthen this value is returned instead."
+            },
+            {
+              "kind": "field",
+              "name": "[mutationObserver]",
+              "type": {
+                "text": "MutationObserver"
+              },
+              "description": "The mutation observer used to determine tab contents IDs and map them to \nthe item key. It's used to support the `aria-controls` attribute set on \na tab."
+            },
+            {
+              "kind": "field",
+              "name": "[registeredPanels]",
+              "default": "new Map<string, string>()",
+              "description": "A map where keys are the `key` property of an item and the value\nis the value of the `id` attribute of a recognized panel.\nThis is used to set the `aria-controls` attribute set on \na tab."
+            },
+            {
               "kind": "method",
-              "name": "handleDragEnter",
-              "privacy": "protected",
+              "name": "[handleMutationChange]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "mutations",
+                  "type": {
+                    "text": "MutationRecord[]"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "[handleStateChange]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "old",
+                  "optional": true,
+                  "type": {
+                    "text": "State"
+                  },
+                  "description": "The old state object, if any, to remove event listeners."
+                }
+              ],
+              "description": "Adds event listeners on the state object to update the view\nwhen the state change."
+            },
+            {
+              "kind": "method",
+              "name": "[handleStateUpdate]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "A handler for the state's `change` event.\nRequests an update when a change happens."
+            },
+            {
+              "kind": "method",
+              "name": "[handleElementDragOver]",
               "return": {
                 "type": {
                   "text": "void"
@@ -866,12 +1164,12 @@
                     "text": "DragEvent"
                   }
                 }
-              ]
+              ],
+              "description": "A handler for the drag over event on the element.\nSets the drag region when the dragged element can be dropped."
             },
             {
               "kind": "method",
-              "name": "handleDragOver",
-              "privacy": "protected",
+              "name": "[handleDocumentDragleave]",
               "return": {
                 "type": {
                   "text": "void"
@@ -884,120 +1182,25 @@
                     "text": "DragEvent"
                   }
                 }
-              ]
+              ],
+              "description": "A handler for the drag leave on the document's body.\nClears the drag state when needed."
             },
             {
               "kind": "method",
-              "name": "handleDrop",
-              "privacy": "protected",
+              "name": "[handleDocumentDragEnd]",
               "return": {
                 "type": {
                   "text": "void"
                 }
               },
-              "parameters": [
-                {
-                  "name": "e",
-                  "type": {
-                    "text": "DragEvent"
-                  }
-                }
-              ]
+              "description": "A handler for the drag end on the document's body.\nClears the drag state when needed."
             },
             {
               "kind": "method",
-              "name": "handleDragleave",
-              "privacy": "protected",
+              "name": "[hasDropTypes]",
               "return": {
                 "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "e",
-                  "type": {
-                    "text": "DragEvent"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "handleDragEnd",
-              "privacy": "protected",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "getDropRegionFromEvent",
-              "privacy": "protected",
-              "return": {
-                "type": {
-                  "text": "SplitRegion | undefined"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "e",
-                  "type": {
-                    "text": "DragEvent"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "getDropRegion",
-              "return": {
-                "type": {
-                  "text": "SplitRegion | undefined"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "element",
-                  "type": {
-                    "text": "HTMLElement"
-                  }
-                },
-                {
-                  "name": "e",
-                  "type": {
-                    "text": "DragEvent"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "findLayout",
-              "privacy": "protected",
-              "return": {
-                "type": {
-                  "text": "SplitView | undefined"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "e",
-                  "type": {
-                    "text": "Event"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "hasDropTypes",
-              "privacy": "protected",
-              "return": {
-                "type": {
-                  "text": "boolean"
+                  "text": ""
                 }
               },
               "parameters": [
@@ -1005,17 +1208,37 @@
                   "name": "dt",
                   "type": {
                     "text": "DataTransfer"
-                  }
+                  },
+                  "description": "The drag event's DataTransfer object."
                 }
-              ]
+              ],
+              "description": "Checks whether the drag event has appropriate `types`\nthat matches set `dragTypes`.\n\nThe hosting application can restrict what data types can be accepted \non the panel by setting `dragTypes` property. These types must then be \nset on when the drag starts."
             },
             {
               "kind": "method",
-              "name": "panelCanDrop",
-              "privacy": "protected",
+              "name": "[panelCanDrop]",
               "return": {
                 "type": {
-                  "text": "boolean"
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "DragEvent"
+                  },
+                  "description": "The originating drag event."
+                }
+              ],
+              "description": "Checks whether a drag target can be dropped on the panel."
+            },
+            {
+              "kind": "method",
+              "name": "[handleTabDragStart]",
+              "return": {
+                "type": {
+                  "text": "void"
                 }
               },
               "parameters": [
@@ -1025,12 +1248,30 @@
                     "text": "DragEvent"
                   }
                 }
-              ]
+              ],
+              "description": "Sets up the `dataTransfer` property of the drag element \nto indicate that the dragged element comes from this panel.\n\nIt is used when dragging items between panels or within a panel."
             },
             {
               "kind": "method",
-              "name": "handleTabDragStart",
-              "privacy": "protected",
+              "name": "[handleTabListDragover]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ],
+              "description": "A handler for the tab list drag over event.\nIf the element can be dropped on the panel then it sets the drop effects."
+            },
+            {
+              "kind": "method",
+              "name": "[handleTabListDrop]",
               "return": {
                 "type": {
                   "text": "void"
@@ -1047,8 +1288,7 @@
             },
             {
               "kind": "method",
-              "name": "handleTabsDragEnter",
-              "privacy": "protected",
+              "name": "[handleElementDrop]",
               "return": {
                 "type": {
                   "text": "void"
@@ -1061,88 +1301,15 @@
                     "text": "DragEvent"
                   }
                 }
-              ]
+              ],
+              "description": "A handler for the drop event on the element.\nClears the drag regions and adds an item to a panel\nor moves an item between panels."
             },
             {
               "kind": "method",
-              "name": "handleTabsDragover",
-              "privacy": "protected",
+              "name": "[handleTabClick]",
               "return": {
                 "type": {
                   "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "e",
-                  "type": {
-                    "text": "DragEvent"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "handleTabDrop",
-              "privacy": "protected",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "e",
-                  "type": {
-                    "text": "DragEvent"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "moveTab",
-              "privacy": "protected",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "fromLayout",
-                  "type": {
-                    "text": "string"
-                  }
-                },
-                {
-                  "name": "toLayout",
-                  "type": {
-                    "text": "string"
-                  }
-                },
-                {
-                  "name": "key",
-                  "type": {
-                    "text": "string"
-                  }
-                },
-                {
-                  "name": "toIndex",
-                  "optional": true,
-                  "type": {
-                    "text": "number"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "findTab",
-              "privacy": "protected",
-              "return": {
-                "type": {
-                  "text": "HTMLElement | undefined"
                 }
               },
               "parameters": [
@@ -1152,12 +1319,12 @@
                     "text": "Event"
                   }
                 }
-              ]
+              ],
+              "description": "A handler for the click event on a tab.\nSelects the clicked tab and dispatched the resize `event` on the target content."
             },
             {
               "kind": "method",
-              "name": "handleTabClick",
-              "privacy": "protected",
+              "name": "[notifyContentResize]",
               "return": {
                 "type": {
                   "text": "Promise<void>"
@@ -1165,17 +1332,18 @@
               },
               "parameters": [
                 {
-                  "name": "e",
+                  "name": "key",
                   "type": {
-                    "text": "Event"
-                  }
+                    "text": "string"
+                  },
+                  "description": "The key of the item to notify."
                 }
-              ]
+              ],
+              "description": "It awaits for the DOM update, finds the item's content,\nand dispatches the `resize` event on the container element.\n\nThis way the content can be notified that it's being rendered and\nshould adjust its size, when needed. The event does not bubble."
             },
             {
               "kind": "method",
-              "name": "handleTabPointerDown",
-              "privacy": "protected",
+              "name": "[handleTabPointerDown]",
               "return": {
                 "type": {
                   "text": "void"
@@ -1189,12 +1357,11 @@
                   }
                 }
               ],
-              "description": "Closes a panel with right pointer configuration"
+              "description": "A handler for the `pointerdown` event on a tab.\nCloses a tab when the middle mouse button was pressed."
             },
             {
               "kind": "method",
-              "name": "handleTabClose",
-              "privacy": "protected",
+              "name": "[handleTabCloseClick]",
               "return": {
                 "type": {
                   "text": "void"
@@ -1207,12 +1374,12 @@
                     "text": "Event"
                   }
                 }
-              ]
+              ],
+              "description": "A handler for the `close` icon click in the UI."
             },
             {
               "kind": "method",
-              "name": "handleTabTouchStart",
-              "privacy": "protected",
+              "name": "[handleTabTouchStart]",
               "return": {
                 "type": {
                   "text": "void"
@@ -1225,15 +1392,175 @@
                     "text": "TouchEvent"
                   }
                 }
-              ]
+              ],
+              "description": "A handler for the touch event on a tab.\nCloses a tab when touched by 3 fingers."
+            },
+            {
+              "kind": "method",
+              "name": "[closeTabFromEvent]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  },
+                  "description": "The originating event"
+                }
+              ],
+              "description": "Closes a tab that is found from the passed event."
+            },
+            {
+              "kind": "method",
+              "name": "selectTab",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "itemKey",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Selects a given tab in the current panel."
             },
             {
               "kind": "method",
               "name": "closeTab",
-              "privacy": "protected",
               "return": {
                 "type": {
                   "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "itemKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to close."
+                }
+              ],
+              "description": "Closes a tab for the given item's key."
+            },
+            {
+              "kind": "method",
+              "name": "[notifyTabClosed]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the closed tab. Added as the detail of the event."
+                }
+              ],
+              "description": "Dispatches the `closetab` custom event where the detail is the key of the closed tab."
+            },
+            {
+              "kind": "method",
+              "name": "[handleTabKeyDown]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "KeyboardEvent"
+                  }
+                }
+              ],
+              "description": "A handler for the keydown event on a tab.\nSelects the tab for \"Enter\" key."
+            },
+            {
+              "kind": "method",
+              "name": "activateNext",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Activates next to the current tab.\nPart of a11y."
+            },
+            {
+              "kind": "method",
+              "name": "activatePrevious",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Activates next to the current tab.\nPart of a11y."
+            },
+            {
+              "kind": "method",
+              "name": "activateFirst",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Activates the first tab on the list, if any."
+            },
+            {
+              "kind": "method",
+              "name": "activateLast",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Activates the last tab on the list, if any."
+            },
+            {
+              "kind": "method",
+              "name": "[handleTabListFocus]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "A handler for the tab list element focus event.\nThis only happens when the panel has no item selected.\nIn such case the view sets the `tabindex` on the list instead of a \nparticular tab. When focus is given on the list, it selects the first\ntab and removes `tabindex` from the list."
+            },
+            {
+              "kind": "method",
+              "name": "[increaseDecreaseSelected]",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "delta",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "[activateTab]",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
                 }
               },
               "parameters": [
@@ -1247,8 +1574,7 @@
             },
             {
               "kind": "method",
-              "name": "handleTabKeyDown",
-              "privacy": "protected",
+              "name": "[notifyContextualMenu]",
               "return": {
                 "type": {
                   "text": "void"
@@ -1261,12 +1587,22 @@
                     "text": "KeyboardEvent"
                   }
                 }
-              ]
+              ],
+              "description": "Dispatches a bubbling `contextmenu` event from the tab.\nThis is used as a a11y measure when the tabs should support tabs menu."
             },
             {
               "kind": "method",
-              "name": "handleCloseKeydown",
-              "privacy": "protected",
+              "name": "[setupPanels]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Gets all children that are `[role=tabpanel]` and registers them\nwith the `this[registeredPanels]` map."
+            },
+            {
+              "kind": "method",
+              "name": "[registerPanel]",
               "return": {
                 "type": {
                   "text": "void"
@@ -1274,12 +1610,31 @@
               },
               "parameters": [
                 {
-                  "name": "e",
+                  "name": "typedElement",
                   "type": {
-                    "text": "KeyboardEvent"
+                    "text": "HTMLElement"
                   }
                 }
-              ]
+              ],
+              "description": "If the passed node is an Element node that has `role` set to \"tabpanel\"\nthen it ensures it has the `id` attribute set and registers this id\non the `this[registeredPanels]` map.\nThis is then used with accessibility."
+            },
+            {
+              "kind": "method",
+              "name": "[unregisterPanel]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "typedElement",
+                  "type": {
+                    "text": "HTMLElement"
+                  }
+                }
+              ],
+              "description": "If the passed node has the `data-key` attribute then it deregisters\na panel from the `this[registeredPanels]` map.\nThis is then used with accessibility."
             },
             {
               "kind": "method",
@@ -1297,9 +1652,17 @@
               "privacy": "protected",
               "return": {
                 "type": {
-                  "text": "TemplateResult | string"
+                  "text": "TemplateResult | typeof nothing"
                 }
-              }
+              },
+              "parameters": [
+                {
+                  "name": "panel",
+                  "type": {
+                    "text": "Panel"
+                  }
+                }
+              ]
             },
             {
               "kind": "method",
@@ -1312,9 +1675,15 @@
               },
               "parameters": [
                 {
+                  "name": "panel",
+                  "type": {
+                    "text": "Panel"
+                  }
+                },
+                {
                   "name": "item",
                   "type": {
-                    "text": "SplitItem"
+                    "text": "Item"
                   }
                 },
                 {
@@ -1331,39 +1700,49 @@
                   }
                 }
               ]
+            },
+            {
+              "kind": "field",
+              "default": "new MutationObserver(this[handleMutationChange].bind(this))"
             }
           ],
           "events": [
             {
-              "name": "datadrop",
-              "type": {
-                "text": "CustomEvent"
-              }
-            },
-            {
               "name": "closetab",
               "type": {
                 "text": "CustomEvent"
-              }
+              },
+              "description": "A custom event where the detail is the key of the closed tab. Dispatched when a tab was closed."
+            },
+            {
+              "description": "When the user presses F10 with shift key together. It triggers a contextual menu.",
+              "name": "contextmenu"
             }
           ],
           "attributes": [
             {
-              "name": "layout",
+              "name": "direction",
               "type": {
-                "text": "SplitDirection"
+                "text": "LayoutDirection | undefined"
               },
               "description": "The layout direction.",
-              "deprecated": "Rename this to `direction`.",
-              "fieldName": "layout"
+              "fieldName": "direction"
             },
             {
               "name": "key",
               "type": {
                 "text": "string | undefined"
               },
-              "description": "The identifier of this view.",
+              "description": "The identifier of this view. It is the key of the panel that generated the view.\nFor the view to generate any layout, the `state` property must be set.",
               "fieldName": "key"
+            },
+            {
+              "name": "state",
+              "type": {
+                "text": "State | undefined"
+              },
+              "description": "A reference to the layout state object.\nSet the `key` property to inform which panel is being rendered.\nThe panel is computed when both values are set.",
+              "fieldName": "state"
             },
             {
               "name": "dragTypes",
@@ -1371,14 +1750,6 @@
                 "text": "string[] | undefined"
               },
               "fieldName": "dragTypes"
-            },
-            {
-              "name": "panel",
-              "type": {
-                "text": "SplitPanel | undefined"
-              },
-              "description": "A reference to the split panel that owns this view.",
-              "fieldName": "panel"
             },
             {
               "name": "constrain",
@@ -1400,6 +1771,238 @@
       "exports": [
         {
           "kind": "js",
+          "name": "handleStateChange",
+          "declaration": {
+            "name": "handleStateChange",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleStateUpdate",
+          "declaration": {
+            "name": "handleStateUpdate",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleElementDragOver",
+          "declaration": {
+            "name": "handleElementDragOver",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleElementDrop",
+          "declaration": {
+            "name": "handleElementDrop",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "notifyTabClosed",
+          "declaration": {
+            "name": "notifyTabClosed",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "closeTabFromEvent",
+          "declaration": {
+            "name": "closeTabFromEvent",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleDocumentDragleave",
+          "declaration": {
+            "name": "handleDocumentDragleave",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleDocumentDragEnd",
+          "declaration": {
+            "name": "handleDocumentDragEnd",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleTabDragStart",
+          "declaration": {
+            "name": "handleTabDragStart",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleTabClick",
+          "declaration": {
+            "name": "handleTabClick",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "notifyContentResize",
+          "declaration": {
+            "name": "notifyContentResize",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleTabPointerDown",
+          "declaration": {
+            "name": "handleTabPointerDown",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleTabCloseClick",
+          "declaration": {
+            "name": "handleTabCloseClick",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleTabTouchStart",
+          "declaration": {
+            "name": "handleTabTouchStart",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleTabKeyDown",
+          "declaration": {
+            "name": "handleTabKeyDown",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleTabListDragover",
+          "declaration": {
+            "name": "handleTabListDragover",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleTabListDrop",
+          "declaration": {
+            "name": "handleTabListDrop",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "panelCanDrop",
+          "declaration": {
+            "name": "panelCanDrop",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "hasDropTypes",
+          "declaration": {
+            "name": "hasDropTypes",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "increaseDecreaseSelected",
+          "declaration": {
+            "name": "increaseDecreaseSelected",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleTabListFocus",
+          "declaration": {
+            "name": "handleTabListFocus",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "activateTab",
+          "declaration": {
+            "name": "activateTab",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "notifyContextualMenu",
+          "declaration": {
+            "name": "notifyContextualMenu",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "mutationObserver",
+          "declaration": {
+            "name": "mutationObserver",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleMutationChange",
+          "declaration": {
+            "name": "handleMutationChange",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "registerPanel",
+          "declaration": {
+            "name": "registerPanel",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "unregisterPanel",
+          "declaration": {
+            "name": "unregisterPanel",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "setupPanels",
+          "declaration": {
+            "name": "setupPanels",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "registeredPanels",
+          "declaration": {
+            "name": "registeredPanels",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
           "name": "default",
           "declaration": {
             "name": "SplitView",
@@ -1410,121 +2013,59 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/TabsLayout.ts",
+      "path": "src/State.ts",
       "declarations": [
         {
+          "kind": "variable",
+          "name": "reset"
+        },
+        {
+          "kind": "variable",
+          "name": "createItem"
+        },
+        {
+          "kind": "variable",
+          "name": "createPanel"
+        },
+        {
           "kind": "class",
-          "description": "Split layout manager creates a view where the application can put \"items\" into\nand render them inside \"panels\". The application can create as many panels as needed.\nPanels can be layout vertically or horizontally.\n\n## Basic usage\n\n```javascript\nconst layout = new TabsLayout({\n stateCallback: async (state: ITabsLayout): Promise<void> => { \n   localStorage.setItem('layout', JSON.stringify(state));\n }\n});\nconst restored = await readStoredState(); // a function that reads the state from the store\nawait layout.initialize(restored);\n\nconst content = layout.render((itemToRender: SplitItem): TemplateResult => { return html`...` });\n```\n\nEach time the layout configuration change the optional `stateCallback` function \nis called.\nIt's not mandatory to set this callback function but if you want the state to\npersist you have to serialize the manager manually when needed.\nSince the manage implement the `toJSON()` method it is safe to pass the instance of the manager\nto a idb store or serialize with `JSON.stringify()`.",
-          "name": "TabsLayout",
+          "description": "The state class that is used by the manager to render the view and control the logic.",
+          "name": "State",
           "members": [
             {
               "kind": "field",
               "name": "definitions",
-              "default": "new Map<string, LayoutObject>()",
-              "description": "The list of all definitions of panels and items."
+              "default": "new Map<string, StateObject>()",
+              "description": "The list of all definitions of panels and items.\nThe map key is the item key, and the value is an instance of either a panel or an item."
             },
             {
               "kind": "field",
               "name": "items",
               "type": {
-                "text": "IPanelObject[]"
+                "text": "PanelObject[]"
               },
               "default": "[]",
               "description": "Holds an ordered list of panels in the layout.\nThough, this interface is consistent with other panels, it can only keep panels, not items."
             },
             {
               "kind": "field",
-              "name": "activeInternal",
+              "name": "#currentPanel",
+              "privacy": "private",
+              "type": {
+                "text": "string | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "currentPanel",
               "type": {
                 "text": "string | undefined"
               },
-              "privacy": "private"
-            },
-            {
-              "kind": "field",
-              "name": "active",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "The key of the panel that is marked as \"active\", that is, \nthe panel the user last interacted with."
-            },
-            {
-              "kind": "field",
-              "name": "activeObject",
-              "type": {
-                "text": "LayoutObject | undefined"
-              },
-              "description": "Returns an object that is marked as active or undefined if none is marked as active."
-            },
-            {
-              "kind": "field",
-              "name": "activePanel",
-              "type": {
-                "text": "SplitPanel | undefined"
-              },
-              "description": "An active panel that the user last interacted with."
-            },
-            {
-              "kind": "field",
-              "name": "activeItem",
-              "type": {
-                "text": "SplitItem | undefined"
-              },
-              "description": "An active panel item that the user last interacted with."
-            },
-            {
-              "kind": "field",
-              "name": "isDirty",
-              "type": {
-                "text": "boolean"
-              },
-              "privacy": "protected",
-              "default": "false",
-              "description": "Whether the manager is dirty, that is, a change ocurred\nwhile storing the layout."
-            },
-            {
-              "kind": "field",
-              "name": "storing",
-              "type": {
-                "text": "boolean"
-              },
-              "privacy": "protected",
-              "default": "false",
-              "description": "A flag that determines that the state is being stored in the store."
-            },
-            {
-              "kind": "field",
-              "name": "debouncer",
-              "type": {
-                "text": "number | undefined"
-              },
-              "privacy": "protected",
-              "description": "The value of the debouncer timeout."
+              "description": "The key of the last focused Panel, if any.\nThis is used to get a reference to the \"active Panel\"."
             },
             {
               "kind": "method",
-              "name": "initialize",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "state",
-                  "optional": true,
-                  "type": {
-                    "text": "ITabsLayout"
-                  },
-                  "description": "A state to restore. When not set an empty layout is rendered."
-                }
-              ],
-              "description": "Initializes the split layout manager.\nWhen passed the `state` parameter it restores the previously serialized state."
-            },
-            {
-              "kind": "method",
-              "name": "reset",
-              "privacy": "protected",
+              "name": "[reset]",
               "return": {
                 "type": {
                   "text": "void"
@@ -1533,13 +2074,41 @@
             },
             {
               "kind": "method",
-              "name": "dispose",
+              "name": "[createItem]",
               "return": {
                 "type": {
-                  "text": "void"
+                  "text": ""
                 }
               },
-              "description": "Clears the state and disposes of all resources."
+              "parameters": [
+                {
+                  "name": "schema",
+                  "type": {
+                    "text": "SerializedItem"
+                  },
+                  "description": "The item schema"
+                }
+              ],
+              "description": "A method to create an item. It is used in child classes to create \ndifferent kind of items."
+            },
+            {
+              "kind": "method",
+              "name": "[createPanel]",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "schema",
+                  "type": {
+                    "text": "SerializedPanel"
+                  },
+                  "description": "The panel schema"
+                }
+              ],
+              "description": "A method to create a panel. It is used in child classes to create \ndifferent kind of panels."
             },
             {
               "kind": "method",
@@ -1551,102 +2120,46 @@
               },
               "parameters": [
                 {
-                  "name": "state",
+                  "name": "schema",
                   "type": {
-                    "text": "ITabsLayout"
+                    "text": "SerializedState"
                   },
-                  "description": "the state to set."
+                  "description": "The state to set."
                 }
               ],
-              "description": "Overrides the current state.\nNote, this operation does not call the `stateCallback()` callback."
+              "description": "Overrides the current state."
             },
             {
               "kind": "method",
               "name": "toJSON",
               "return": {
                 "type": {
-                  "text": "ITabsLayout"
+                  "text": "SerializedState"
                 }
               }
             },
             {
               "kind": "method",
-              "name": "scheduleStore",
+              "name": "get",
               "return": {
                 "type": {
-                  "text": "void"
-                }
-              },
-              "description": "Schedules a layout store operation in a debouncer.\nOnce active all other request to store the layout are ignored until \nthe timeout is triggered."
-            },
-            {
-              "kind": "method",
-              "name": "storeLayout",
-              "return": {
-                "type": {
-                  "text": "Promise<void>"
-                }
-              },
-              "description": "This function is called automatically when the store configuration\nchange. There's no need to call it manually unless you want to trigger\nthe storing state flow. However, at that moment the state is already stored\n(unless there was an error)."
-            },
-            {
-              "kind": "method",
-              "name": "handleFocusIn",
-              "privacy": "protected",
-              "return": {
-                "type": {
-                  "text": "void"
+                  "text": "Panel | Item | null"
                 }
               },
               "parameters": [
                 {
-                  "name": "e",
-                  "type": {
-                    "text": "Event"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "setActive",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "panelOrItemKey",
+                  "name": "key",
                   "type": {
                     "text": "string"
                   },
-                  "description": "the key of the panel or item that is active."
+                  "description": "The key of the item to find."
                 }
               ],
-              "description": "Sets an active panel or item."
+              "description": "Finds an item in the layout."
             },
             {
               "kind": "method",
-              "name": "findViewFromEvent",
-              "privacy": "protected",
-              "return": {
-                "type": {
-                  "text": "SplitView | undefined"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "e",
-                  "type": {
-                    "text": "Event"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "findView",
+              "name": "panel",
               "return": {
                 "type": {
                   "text": ""
@@ -1654,55 +2167,18 @@
               },
               "parameters": [
                 {
-                  "name": "panelKey",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The panel key to search for the view for."
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "getParents",
-              "return": {
-                "type": {
-                  "text": ""
-                }
-              },
-              "parameters": [
-                {
-                  "name": "itemOrPanelKey",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The key of the panel or an item."
-                }
-              ],
-              "description": "Finds parents an item or another panel is anchored to.\nAn item can have multiple parents. A panel can only have a single parent."
-            },
-            {
-              "kind": "method",
-              "name": "findPanel",
-              "return": {
-                "type": {
-                  "text": ""
-                }
-              },
-              "parameters": [
-                {
-                  "name": "panelKey",
+                  "name": "key",
                   "type": {
                     "text": "string"
                   },
                   "description": "The id of the panel."
                 }
               ],
-              "description": "Finds a panel by id."
+              "description": "Finds a `Panel` by its key."
             },
             {
               "kind": "method",
-              "name": "findItem",
+              "name": "item",
               "return": {
                 "type": {
                   "text": ""
@@ -1710,14 +2186,73 @@
               },
               "parameters": [
                 {
-                  "name": "itemKey",
+                  "name": "key",
                   "type": {
                     "text": "string"
                   },
-                  "description": "The id of the panel item."
+                  "description": "The id of the panel's item."
                 }
               ],
-              "description": "Finds a panel item by id."
+              "description": "Finds an `Item` by its key."
+            },
+            {
+              "kind": "method",
+              "name": "transaction",
+              "return": {
+                "type": {
+                  "text": "Transaction"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "parents",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the panel or an item."
+                }
+              ],
+              "description": "Finds parents of an item or a parent of a panel.\n\nAn item can have multiple parents. A panel can only have a single parent.",
+              "deprecated": "This should not be here. Instead use the item's reference."
+            },
+            {
+              "kind": "method",
+              "name": "clone",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "description": "Creates a deep copy of the current state."
+            },
+            {
+              "kind": "method",
+              "name": "activePanel",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "description": "Finds a reference to the \"active\" panel.\nAn active panel is the one the user focused last, or when not \nfocused before, the first panel that hosts items."
+            },
+            {
+              "kind": "method",
+              "name": "notifyRender",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Notifies listeners when something changed so the application\nshould trigger a render operation."
             },
             {
               "kind": "method",
@@ -1727,11 +2262,11 @@
                   "text": "void"
                 }
               },
-              "description": "Informs the screen that something has changed"
+              "description": "Notifies listeners when the internal state has changed."
             },
             {
               "kind": "method",
-              "name": "dispatchNameItem",
+              "name": "notifyItemCreated",
               "return": {
                 "type": {
                   "text": "void"
@@ -1741,227 +2276,19 @@
                 {
                   "name": "item",
                   "type": {
-                    "text": "SplitItem"
+                    "text": "TransactionalItem"
                   },
-                  "description": "The item to notify."
+                  "description": "The item that just been created."
                 }
               ],
-              "description": "Dispatches the `nameitem` event.\nThe detail object has the item to be added to the items.\nThe event handler can manipulate properties of the item, except for the index which will be set by the manager.\n\nNote, use the `requestNameUpdate()` when requesting a name update. The other method includes side\neffects like updating the view."
-            },
-            {
-              "kind": "method",
-              "name": "notifyTabClose",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "itemKey",
-                  "type": {
-                    "text": "string"
-                  }
-                },
-                {
-                  "name": "panel",
-                  "type": {
-                    "text": "string"
-                  }
-                }
-              ],
-              "description": "Do not call this method from the outside of the layout manager logic.\nIt is a way to communicate a tab was closed."
-            },
-            {
-              "kind": "method",
-              "name": "updateView",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "panelKey",
-                  "optional": true,
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The id of the panel. When not set it uses the active panel"
-                }
-              ],
-              "description": "Requests an update on the view element."
-            },
-            {
-              "kind": "method",
-              "name": "requestNameUpdate",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "itemKey",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The key of the item."
-                }
-              ],
-              "description": "Requests to dispatch the `nameitem` event so the application can update the name of the tab."
-            },
-            {
-              "kind": "method",
-              "name": "requestNameUpdateByParent",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "parentValue",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The key of the `parent` property to look for."
-                }
-              ],
-              "description": "Dispatches the `nameitem` event so the application \ncan update the name of an item that has a specific `parent`."
-            },
-            {
-              "kind": "method",
-              "name": "setItemLabel",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "itemKey",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The key of the item to rename"
-                },
-                {
-                  "name": "label",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The label to set. It won't trigger side effects if the label is the same."
-                }
-              ],
-              "description": "A shortcut to rename an item."
-            },
-            {
-              "kind": "method",
-              "name": "addPanel",
-              "return": {
-                "type": {
-                  "text": "SplitPanel"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "opts",
-                  "default": "{}",
-                  "type": {
-                    "text": "SplitPanelAddOptions"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "addItem",
-              "return": {
-                "type": {
-                  "text": "SplitItem"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "item",
-                  "type": {
-                    "text": "ISplitItem"
-                  },
-                  "description": "The item to add."
-                }
-              ],
-              "description": "Adds an item to the active panel.\n\nTo add an item to a specific panel find a reference to \nthe panel instance and call `addItem()` there."
-            },
-            {
-              "kind": "method",
-              "name": "removeItem",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "key",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The key of the item to remove."
-                }
-              ],
-              "description": "Removes an item from the layout. This means removing an item from all panels.\nIf you want to remove an item from a specific panel then find the panel first and then call `removeItem()`."
-            },
-            {
-              "kind": "method",
-              "name": "moveItem",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "fromPanelKey",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The id of the source panel of the item"
-                },
-                {
-                  "name": "toPanelKey",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The id of the target panel of the item"
-                },
-                {
-                  "name": "itemKey",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The key of the item"
-                },
-                {
-                  "name": "opts",
-                  "optional": true,
-                  "type": {
-                    "text": "TabsLayoutAddOptions"
-                  }
-                },
-                {
-                  "description": "The index to which add the item. Default as the last.",
-                  "name": "toIndex"
-                }
-              ],
-              "description": "Moves a tab between panels or inside a panel"
+              "description": "Notifies listeners about an item being created."
             },
             {
               "kind": "method",
               "name": "panelIterator",
               "return": {
                 "type": {
-                  "text": "Generator<SplitPanel>"
+                  "text": "Generator<Panel>"
                 }
               },
               "parameters": [
@@ -1969,7 +2296,7 @@
                   "name": "parentPanel",
                   "optional": true,
                   "type": {
-                    "text": "SplitPanel"
+                    "text": "Panel"
                   },
                   "description": "The parent TabsLayout to start the iteration from."
                 }
@@ -1978,95 +2305,23 @@
             },
             {
               "kind": "method",
-              "name": "parentItemsIterator",
+              "name": "itemsIterator",
               "return": {
                 "type": {
-                  "text": "Generator<SplitItem>"
+                  "text": "Generator<Item>"
                 }
               },
               "parameters": [
-                {
-                  "name": "key",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The key of the `parent` property of a `SplitItem` to include in the iteration"
-                },
                 {
                   "name": "parentPanel",
                   "optional": true,
                   "type": {
-                    "text": "SplitPanel"
+                    "text": "Panel"
                   },
-                  "description": "The `SplitPanel` to start the iteration from."
+                  "description": "Optionally the start panel. By default it starts from the root panel."
                 }
               ],
-              "description": "Iterates over items that have specific `parent` property set.\n\nThis is useful to close multiple object that belong to a parent."
-            },
-            {
-              "kind": "method",
-              "name": "removeByParent",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "parentValue",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The key of the parent to search for."
-                }
-              ],
-              "description": "Finds all items in all panels that have specified parent."
-            },
-            {
-              "kind": "method",
-              "name": "hasItem",
-              "return": {
-                "type": {
-                  "text": ""
-                }
-              },
-              "parameters": [
-                {
-                  "name": "itemKey",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The key of the item to check"
-                }
-              ],
-              "description": "Checks whether the item with the given key is already managed by the manager."
-            },
-            {
-              "kind": "method",
-              "name": "selectItem",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "itemKey",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The key of the item to set selected in the view."
-                },
-                {
-                  "name": "panelKey",
-                  "optional": true,
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The optional panel key. When not set it finds the first panel the item is on."
-                }
-              ],
-              "description": "Selects an item in a panel.\n\nWhen the parent is give then it tries to select the item on that panel.\nOtherwise it checks whether the item is in the current panel and if so it selects it.\nOtherwise, it selects the item on a first panel the item is in."
+              "description": "Iterates over items in each panel in order."
             },
             {
               "kind": "method",
@@ -2076,45 +2331,707 @@
                   "text": "boolean"
                 }
               },
-              "description": "Checks whether the manager has at least one panel that has items.\n\nThis is useful to render the empty state when no items are added."
+              "description": "Checks whether the state has at least one panel that has items.\n\nThis is useful to render the empty state when no items are added."
             }
           ],
           "events": [
+            {
+              "name": "render",
+              "type": {
+                "text": "Event"
+              },
+              "description": "When the application should trigger a render of the layout."
+            },
             {
               "name": "change",
               "type": {
                 "text": "Event"
               },
-              "description": "When the layout configuration change. This is the best time to perform DOM update."
+              "description": "When the internal state has changed."
             },
             {
-              "name": "nameitem",
+              "name": "created",
               "type": {
                 "text": "CustomEvent"
               },
-              "description": "When the layout requests to name an item. This usually happens then a code calls the `requestNameUpdate()` method after the item's name changed."
-            },
-            {
-              "name": "closetab",
-              "type": {
-                "text": "CustomEvent"
-              },
-              "description": "When a tab wa closed via a user interaction."
+              "description": "A custom event when an item was created. The detail object contains the `TransactionalItem` object which can be manipulated if needed."
             }
           ],
           "superclass": {
             "name": "EventTarget",
-            "module": "src/TabsLayout.ts"
+            "module": "src/State.ts"
           }
         }
       ],
       "exports": [
         {
           "kind": "js",
-          "name": "TabsLayout",
+          "name": "reset",
           "declaration": {
-            "name": "TabsLayout",
-            "module": "src/TabsLayout.ts"
+            "name": "reset",
+            "module": "src/State.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "createItem",
+          "declaration": {
+            "name": "createItem",
+            "module": "src/State.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "createPanel",
+          "declaration": {
+            "name": "createPanel",
+            "module": "src/State.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "State",
+          "declaration": {
+            "name": "State",
+            "module": "src/State.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/StateHelper.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A class that contains a common interactions \nwith the state through the transactions.",
+          "name": "StateHelper",
+          "members": [
+            {
+              "kind": "method",
+              "name": "removeItem",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "State"
+                  },
+                  "description": "The state object to remove the item from."
+                },
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to remove."
+                }
+              ],
+              "description": "Creates a transaction and removes an item from the state and all parents."
+            },
+            {
+              "kind": "method",
+              "name": "removeItem",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "State"
+                  },
+                  "description": "The state object to remove the item from."
+                },
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to remove."
+                },
+                {
+                  "name": "parent",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "When set it removes the item from the specific panel only."
+                }
+              ],
+              "description": "Creates a transaction and removes an item from a specific parent.\nWhen the item has only single parent, it is removed from the state."
+            },
+            {
+              "kind": "method",
+              "name": "removeItem",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "State"
+                  },
+                  "description": "The state object to remove the item from."
+                },
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to remove."
+                },
+                {
+                  "name": "parent",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "When set it removes the item from the specific panel only."
+                }
+              ],
+              "description": "Creates a transaction and removes an item from the state.\nIt also removes the item from all parents it was added to, if \nthe parent is not specified."
+            },
+            {
+              "kind": "method",
+              "name": "selectItem",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "State"
+                  },
+                  "description": "The state object to use to change the selected state."
+                },
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to select on the panel."
+                },
+                {
+                  "name": "parent",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The parent panel of the item to select the item on."
+                }
+              ],
+              "description": "Crates a transaction and marks an item as selected on a given panel.\nAn item can be added to multiple panels so the parent panel must be specified."
+            },
+            {
+              "kind": "method",
+              "name": "moveItem",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "State"
+                  },
+                  "description": "The current state object to manipulate."
+                },
+                {
+                  "name": "fromParent",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The panel key to move the item from."
+                },
+                {
+                  "name": "toParent",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The parent to move the item to. May be the same as `fromParent`."
+                },
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to move."
+                },
+                {
+                  "name": "opts",
+                  "optional": true,
+                  "type": {
+                    "text": "TabsLayoutAddOptions"
+                  },
+                  "description": "Move options."
+                }
+              ],
+              "description": "A method to move an item within a panel of between panels."
+            },
+            {
+              "kind": "method",
+              "name": "moveItemWithinPanel",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "State"
+                  },
+                  "description": "The current state object to manipulate."
+                },
+                {
+                  "name": "parent",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The parent panel of the item. Note, an item may be opened in multiple panels."
+                },
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to move."
+                },
+                {
+                  "name": "opts",
+                  "optional": true,
+                  "type": {
+                    "text": "TabsLayoutAddOptions"
+                  },
+                  "description": "Item manipulation options."
+                }
+              ],
+              "description": "Moves an item within the same panel."
+            },
+            {
+              "kind": "method",
+              "name": "moveItemBetweenPanels",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "State"
+                  },
+                  "description": "The current state object to manipulate."
+                },
+                {
+                  "name": "fromParent",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The panel key to move the item from."
+                },
+                {
+                  "name": "toParent",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The parent to move the item to. May be the same as `fromParent`."
+                },
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to move."
+                },
+                {
+                  "name": "opts",
+                  "optional": true,
+                  "type": {
+                    "text": "TabsLayoutAddOptions"
+                  }
+                },
+                {
+                  "description": "The position on which to insert the item at. When not set, adds it to the end of items.",
+                  "name": "toIndex"
+                }
+              ],
+              "description": "Moves an item between two panels."
+            },
+            {
+              "kind": "method",
+              "name": "createItem",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": "Item"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "State"
+                  },
+                  "description": "The current state object to manipulate."
+                },
+                {
+                  "name": "parent",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The parent panel to add the item to."
+                },
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "Partial<SerializedItem>"
+                  }
+                },
+                {
+                  "name": "opts",
+                  "optional": true,
+                  "type": {
+                    "text": "TabsLayoutAddOptions"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "StateHelper",
+          "declaration": {
+            "name": "StateHelper",
+            "module": "src/StateHelper.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/View.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A class that is responsible for rendering the layout view.",
+          "name": "View",
+          "members": [
+            {
+              "kind": "method",
+              "name": "renderPanel",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "State"
+                  }
+                },
+                {
+                  "name": "panel",
+                  "type": {
+                    "text": "Panel"
+                  }
+                },
+                {
+                  "name": "itemCallback",
+                  "type": {
+                    "text": "PanelRenderCallback"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "panelTemplate",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "State"
+                  }
+                },
+                {
+                  "name": "panel",
+                  "type": {
+                    "text": "Panel"
+                  }
+                },
+                {
+                  "name": "itemCallback",
+                  "type": {
+                    "text": "PanelRenderCallback"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "itemTemplate",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "TemplateResult | undefined"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "Item"
+                  }
+                },
+                {
+                  "name": "visible",
+                  "type": {
+                    "text": "boolean"
+                  }
+                },
+                {
+                  "name": "itemCallback",
+                  "type": {
+                    "text": "PanelRenderCallback"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "View",
+          "declaration": {
+            "name": "View",
+            "module": "src/View.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "render",
+          "declaration": {
+            "name": "render",
+            "package": "lit"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "html",
+          "declaration": {
+            "name": "html",
+            "package": "lit"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "nothing",
+          "declaration": {
+            "name": "nothing",
+            "package": "lit"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Item",
+          "declaration": {
+            "name": "Item",
+            "module": "./Item.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Panel",
+          "declaration": {
+            "name": "Panel",
+            "module": "./Panel.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Transaction",
+          "declaration": {
+            "name": "Transaction",
+            "module": "./transaction/Transaction.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TransactionalItem",
+          "declaration": {
+            "name": "TransactionalItem",
+            "module": "./transaction/TransactionalItem.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TransactionalPanel",
+          "declaration": {
+            "name": "TransactionalPanel",
+            "module": "./transaction/TransactionalPanel.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TransactionalState",
+          "declaration": {
+            "name": "TransactionalState",
+            "module": "./transaction/TransactionalState.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TransactionError",
+          "declaration": {
+            "name": "TransactionError",
+            "module": "./transaction/TransactionError.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "State",
+          "declaration": {
+            "name": "State",
+            "module": "./State.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Manager",
+          "declaration": {
+            "name": "Manager",
+            "module": "./Manager.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "StateEvent",
+          "declaration": {
+            "name": "StateEvent",
+            "module": "./events/StateEvent.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "StateHelper",
+          "declaration": {
+            "name": "StateHelper",
+            "module": "./StateHelper.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TemplateResult",
+          "declaration": {
+            "name": "TemplateResult",
+            "package": "lit"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "SVGTemplateResult",
+          "declaration": {
+            "name": "SVGTemplateResult",
+            "package": "lit"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "SerializedItem",
+          "declaration": {
+            "name": "SerializedItem",
+            "module": "./Item.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "SerializedPanel",
+          "declaration": {
+            "name": "SerializedPanel",
+            "module": "./Panel.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "SerializedState",
+          "declaration": {
+            "name": "SerializedState",
+            "module": "./State.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ManagerInit",
+          "declaration": {
+            "name": "ManagerInit",
+            "module": "./type.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ManagerRenderOptions",
+          "declaration": {
+            "name": "ManagerRenderOptions",
+            "module": "./type.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PanelAddOptions",
+          "declaration": {
+            "name": "PanelAddOptions",
+            "module": "./type.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PanelRenderCallback",
+          "declaration": {
+            "name": "PanelRenderCallback",
+            "module": "./type.js"
           }
         }
       ]
@@ -2157,6 +3074,299 @@
           "declaration": {
             "name": "SplitViewElement",
             "module": "src/define/split-view.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/events/StateEvent.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "StateEvent",
+          "superclass": {
+            "name": "Event",
+            "module": "src/events/StateEvent.ts"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "StateEvent",
+          "declaration": {
+            "name": "StateEvent",
+            "module": "src/events/StateEvent.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/lib/Interactions.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "members": [
+            {
+              "kind": "method",
+              "name": "isMiddleButton",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "PointerEvent"
+                  },
+                  "description": "The pointer event to get the information from."
+                }
+              ],
+              "description": "Checks whether a middle button was clicked."
+            },
+            {
+              "kind": "method",
+              "name": "isCloseTouch",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "TouchEvent"
+                  },
+                  "description": "The originating touch event."
+                }
+              ],
+              "description": "When using a trackpad, 3 target touches represent an intention\nto close a tab/window. This function is to detect those."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/lib/Interactions.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/lib/Rand.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "Rand",
+          "members": [
+            {
+              "kind": "method",
+              "name": "id",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "size",
+                  "default": "8",
+                  "description": "The size of the resulting alphanumeric string. Max 12."
+                }
+              ],
+              "description": "Generates a random alphanumeric string.\nThis gives 62 elements per single character generated so the \nprobability of generating the same string is (62 ^ size).\n\n- size = 4  => ~14.77 million (collision very likely to happen)\n- size = 6  => ~56.8 billion (collision likely to happen)\n- size = 8  => ~218.34e+12 (collision very unlikely to happen)\n- size = 12 => ~3.23e+21 (collision impossible to happen)\n\nFor comparison, the universe is about 4.41e+17 seconds old\nand the planet Earth is about 1.75e+17 seconds old."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "Rand",
+          "declaration": {
+            "name": "Rand",
+            "module": "src/lib/Rand.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/lib/SplitView.lib.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "members": [
+            {
+              "kind": "method",
+              "name": "findLayout",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  },
+                  "description": "The event to find the layout for."
+                },
+                {
+                  "name": "localName",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The local name of the registered element."
+                }
+              ],
+              "description": "Finds a `SplitView` from which the event originated."
+            },
+            {
+              "kind": "method",
+              "name": "getDropRegion",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "element",
+                  "type": {
+                    "text": "HTMLElement"
+                  },
+                  "description": "The element to test for the drop region"
+                },
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "MouseEvent"
+                  },
+                  "description": "The drop event"
+                }
+              ],
+              "description": "Splits UI regions of an element into 4 areas (north, south, west, east)\nand returns the region for where the event ocurred."
+            },
+            {
+              "kind": "method",
+              "name": "getDropRegionFromEvent",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "MouseEvent"
+                  },
+                  "description": "The originating mouse event."
+                },
+                {
+                  "name": "localName",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The element's local name to find the SplitView."
+                }
+              ],
+              "description": "A combination of `findLayout()` and `getDropRegion()`, for convenience."
+            },
+            {
+              "kind": "method",
+              "name": "findTab",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": "HTMLElement | null"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  },
+                  "description": "The event to get the path from."
+                }
+              ],
+              "description": "Finds a `tab` ([role=tab]) in the event path."
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/lib/SplitView.lib.ts"
           }
         }
       ]
@@ -2226,6 +3436,1533 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/transaction/Transaction.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A transaction object that holds a list of changes applied to the state.\nA transaction has to be committed to the manager for any change to take effect.\n\nYou need to rollback the transaction when an error occur.\n\n```ts\nconst transaction = state.transaction();\n// make changes\n\ntry {\n  layout.commit(transaction);\n} catch (e) {\n  layout.rollback(transaction);\n}\n```",
+          "name": "Transaction",
+          "members": [
+            {
+              "kind": "field",
+              "name": "state",
+              "type": {
+                "text": "TransactionalState"
+              },
+              "description": "The working state for the transaction.",
+              "default": "new TransactionalState(this, copy)"
+            },
+            {
+              "kind": "method",
+              "name": "get",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the panel or the item to return."
+                }
+              ],
+              "description": "Finds a panel or item that has additional methods available only during \na transaction."
+            },
+            {
+              "kind": "method",
+              "name": "add",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "panel",
+                  "type": {
+                    "text": "Partial<SerializedPanel>"
+                  },
+                  "description": "The definition of the panel. If the `key` is not provided then one will be generated."
+                },
+                {
+                  "description": "When set it is equivalent of reading a panel from the transaction and then calling the `add()` method.\nWhen not set it adds the panel to the root.",
+                  "name": "parentKey"
+                }
+              ],
+              "description": "Adds a new panel to the state through this transaction.\nThis method only allow to add a new panel to the root of the state.\n\nFor adding a panel to another panel, find for the panel first and then call the `add()` function.\n\n```ts\nconst panel = transaction.get(parentKey) as TransactionalPanel;\npanel.add(panel);\n```"
+            },
+            {
+              "kind": "method",
+              "name": "commit",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Commits the transaction and finalizes the current transaction instance.\n\nIf any of the operations fail, then the entire transaction fails.\nYou need to `rollback()` the transaction to restore the state on the layout."
+            },
+            {
+              "kind": "method",
+              "name": "reset",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Resets the State object to the initial values."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "Transaction",
+          "declaration": {
+            "name": "Transaction",
+            "module": "src/transaction/Transaction.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/transaction/TransactionError.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "TransactionError",
+          "superclass": {
+            "name": "Error",
+            "module": "src/transaction/TransactionError.ts"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "TransactionError",
+          "declaration": {
+            "name": "TransactionError",
+            "module": "src/transaction/TransactionError.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/transaction/TransactionalItem.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "An instance of this object has methods that can be used in a transaction.",
+          "name": "TransactionalItem",
+          "members": [
+            {
+              "kind": "method",
+              "name": "remove",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Removes this item from all panels it is opened in.\nIt is the same as finding all parents of this item and calling \nthe `removeChild()` on each."
+            },
+            {
+              "kind": "method",
+              "name": "getParents",
+              "return": {
+                "type": {
+                  "text": "TransactionalPanel[]"
+                }
+              },
+              "description": "Finds parents of an item.\n\nAn `Item` can have multiple parents as the same item can be opened in different\nsplit panels.\n\nIt may return an empty array only when the item was removed from the state.",
+              "inheritedFrom": {
+                "name": "Item",
+                "module": "src/Item.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "custom",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "inheritedFrom": {
+                "name": "Item",
+                "module": "src/Item.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "inheritedFrom": {
+                "name": "Item",
+                "module": "src/Item.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "pinned",
+              "type": {
+                "text": "boolean | undefined"
+              },
+              "inheritedFrom": {
+                "name": "Item",
+                "module": "src/Item.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "index",
+              "type": {
+                "text": "number"
+              },
+              "default": "0",
+              "inheritedFrom": {
+                "name": "Item",
+                "module": "src/Item.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "icon",
+              "type": {
+                "text": "SVGTemplateResult | undefined"
+              },
+              "inheritedFrom": {
+                "name": "Item",
+                "module": "src/Item.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "persistent",
+              "type": {
+                "text": "boolean | undefined"
+              },
+              "inheritedFrom": {
+                "name": "Item",
+                "module": "src/Item.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "loading",
+              "type": {
+                "text": "boolean | undefined"
+              },
+              "inheritedFrom": {
+                "name": "Item",
+                "module": "src/Item.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "isDirty",
+              "type": {
+                "text": "boolean | undefined"
+              },
+              "inheritedFrom": {
+                "name": "Item",
+                "module": "src/Item.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "new",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "schema",
+                  "type": {
+                    "text": "SerializedItem"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "toJSON",
+              "return": {
+                "type": {
+                  "text": "SerializedItem"
+                }
+              },
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "key",
+              "type": {
+                "text": "string"
+              },
+              "description": "The key of the object. \nEach object need a unique key inside the layout.",
+              "default": "key",
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "type",
+              "type": {
+                "text": "LayoutObjectType"
+              },
+              "description": "The type of the object.\nThis is to compare object using this property and not the \n`instance of`.",
+              "default": "type",
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "layoutState",
+              "type": {
+                "text": "State"
+              },
+              "privacy": "protected",
+              "description": "A reference to the state object.",
+              "default": "state",
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "Item",
+            "module": "/src/Item.js"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "TransactionalItem",
+          "declaration": {
+            "name": "TransactionalItem",
+            "module": "src/transaction/TransactionalItem.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/transaction/TransactionalPanel.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "removeDefinition"
+        },
+        {
+          "kind": "variable",
+          "name": "decreaseItemIndex"
+        },
+        {
+          "kind": "variable",
+          "name": "increaseItemIndex"
+        },
+        {
+          "kind": "variable",
+          "name": "moveToRegion"
+        },
+        {
+          "kind": "variable",
+          "name": "moveToIndex"
+        },
+        {
+          "kind": "variable",
+          "name": "moveToEnd"
+        },
+        {
+          "kind": "variable",
+          "name": "nextIndex"
+        },
+        {
+          "kind": "class",
+          "description": "An instance of this object has methods that can be used in a transaction.",
+          "name": "TransactionalPanel",
+          "members": [
+            {
+              "kind": "method",
+              "name": "getParent",
+              "return": {
+                "type": {
+                  "text": "TransactionalPanel | null"
+                }
+              },
+              "description": "Finds and returns a parent panel of this panel.\nIt returns `null` when the panel is the root panel (at the top of the state)\nor when the panel was removed from the state.",
+              "inheritedFrom": {
+                "name": "Panel",
+                "module": "src/Panel.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "remove",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Removes this panel and its children from the layout."
+            },
+            {
+              "kind": "method",
+              "name": "removeItem",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to remove."
+                }
+              ],
+              "description": "Removes a single item from the panel.\n\nIt takes care about the item indexes (decreases higher indexes) and the `selected` state.\n\nNote, it is possible to leave a panel without any item added. This means that such a\npanel can accept items or a new panel (and becoming a split panel). \nYou should handle this situation if you'd like to remove the panel\nif it has no more children."
+            },
+            {
+              "kind": "method",
+              "name": "[removeDefinition]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "Item | Panel"
+                  },
+                  "description": "The item definition to remove."
+                }
+              ],
+              "description": "Removes an item from the state definitions and adds the transaction record."
+            },
+            {
+              "kind": "method",
+              "name": "[decreaseItemIndex]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "fromIndex",
+                  "type": {
+                    "text": "number"
+                  },
+                  "description": "The minimal index to affect."
+                }
+              ],
+              "description": "Decreases items index by 1 to all items with the index at least equal to `fromIndex`."
+            },
+            {
+              "kind": "method",
+              "name": "[increaseItemIndex]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "fromIndex",
+                  "type": {
+                    "text": "number"
+                  },
+                  "description": "The minimal index to affect."
+                }
+              ],
+              "description": "Increases items index by 1 to all items with index at least equal to `fromIndex`."
+            },
+            {
+              "kind": "method",
+              "name": "move",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the panel object to move."
+                },
+                {
+                  "name": "opts",
+                  "default": "{}",
+                  "type": {
+                    "text": "TabsLayoutAddOptions"
+                  },
+                  "description": "Moving options."
+                }
+              ],
+              "description": "Moves an item within a panel.\n\nIt can move an item:\n- at the specific index of a panel - when an index is specified.\n- move an item to a region (split the panel) - when a region is specified.\n- move at the end of the panel - default behavior."
+            },
+            {
+              "kind": "method",
+              "name": "[moveToRegion]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "TransactionalItem"
+                  }
+                },
+                {
+                  "name": "region",
+                  "type": {
+                    "text": "SplitRegion"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "[moveToIndex]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "TransactionalItem"
+                  }
+                },
+                {
+                  "name": "index",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "[moveToEnd]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "TransactionalItem"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "addPanel",
+              "return": {
+                "type": {
+                  "text": "TransactionalPanel"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "init",
+                  "default": "{}",
+                  "type": {
+                    "text": "Partial<SerializedPanel>"
+                  },
+                  "description": "The properties to set on the new panel."
+                }
+              ],
+              "description": "Adds a new panel to this panel.\nNote, this is only possible if the panel does not contain items already.\nIn such case the transaction will fail."
+            },
+            {
+              "kind": "method",
+              "name": "addItem",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "init",
+                  "default": "{}",
+                  "type": {
+                    "text": "Partial<SerializedItem>"
+                  },
+                  "description": "The item definition."
+                },
+                {
+                  "name": "options",
+                  "default": "{}",
+                  "type": {
+                    "text": "TabsLayoutAddOptions"
+                  },
+                  "description": "THe add options, if any. By default it adds the item at the end of the current panel."
+                }
+              ],
+              "description": "Adds a new item to the layout."
+            },
+            {
+              "kind": "method",
+              "name": "[nextIndex]",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "description": "Finds an index where to put an item.\nThis finds \"holes\" in items where an index is not set for a given position.\nIn this case the resulting index is the missing index.\nOtherwise it returns next after the highest index."
+            },
+            {
+              "kind": "method",
+              "name": "splitByRegion",
+              "return": {
+                "type": {
+                  "text": "TransactionalPanel"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "region",
+                  "type": {
+                    "text": "SplitRegion"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "split",
+              "return": {
+                "type": {
+                  "text": "TransactionalPanel[]"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "opts",
+                  "default": "{}",
+                  "type": {
+                    "text": "PanelSplitOptions"
+                  }
+                }
+              ],
+              "description": "Splits this panel into 2 panels.\n\nThis to be used when the panel has no other panels. Only items are allowed.\nIt produces 2 new panels and moves the items to the first one leaving the other one available."
+            },
+            {
+              "kind": "method",
+              "name": "unSplit",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Takes the first panel from the current panel's items list and \nreplaces the current panel `items` and `selected` with the old panel."
+            },
+            {
+              "kind": "method",
+              "name": "closeRelative",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to perform a relative operation from."
+                },
+                {
+                  "name": "dir",
+                  "default": "TabCloseDirection.left",
+                  "type": {
+                    "text": "TabCloseDirection"
+                  },
+                  "description": "The direction to which close other items. Default to both directions leaving only the `key` item"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "direction",
+              "type": {
+                "text": "LayoutDirection"
+              },
+              "description": "The direction the panel splits.\nIt only has meaning when the panel is holding other panels.",
+              "inheritedFrom": {
+                "name": "Panel",
+                "module": "src/Panel.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "state",
+              "type": {
+                "text": "PanelState"
+              },
+              "description": "The current state of the panel.",
+              "inheritedFrom": {
+                "name": "Panel",
+                "module": "src/Panel.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "selected",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "The `key` of the item being rendered in the panel.\nOnly one item can be rendered in a panel that holds items.",
+              "inheritedFrom": {
+                "name": "Panel",
+                "module": "src/Panel.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "items",
+              "type": {
+                "text": "PanelObject[]"
+              },
+              "default": "[]",
+              "description": "The items or panels held by this panel.",
+              "inheritedFrom": {
+                "name": "Panel",
+                "module": "src/Panel.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "hasPanels",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Checks whether this panel has other panels on it.\nIf so, this also means that the `hasItems` is `false`.",
+              "inheritedFrom": {
+                "name": "Panel",
+                "module": "src/Panel.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "hasItems",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Checks whether this panel has items on it.\nIf so, this also means that the `hasPanels` is `false`.",
+              "inheritedFrom": {
+                "name": "Panel",
+                "module": "src/Panel.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "new",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "schema",
+                  "type": {
+                    "text": "SerializedPanel"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "toJSON",
+              "return": {
+                "type": {
+                  "text": "SerializedPanel"
+                }
+              },
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "hasItem",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to test."
+                }
+              ],
+              "description": "Checks whether this panel contains an item",
+              "inheritedFrom": {
+                "name": "Panel",
+                "module": "src/Panel.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "sortedItems",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "inheritedFrom": {
+                "name": "Panel",
+                "module": "src/Panel.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "canDrop",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "inheritedFrom": {
+                "name": "Panel",
+                "module": "src/Panel.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "hasSiblings",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "inheritedFrom": {
+                "name": "Panel",
+                "module": "src/Panel.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "isSibling",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "other",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the other panel."
+                }
+              ],
+              "inheritedFrom": {
+                "name": "Panel",
+                "module": "src/Panel.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "itemIndex",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Finds the index of an item on the items array\nafter ordering them according to the `sortedItems()`.\nThis can be used to read the position of the rendered tab\nin the view.",
+              "inheritedFrom": {
+                "name": "Panel",
+                "module": "src/Panel.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "[Symbol.iterator]",
+              "return": {
+                "type": {
+                  "text": "Generator<Item>"
+                }
+              },
+              "description": "The default iterator for the panel. Yields items in order.",
+              "inheritedFrom": {
+                "name": "Panel",
+                "module": "src/Panel.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "key",
+              "type": {
+                "text": "string"
+              },
+              "description": "The key of the object. \nEach object need a unique key inside the layout.",
+              "default": "key",
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "type",
+              "type": {
+                "text": "LayoutObjectType"
+              },
+              "description": "The type of the object.\nThis is to compare object using this property and not the \n`instance of`.",
+              "default": "type",
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "layoutState",
+              "type": {
+                "text": "State"
+              },
+              "privacy": "protected",
+              "description": "A reference to the state object.",
+              "default": "state",
+              "inheritedFrom": {
+                "name": "LayoutObject",
+                "module": "src/LayoutObject.ts"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "Panel",
+            "module": "/src/Panel.js"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "removeDefinition",
+          "declaration": {
+            "name": "removeDefinition",
+            "module": "src/transaction/TransactionalPanel.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "decreaseItemIndex",
+          "declaration": {
+            "name": "decreaseItemIndex",
+            "module": "src/transaction/TransactionalPanel.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "increaseItemIndex",
+          "declaration": {
+            "name": "increaseItemIndex",
+            "module": "src/transaction/TransactionalPanel.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "moveToRegion",
+          "declaration": {
+            "name": "moveToRegion",
+            "module": "src/transaction/TransactionalPanel.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "moveToIndex",
+          "declaration": {
+            "name": "moveToIndex",
+            "module": "src/transaction/TransactionalPanel.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "moveToEnd",
+          "declaration": {
+            "name": "moveToEnd",
+            "module": "src/transaction/TransactionalPanel.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "nextIndex",
+          "declaration": {
+            "name": "nextIndex",
+            "module": "src/transaction/TransactionalPanel.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TransactionalPanel",
+          "declaration": {
+            "name": "TransactionalPanel",
+            "module": "src/transaction/TransactionalPanel.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/transaction/TransactionalState.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "tx"
+        },
+        {
+          "kind": "class",
+          "description": "The state with methods only available during a transaction.",
+          "name": "TransactionalState",
+          "members": [
+            {
+              "kind": "field",
+              "name": "[tx]",
+              "type": {
+                "text": "Transaction"
+              },
+              "description": "The current transaction."
+            },
+            {
+              "kind": "method",
+              "name": "activePanel",
+              "return": {
+                "type": {
+                  "text": "TransactionalPanel | null"
+                }
+              },
+              "description": "Finds a reference to the \"active\" panel.\nAn active panel is the one the user focused last, or when not \nfocused before, the first panel that hosts items.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "addPanel",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "opts",
+                  "default": "{}",
+                  "type": {
+                    "text": "PanelAddOptions"
+                  },
+                  "description": "Adding panel options."
+                }
+              ],
+              "description": "Adds a panel to the root of the state.\nTo add a panel to another panel, first find its reference and then call add panel."
+            },
+            {
+              "kind": "method",
+              "name": "[createItem]",
+              "return": {
+                "type": {
+                  "text": "TransactionalItem"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "schema",
+                  "type": {
+                    "text": "SerializedItem"
+                  }
+                }
+              ],
+              "description": "A method to create an item. It is used in child classes to create \ndifferent kind of items.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "[createPanel]",
+              "return": {
+                "type": {
+                  "text": "TransactionalPanel"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "schema",
+                  "type": {
+                    "text": "SerializedPanel"
+                  }
+                }
+              ],
+              "description": "A method to create a panel. It is used in child classes to create \ndifferent kind of panels.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "panel",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The id of the panel."
+                }
+              ],
+              "description": "Finds a `Panel` by its key.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "item",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The id of the panel's item."
+                }
+              ],
+              "description": "Finds an `Item` by its key.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "panelIterator",
+              "return": {
+                "type": {
+                  "text": "Generator<TransactionalPanel>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "parentPanel",
+                  "optional": true,
+                  "type": {
+                    "text": "TransactionalPanel | undefined"
+                  }
+                }
+              ],
+              "description": "Iterates over panels from the root. \nThis iterates the panels structure in order defined in the `items` array on \neach panel.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "default": "transaction"
+            },
+            {
+              "kind": "field",
+              "name": "definitions",
+              "default": "new Map<string, StateObject>()",
+              "description": "The list of all definitions of panels and items.\nThe map key is the item key, and the value is an instance of either a panel or an item.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "items",
+              "type": {
+                "text": "PanelObject[]"
+              },
+              "default": "[]",
+              "description": "Holds an ordered list of panels in the layout.\nThough, this interface is consistent with other panels, it can only keep panels, not items.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#currentPanel",
+              "privacy": "private",
+              "type": {
+                "text": "string | undefined"
+              },
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "currentPanel",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "The key of the last focused Panel, if any.\nThis is used to get a reference to the \"active Panel\".",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "[reset]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "new",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "schema",
+                  "type": {
+                    "text": "SerializedState"
+                  },
+                  "description": "The state to set."
+                }
+              ],
+              "description": "Overrides the current state.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "toJSON",
+              "return": {
+                "type": {
+                  "text": "SerializedState"
+                }
+              },
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "get",
+              "return": {
+                "type": {
+                  "text": "Panel | Item | null"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to find."
+                }
+              ],
+              "description": "Finds an item in the layout.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "transaction",
+              "return": {
+                "type": {
+                  "text": "Transaction"
+                }
+              },
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "parents",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the panel or an item."
+                }
+              ],
+              "description": "Finds parents of an item or a parent of a panel.\n\nAn item can have multiple parents. A panel can only have a single parent.",
+              "deprecated": "This should not be here. Instead use the item's reference.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "clone",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "description": "Creates a deep copy of the current state.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "notifyRender",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Notifies listeners when something changed so the application\nshould trigger a render operation.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "notifyChange",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Notifies listeners when the internal state has changed.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "notifyItemCreated",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "TransactionalItem"
+                  },
+                  "description": "The item that just been created."
+                }
+              ],
+              "description": "Notifies listeners about an item being created.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "itemsIterator",
+              "return": {
+                "type": {
+                  "text": "Generator<Item>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "parentPanel",
+                  "optional": true,
+                  "type": {
+                    "text": "Panel"
+                  },
+                  "description": "Optionally the start panel. By default it starts from the root panel."
+                }
+              ],
+              "description": "Iterates over items in each panel in order.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "isEmpty",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "description": "Checks whether the state has at least one panel that has items.\n\nThis is useful to render the empty state when no items are added.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "State",
+            "module": "/src/State.js"
+          },
+          "events": [
+            {
+              "name": "render",
+              "type": {
+                "text": "Event"
+              },
+              "description": "When the application should trigger a render of the layout.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "name": "change",
+              "type": {
+                "text": "Event"
+              },
+              "description": "When the internal state has changed.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "name": "created",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "A custom event when an item was created. The detail object contains the `TransactionalItem` object which can be manipulated if needed.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "tx",
+          "declaration": {
+            "name": "tx",
+            "module": "src/transaction/TransactionalState.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TransactionalState",
+          "declaration": {
+            "name": "TransactionalState",
+            "module": "src/transaction/TransactionalState.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/lib/math/MissingIndexes.ts",
       "declarations": [
         {
@@ -2245,7 +4982,10 @@
             },
             {
               "name": "desiredSize",
-              "default": "list.length"
+              "optional": true,
+              "type": {
+                "text": "number"
+              }
             }
           ],
           "description": "Takes the array and reads which indexes are missing.\n\n## Example\n\n```javascript\nconst input = [0, 1, 3, 6, 7];\nlet result = missingIndexes(input);\nconsole.log(result); // -> [2, 5]\nresult = missingIndexes(input, 9);\nconsole.log(result); // -> [2, 5, 8, 9]\n```"

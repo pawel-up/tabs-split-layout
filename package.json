@@ -31,7 +31,7 @@
     "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore",
     "test": "tsc && wtr --coverage --playwright --browsers chromium firefox webkit",
     "test:watch": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wtr --watch --playwright --browsers chromium\"",
-    "prepare": "husky install",
+    "prepare": "husky install && npx playwright install",
     "tsc:watch": "tsc --watch",
     "tsc": "tsc"
   },

@@ -54,7 +54,7 @@ class ComponentDemoPage extends DemoPage {
   demoTitle = 'Filesystem demo';
 
   @reactive()
-  state: CurrentState = {
+  uiState: CurrentState = {
     type: 'initializing',
   };
 
@@ -64,7 +64,7 @@ class ComponentDemoPage extends DemoPage {
   @reactive()
   renderDropRegion = false;
 
-  layoutState: State;
+  state: State;
 
   layout: Manager;
 
@@ -78,7 +78,7 @@ class ComponentDemoPage extends DemoPage {
     const layout = new Manager(state, {
       constrain: true,
     });
-    this.layoutState = state;
+    this.state = state;
     this.layout = layout;
     layout.addEventListener('render', this.handlerStateChange.bind(this));
     layout.addEventListener('change', this.handlerLayoutChange.bind(this));
@@ -107,21 +107,21 @@ class ComponentDemoPage extends DemoPage {
     const { name } = handle;
     this.currentLayoutKey = `layout-${name}`;
     const fileSystem = await this.setupFilesystem(handle);
-    this.state = {
+    this.uiState = {
       type: 'directory',
       handle,
       fileSystem,
     };
     const state = await get(this.currentLayoutKey);
     if (state) {
-      this.layoutState.new(state);
-      for (const item of this.layoutState.itemsIterator()) {
+      this.state.new(state);
+      for (const item of this.state.itemsIterator()) {
         // eslint-disable-next-line no-await-in-loop
         await this.restoreItemData(item);
       }
-      this.layoutState.notifyRender();
+      this.state.notifyRender();
     } else {
-      const tx = this.layoutState.transaction();
+      const tx = this.layout.transaction();
       tx.reset();
       tx.commit();
     }
@@ -143,7 +143,7 @@ class ComponentDemoPage extends DemoPage {
   async restoreDirectory(): Promise<void> {
     const handle = await get(lastDirectoryKey) as FileSystemDirectoryHandle | undefined;
     if (!handle) {
-      this.state = {
+      this.uiState = {
         type: 'empty',
       };
       return;
@@ -154,11 +154,11 @@ class ComponentDemoPage extends DemoPage {
     };
     const state = await handle.queryPermission(options);
     if (state === 'denied') {
-      this.state = {
+      this.uiState = {
         type: 'empty',
       };
     } else if (state === 'prompt') {
-      this.state = {
+      this.uiState = {
         type: 'restoring-handle',
         handle,
       };
@@ -181,12 +181,12 @@ class ComponentDemoPage extends DemoPage {
   }
 
   async handleRestoreDirectory(): Promise<void> {
-    const state = this.state as RestoringHandleState;
+    const state = this.uiState as RestoringHandleState;
     const result = await this.verifyPermission(state.handle);
     if (result === true) {
       await this.createDirectoryState(state.handle);
     } else {
-      this.state = {
+      this.uiState = {
         type: 'empty',
       };
     }
@@ -269,7 +269,7 @@ class ComponentDemoPage extends DemoPage {
   }
 
   findFilesystemItem(path: string): FileSystemNavigation | null {
-    const state = this.state as SelectedDirectoryState;
+    const state = this.uiState as SelectedDirectoryState;
     const { fileSystem } = state;
     let current  = fileSystem;
     let selected: FileSystemNavigation | null = null;
@@ -313,19 +313,19 @@ class ComponentDemoPage extends DemoPage {
   }
 
   async appendFile(file: File, item: FileSystemNavigation): Promise<void> {
-    const { layoutState } = this;
-    let panel = layoutState.activePanel();
+    const { state, layout } = this;
+    let panel = state.activePanel();
     if (!panel) {
-      const tx = layoutState.transaction();
+      const tx = layout.transaction();
       panel = tx.state.addPanel();
       tx.commit();
-      panel = layoutState.panel(panel.key)!;
+      panel = state.panel(panel.key)!;
     }
     if (!this.openedFiles.has(item.path)) {
       const info = await FileToContent.getInfo(file);
       this.openedFiles.set(item.path, info);
     }
-    StateHelper.createItem(layoutState, panel.key, { key: item.path, label: file.name });
+    StateHelper.createItem(layout, panel.key, { key: item.path, label: file.name });
   }
 
   handleDragOver(e: DragEvent): void {
@@ -359,9 +359,9 @@ class ComponentDemoPage extends DemoPage {
   }
 
   contentTemplate(): TemplateResult {
-    const { state } = this;
+    const { uiState } = this;
     let content: TemplateResult;
-    switch (state.type) {
+    switch (uiState.type) {
       case 'initializing': content = this.renderInitializingState(); break;
       case 'restoring-handle': content = this.renderRestoringHandleState(); break;
       case 'directory': content = this.renderDirectoryState(); break;
@@ -384,7 +384,7 @@ class ComponentDemoPage extends DemoPage {
    * in the IDB, but, after restoring, we don't have permission to the file.
    */
   renderRestoringHandleState(): TemplateResult {
-    const state = this.state as RestoringHandleState;
+    const state = this.uiState as RestoringHandleState;
     const { handle } = state;
     return html`
     <div class="monit">
@@ -401,7 +401,7 @@ class ComponentDemoPage extends DemoPage {
 
   renderDirectoryState(): TemplateResult {
     const { renderDropRegion } = this;
-    const state = this.state as SelectedDirectoryState;
+    const state = this.uiState as SelectedDirectoryState;
     const { fileSystem, handle } = state;
     const entries = this.renderFileEntries(fileSystem);
     const classes: ClassInfo = {

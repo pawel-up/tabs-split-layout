@@ -1,7 +1,6 @@
 import { Item, SerializedItem } from "./Item.js";
 import { Panel, SerializedPanel } from "./Panel.js";
 import { PanelObject } from "./PanelObject.js";
-import { Transaction } from "./transaction/Transaction.js";
 import type { TransactionalItem } from "./transaction/TransactionalItem.js";
 import { SerializedStateObject, StateObject } from "./type.js";
 import { LayoutObjectType } from "./Enum.js";
@@ -174,11 +173,6 @@ export class State extends EventTarget {
       return null;
     }
     return result.value as Item;
-  }
-
-  transaction(): Transaction {
-    const result = new Transaction(this);
-    return result;
   }
 
   /**

@@ -1,6 +1,7 @@
 import { TemplateResult, render as litRender } from "lit";
 import { StateEvent } from "./events/StateEvent.js";
 import { View } from "./View.js";
+import { Transaction } from "./transaction/Transaction.js";
 import type { State } from "./State.js";
 import type { ManagerInit, PanelRenderCallback } from "./type.js";
 import type SplitView from "./SplitView.js";
@@ -27,7 +28,7 @@ export class Manager extends EventTarget {
   /**
    * The state object used to represent the layout.
    */
-  protected state: State;
+  state: State;
 
   /**
    * The configuration options.
@@ -154,7 +155,7 @@ export class Manager extends EventTarget {
       if (!panel) {
         continue;
       }
-      const content = view.renderPanel(state, panel, renderer);
+      const content = view.renderPanel(this, panel, renderer);
       if (content) {
         result.push(content);
       }
@@ -212,5 +213,10 @@ export class Manager extends EventTarget {
     }
     const content = this.render(render.renderer);
     litRender(content, renderRoot, render.options);
+  }
+
+  transaction(): Transaction {
+    const result = new Transaction(this.state);
+    return result;
   }
 }
