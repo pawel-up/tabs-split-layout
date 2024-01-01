@@ -61,6 +61,9 @@ class ComponentDemoPage extends DemoPage {
   @reactive()
   readingDirectory = false;
 
+  @reactive()
+  renderDropRegion = false;
+
   layoutState: State;
 
   layout: Manager;
@@ -221,9 +224,13 @@ class ComponentDemoPage extends DemoPage {
       this.readingDirectory = false;
       return;
     }
+    await this.processUserDirectory(handle);
+    this.readingDirectory = false;
+  }
+
+  async processUserDirectory(handle: FileSystemDirectoryHandle): Promise<void> {
     await set(lastDirectoryKey, handle);
     await this.createDirectoryState(handle);
-    this.readingDirectory = false;
   }
 
   handleDirectoryDblClick(e: Event): void {
@@ -321,6 +328,36 @@ class ComponentDemoPage extends DemoPage {
     StateHelper.createItem(layoutState, panel.key, { key: item.path, label: file.name });
   }
 
+  handleDragOver(e: DragEvent): void {
+    const dt = e.dataTransfer as DataTransfer;
+    for (const item of dt.items) {
+      if (item.kind === 'file') {
+        e.preventDefault();
+        this.renderDropRegion = true;
+      }
+    }
+  }
+
+  handleDragLeave(): void {
+    this.renderDropRegion = false;
+  }
+
+  async handleDrop(e: DragEvent): Promise<void> {
+    e.preventDefault();
+    this.renderDropRegion = false;
+    const dt = e.dataTransfer as DataTransfer;
+
+    const item = Array.from(dt.items).find(i => i.kind === 'file');
+    if (!item) {
+      return;
+    }
+    const entry = await item.getAsFileSystemHandle();
+    if (!entry || entry.kind !== "directory") {
+      return;
+    }
+    await this.processUserDirectory(entry as FileSystemDirectoryHandle);
+  }
+
   contentTemplate(): TemplateResult {
     const { state } = this;
     let content: TemplateResult;
@@ -363,11 +400,16 @@ class ComponentDemoPage extends DemoPage {
   }
 
   renderDirectoryState(): TemplateResult {
+    const { renderDropRegion } = this;
     const state = this.state as SelectedDirectoryState;
     const { fileSystem, handle } = state;
     const entries = this.renderFileEntries(fileSystem);
+    const classes: ClassInfo = {
+      'file-browser': true,
+      'drop-region': renderDropRegion,
+    };
     return html`
-    <section class="file-browser">
+    <section class="${classMap(classes)}" @dragover="${this.handleDragOver}" @drop="${this.handleDrop}" @dragleave="${this.handleDragLeave}">
       <div class="fs-header">
         <span class="">${handle.name}</span>
         <button class="outlined" @click="${this.setupDirectory}">Change</button>
@@ -387,14 +429,19 @@ class ComponentDemoPage extends DemoPage {
   }
 
   renderEmptyState(): TemplateResult {
-    return html`EMPTY`;
+    return this.renderDirectoryRequest();
   }
 
   renderDirectoryRequest(): TemplateResult {
+    const { renderDropRegion } = this;
+    const classes: ClassInfo = {
+      'dir-request': true,
+      'drop-region': renderDropRegion,
+    };
     return html`
-    <div class="dir-request">
+    <div class="${classMap(classes)}" @dragover="${this.handleDragOver}" @drop="${this.handleDrop}" @dragleave="${this.handleDragLeave}">
       <p>Drop a directory here or</p> 
-      <button @click="${this.setupDirectory}">pick a directory</button>
+      <button class="filled" @click="${this.setupDirectory}">pick a directory</button>
     </div>
     `;
   }

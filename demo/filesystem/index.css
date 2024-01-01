@@ -37,6 +37,7 @@ main {
 .file-browser {
   width: 320px;
   overflow: auto;
+  border: 1px transparent dotted;
 }
 
 .material-symbols-outlined {
@@ -54,6 +55,13 @@ main {
   height: 100%;
   flex-direction: column;
   gap: 8px;
+  border: 1px transparent dotted;
+  padding: 20px;
+}
+
+.file-browser.drop-region,
+.dir-request.drop-region {
+  border: 1px #4CAF50 dashed;
 }
 
 .fs-header {
