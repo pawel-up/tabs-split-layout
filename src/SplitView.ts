@@ -557,7 +557,7 @@ export default class SplitView extends LitElement {
       throw new Error(`The "state" or "key" is not set.`);
     }
     try {
-      StateHelper.selectItem(manager, itemKey, key);
+      StateHelper.selectItem(manager, itemKey);
       this[notifyContentResize](key);
       this[activateTab](itemKey);
     } catch (e) {

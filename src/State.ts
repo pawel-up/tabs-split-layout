@@ -176,30 +176,6 @@ export class State extends EventTarget {
   }
 
   /**
-   * Finds parents of an item or a parent of a panel.
-   * 
-   * An item can have multiple parents. A panel can only have a single parent.
-   * 
-   * @param key The key of the panel or an item.
-   * @returns The list of panels the item is added.
-   * @deprecated This should not be here. Instead use the item's reference.
-   */
-  parents(key: string): Panel[] {
-    const result: Panel[] = [];
-    for (const { type, value } of this.definitions.values()) {
-      if (type !== LayoutObjectType.panel) {
-        continue;
-      }
-      const panel = value as Panel;
-      const has = panel.items.some(i => i.key === key);
-      if (has) {
-        result.push(panel);
-      }
-    }
-    return result;
-  }
-
-  /**
    * Creates a deep copy of the current state.
    * @returns A clone of this state.
    */
@@ -222,7 +198,7 @@ export class State extends EventTarget {
         return panel;
       }
     }
-    for (const panel of this.panelIterator()) {
+    for (const panel of this.panelsIterator()) {
       if (panel.hasItems) {
         return panel;
       }
@@ -262,7 +238,7 @@ export class State extends EventTarget {
    * 
    * @param parentPanel The parent TabsLayout to start the iteration from.
    */
-  * panelIterator(parentPanel?: Panel): Generator<Panel> {
+  * panelsIterator(parentPanel?: Panel): Generator<Panel> {
     const root = parentPanel || this;
     const { items } = root;
     for (const info of items) {
@@ -270,7 +246,7 @@ export class State extends EventTarget {
         const panel = this.panel(info.key);
         if (panel) {
           yield panel;
-          for (const result of this.panelIterator(panel)) {
+          for (const result of this.panelsIterator(panel)) {
             yield result;
           }
         }
@@ -283,7 +259,12 @@ export class State extends EventTarget {
    * @param parentPanel Optionally the start panel. By default it starts from the root panel.
    */
   * itemsIterator(parentPanel?: Panel): Generator<Item> {
-    for (const panel of this.panelIterator(parentPanel)) {
+    if (parentPanel) {
+      for (const item of parentPanel) {
+        yield item;
+      }
+    }
+    for (const panel of this.panelsIterator(parentPanel)) {
       for (const item of panel) {
         yield item;
       }
@@ -296,7 +277,7 @@ export class State extends EventTarget {
    * This is useful to render the empty state when no items are added.
    */
   isEmpty(): boolean {
-    for (const panel of this.panelIterator()) {
+    for (const panel of this.panelsIterator()) {
       if (panel.hasItems) {
         return false;
       }

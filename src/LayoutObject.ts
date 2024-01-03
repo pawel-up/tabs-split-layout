@@ -7,6 +7,7 @@ export interface SerializedLayoutObject {
   /**
    * The key of the object. 
    * Each object need a unique key inside the layout.
+   * Do not rely on this information. It may change when moving items between panels.
    */
   key: string;
 

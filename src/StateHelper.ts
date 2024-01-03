@@ -37,55 +37,44 @@ export class StateHelper {
    * 
    * @param state The state object to remove the item from.
    * @param key The key of the item to remove.
-   * @param parent When set it removes the item from the specific panel only.
    * @throws When the item was not found.
    * @throws When the parent was not found.
    * @throws When the parent has no item on it.
    */
-  static removeItem(manager: Manager, key: string, parent?: string): void {
+  static removeItem(manager: Manager, key: string): void {
     const tx = manager.transaction();
     const item = tx.state.item(key);
     if (!item) {
       throw new TransactionError(`The item to remove is not in the state.`);
     }
-    if (parent) {
-      const panel = tx.state.panel(parent);
-      if (!panel) {
-        throw new TransactionError(`The parent is not in the state.`);
-      }
-      if (!panel.hasItem(key)) {
-        throw new TransactionError(`The parent has no item on it.`);
-      }
-      panel.removeItem(key);
-      if (!panel.hasItems) {
-        panel.remove();
-      }
-    } else {
-      const parents = item.getParents();
-      item.remove();
-      for (const panel of parents) {
-        if (!panel.hasItems) {
-          panel.remove();
-        }
-      }
+    const panel = item.getParent();
+    const parent = panel.getParent();
+    panel.removeItem(key);
+    if (!panel.hasItems) {
+      panel.remove();
+    }
+    if (parent && parent.items.length === 1) {
+      parent.unSplit();
     }
     tx.commit();
   }
 
   /**
    * Crates a transaction and marks an item as selected on a given panel.
-   * An item can be added to multiple panels so the parent panel must be specified.
    * 
    * @param state The state object to use to change the selected state.
    * @param key The key of the item to select on the panel.
-   * @param parent The parent panel of the item to select the item on.
    * @throws When the state has no parent panel.
    * @throws When the parent panel already has the item selected.
    * 
    */
-  static selectItem(manager: Manager, key: string, parent: string): void {
+  static selectItem(manager: Manager, key: string): void {
     const tx = manager.transaction();
-    const panel = tx.state.panel(parent);
+    const item = tx.state.item(key);
+    if (!item) {
+      throw new TransactionError(`The item does not exist on the state.`);
+    }
+    const panel = item.getParent();
     if (!panel) {
       throw new TransactionError(`The parent panel does not exist on the state.`);
     }
@@ -110,7 +99,7 @@ export class StateHelper {
    */
   static moveItem(manager: Manager, fromParent: string, toParent: string, key: string, opts?: TabsLayoutAddOptions): void {
     if (fromParent === toParent) {
-      this.moveItemWithinPanel(manager, fromParent, key, opts);
+      this.moveItemWithinPanel(manager, key, opts);
     } else {
       this.moveItemBetweenPanels(manager, fromParent, toParent, key, opts);
     }
@@ -120,17 +109,21 @@ export class StateHelper {
    * Moves an item within the same panel.
    * 
    * @param state The current state object to manipulate.
-   * @param parent The parent panel of the item. Note, an item may be opened in multiple panels.
    * @param key The key of the item to move.
    * @param opts Item manipulation options.
    */
-  static moveItemWithinPanel(manager: Manager, parent: string, key: string, opts?: TabsLayoutAddOptions): void {
+  static moveItemWithinPanel(manager: Manager, key: string, opts?: TabsLayoutAddOptions): void {
     const tx = manager.transaction();
-    const panel = tx.state.panel(parent);
-    if (!panel) {
-      throw new TransactionError(`The source panel of the move operation does not exist.`);
+    const item = tx.state.item(key);
+    if (!item) {
+      throw new TransactionError(`The item the move does not exist.`);
     }
-    panel.move(key, opts);
+    item.move(opts);
+    // const panel = item.getParent();
+    // if (!panel) {
+    //   throw new TransactionError(`The source panel of the move operation does not exist.`);
+    // }
+    // panel.move(key, opts);
     tx.commit();
   }
 
@@ -146,40 +139,47 @@ export class StateHelper {
    */
   static moveItemBetweenPanels(manager: Manager, fromParent: string, toParent: string, key: string, opts?: TabsLayoutAddOptions): void {
     const tx = manager.transaction();
-    const from = tx.state.panel(fromParent);
-    const to = fromParent === toParent ? from : tx.state.panel(toParent);
-    if (!from) {
-      throw new TransactionError(`The source panel of the move operation does not exist.`);
-    }
-    if (!to) {
-      throw new TransactionError(`The destination panel of the move operation does not exist.`);
-    }
-    const orderedItems = from.sortedItems();
-    const item = from.removeItem(key);
+    const item = tx.state.item(key);
     if (!item) {
       throw new TransactionError(`The target item of the move operation does not exist.`);
     }
-    if (!from.hasItems) {
-      from.remove();
-    } else if (from.selected === key) {
-      const index = orderedItems.findIndex(i => i.key === key);
-      let selected = orderedItems[index + 1]?.key;
-      if (!selected) {
-        selected = orderedItems[index - 1]?.key;
-      }
-      from.update({
-        selected,
-      });
-    }
-    to.addItem(item.toJSON(), opts);
-    to.update({
-      selected: item.key,
-    });
+    item.moveTo(toParent, opts);
+    // const from = tx.state.panel(fromParent);
+    // const to = fromParent === toParent ? from : tx.state.panel(toParent);
+    // if (!from) {
+    //   throw new TransactionError(`The source panel of the move operation does not exist.`);
+    // }
+    // if (!to) {
+    //   throw new TransactionError(`The destination panel of the move operation does not exist.`);
+    // }
+    // const orderedItems = from.sortedItems();
+    // const item = from.removeItem(key);
+    // if (!item) {
+    //   throw new TransactionError(`The target item of the move operation does not exist.`);
+    // }
+    // if (!from.hasItems) {
+    //   from.remove();
+    // } else if (from.selected === key) {
+    //   const index = orderedItems.findIndex(i => i.key === key);
+    //   let selected = orderedItems[index + 1]?.key;
+    //   if (!selected) {
+    //     selected = orderedItems[index - 1]?.key;
+    //   }
+    //   from.update({
+    //     selected,
+    //   });
+    // }
+    // if (!to.hasItem(item.key)) {
+    //   to.addItem(item.toJSON(), opts);
+    //   to.update({
+    //     selected: item.key,
+    //   });
+    // }
     tx.commit();
   }
 
   /**
-   * 
+   * A shortcut to create an item inside a panel.
    * @param state The current state object to manipulate.
    * @param parent The parent panel to add the item to.
    * @param item 

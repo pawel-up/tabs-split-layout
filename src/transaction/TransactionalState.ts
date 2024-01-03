@@ -23,12 +23,9 @@ export class TransactionalState extends State {
     super();
     this[tx] = transaction;
     if (restored) {
+      // this has to be called after the `this[tx]` is set, not in the `super()`.
       this.new(restored);
     }
-  }
-
-  override activePanel(): TransactionalPanel | null {
-    return super.activePanel() as TransactionalPanel | null;
   }
   
   /**
@@ -63,6 +60,11 @@ export class TransactionalState extends State {
     return new TransactionalPanel(this[tx], this, schema);
   }
 
+  override activePanel(): TransactionalPanel | null {
+    // this is to support types system.
+    return super.activePanel() as TransactionalPanel | null;
+  }
+
   /**
    * Finds a `Panel` by its key.
    * 
@@ -83,8 +85,8 @@ export class TransactionalState extends State {
     return super.item(key) as TransactionalItem | null;
   }
 
-  override * panelIterator(parentPanel?: TransactionalPanel | undefined): Generator<TransactionalPanel> {
-    for (const panel of super.panelIterator(parentPanel)) {
+  override * panelsIterator(parentPanel?: TransactionalPanel | undefined): Generator<TransactionalPanel> {
+    for (const panel of super.panelsIterator(parentPanel)) {
       yield panel as TransactionalPanel;
     }
   }

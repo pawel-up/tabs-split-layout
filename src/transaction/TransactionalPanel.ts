@@ -23,7 +23,7 @@ export const nextIndex = Symbol('nextIndex');
  * An instance of this object has methods that can be used in a transaction.
  */
 export class TransactionalPanel extends Panel {
-  constructor(protected transaction: Transaction, state: State, schema?: SerializedPanel) {
+  constructor(public readonly transaction: Transaction, state: State, schema?: SerializedPanel) {
     super(state, schema);
   }
 
@@ -45,7 +45,12 @@ export class TransactionalPanel extends Panel {
         panels.push(item.key);
       }
     }
-    items.forEach(i => this.removeItem(i));
+    items.forEach((item) => {
+      // remove manually as the `removeItem()` has a lot of computations related to indexes.
+      const index = this.items.findIndex(i => i.key === item);
+      this.items.splice(index, 1);
+      this.layoutState.definitions.delete(item);
+    });
     panels.forEach((key) => {
       const panel = this.layoutState.panel(key) as TransactionalPanel;
       panel?.remove();
@@ -56,8 +61,11 @@ export class TransactionalPanel extends Panel {
       if (index >= 0) {
         parent.items.splice(index, 1);
       }
-      if (parent.items.length === 1) {
-        parent.unSplit();
+    } else {
+      const index = this.layoutState.items.findIndex(i => i.key === this.key);
+      if (index >= 0) {
+        // this is a root panel.
+        this.layoutState.items.splice(index, 1);
       }
     }
   }
@@ -71,6 +79,9 @@ export class TransactionalPanel extends Panel {
    * panel can accept items or a new panel (and becoming a split panel). 
    * You should handle this situation if you'd like to remove the panel
    * if it has no more children.
+   * 
+   * Note, you may want to use the `StateHelper.removeItem()` as it has additional logic
+   * that takes care of empty panels.
    * 
    * @param key The key of the item to remove.
    * @returns The deleted item or null if not found or not a parent of the item.
@@ -93,20 +104,18 @@ export class TransactionalPanel extends Panel {
       return null;
     }
     this[decreaseItemIndex](item.index || 0);
-    const parents = item.getParents();
-    if (!parents.length) {
-      this[removeDefinition](item);
-    }
+    this[removeDefinition](item);
     if (this.selected === item.key) {
       let nextKey: string | undefined;
       if (this.items[index]) {
         nextKey = this.items[index].key;
       } else if (this.items[index - 1]) {
         nextKey = this.items[index - 1].key;
-      } else if (this.items.length) {
+      }
+      /* else if (this.items.length) {
         const [other] = this.items;
         nextKey = other.key;
-      }
+      } */
       this.update({
         selected: nextKey,
       });
@@ -183,7 +192,7 @@ export class TransactionalPanel extends Panel {
     }
     const item = this.layoutState.item(info.key) as TransactionalItem;
     if (!item) {
-      return;
+      throw new TransactionError(`Item ${key} definition does not exist.`);
     }
     const { index, region } = opts;
     if (region) {
@@ -195,6 +204,12 @@ export class TransactionalPanel extends Panel {
     }
   }
 
+  /**
+   * Moves an item from this panel to the panel's region, splitting the panel.
+   * 
+   * @param item The item to move
+   * @param region The panel's region to move the item to.
+   */
   [moveToRegion](item: TransactionalItem, region: SplitRegion): void {
     if (this.items.length < 2) {
       // nothing to split.
@@ -212,9 +227,10 @@ export class TransactionalPanel extends Panel {
       return;
     }
     this.items.splice(itemsIndex, 1);
-    const index = typeof item.index === 'number' ? item.index : this[nextIndex]();
+    this[decreaseItemIndex](item.index);
     const panel = this.splitByRegion(region);
-    panel.addItem(item, { index });
+    item.index = 0;
+    panel.items = [{ key: item.key, type: LayoutObjectType.item }];
     panel.update({
       selected: item.key,
     });
@@ -266,18 +282,12 @@ export class TransactionalPanel extends Panel {
   update(info: Partial<SerializedPanel>): void {
     const cp = { ...info } as Partial<SerializedPanel>;
     if (cp.key) {
-      // eslint-disable-next-line no-console
-      console.error(`Tried to update the "key" of a panel but this is prohibited.`);
       delete cp.key;
     }
     if (cp.items) {
-      // eslint-disable-next-line no-console
-      console.error(`Tried to update the "items" of a panel but this is prohibited.`);
       delete cp.items;
     }
     if (cp.type) {
-      // eslint-disable-next-line no-console
-      console.error(`Tried to update the "type" of a panel but this is prohibited.`);
       delete cp.type;
     }
     const keys = Object.keys(cp) as (keyof SerializedPanel)[];
@@ -313,13 +323,9 @@ export class TransactionalPanel extends Panel {
     }
     const cp = { ...init } as Partial<SerializedPanel>;
     if (cp.items) {
-      // eslint-disable-next-line no-console
-      console.error(`Tried to create the "items" on a panel but this is prohibited.`);
       delete cp.items;
     }
     if (cp.type) {
-      // eslint-disable-next-line no-console
-      console.error(`Tried to create the "type" on a panel but this is prohibited.`);
       delete cp.type;
     }
     const panel = new TransactionalPanel(this.transaction, this.layoutState);
@@ -345,6 +351,8 @@ export class TransactionalPanel extends Panel {
   /**
    * Adds a new item to the layout.
    * 
+   * Note, if the item already exists, a new item with a new, random key will be inserted.
+   * 
    * @param init The item definition.
    * @param options THe add options, if any. By default it adds the item at the end of the current panel.
    * @returns The created Item or an existing item if the panel already hosts the item.
@@ -358,20 +366,26 @@ export class TransactionalPanel extends Panel {
       delete cp.type;
     }
     const { region = SplitRegion.center } = options;
-    const { key = Rand.id() } = cp;
-    const hasItem = region === SplitRegion.center && this.hasItem(key);
-    const existingItem = this.layoutState.item(key) as TransactionalItem | null;
+    const hasItem = !!init.key && region === SplitRegion.center && this.hasItem(init.key);
     if (hasItem) {
-      if (key !== this.selected) {
+      if (init.key !== this.selected) {
         this.update({
-          selected: key,
+          selected: init.key,
         });
       }
-      if (!existingItem) {
-        throw new TransactionError(`The item ${key} is defined on a panel but not defined in definitions.`);
+      const item = this.layoutState.item(init.key as string) as TransactionalItem;
+      if (!item) {
+        throw new TransactionError(`The item ${init.key} is defined on a panel but not defined in definitions.`);
       }
-      return existingItem;
+      return item;
     }
+    if (cp.key) {
+      const existingItem = this.layoutState.item(cp.key) as TransactionalItem | null;
+      if (existingItem) {
+        delete cp.key;
+      }
+    }
+    const { key = Rand.id() } = cp;    
     const hasOptionIndex = typeof options.index === 'number';
     const hasItemIndex = typeof cp.index === 'number';
     const hasIndex = hasOptionIndex || hasItemIndex;
@@ -386,7 +400,7 @@ export class TransactionalPanel extends Panel {
     const isCenter = region === SplitRegion.center || (!this.hasItems && !this.hasPanels);
     if (!isCenter) {
       const panel = this.splitByRegion(region);
-      return panel.addItem(cp, { index });
+      return panel.addItem(cp, { index: 0 });
     }
 
     // add to the current items, no splitting.
@@ -394,28 +408,22 @@ export class TransactionalPanel extends Panel {
       this[increaseItemIndex](index);
     }
 
-    // we don't create a new item definition if it already exists.
-    let item: TransactionalItem;
-    if (existingItem) {
-      item = existingItem;
-    } else {
-      item = new TransactionalItem(this.transaction, this.layoutState);
-      for (const _key of Object.keys(cp)) {
-        // Anyone have an idea how to deal with it?
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        item[_key] = cp[_key];
-      }
-      item.key = key;
-      item.index = index;
-      // The item may change here by the hosting application.
-      this.transaction.currentState.notifyItemCreated(item);
-      const definition: StateObject = {
-        type: LayoutObjectType.item,
-        value: item,
-      }
-      this.layoutState.definitions.set(key, definition);
+    const item = new TransactionalItem(this.transaction, this.layoutState);
+    for (const _key of Object.keys(cp)) {
+      // Anyone have an idea how to deal with it?
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      item[_key] = cp[_key];
     }
+    item.key = key;
+    item.index = index;
+    // The item may change here by the hosting application.
+    this.transaction.currentState.notifyItemCreated(item);
+    const definition: StateObject = {
+      type: LayoutObjectType.item,
+      value: item,
+    }
+    this.layoutState.definitions.set(key, definition);
     const obj: PanelObject = {
       key: item.key,
       type: LayoutObjectType.item,
@@ -509,37 +517,25 @@ export class TransactionalPanel extends Panel {
       selected,
     });
     panel.items = items;
-    // TODO: add transaction track record.
     return [p1, p2];
   }
 
   /**
-   * Takes the first panel from the current panel's items list and 
-   * replaces the current panel `items` and `selected` with the old panel. 
+   * Moves all items from panels below to this panel and removes the other panels.
    */
   unSplit(): void {
-    const parent = this.getParent();
-    if (!parent) {
-      // either root panel or a detached panel.
-      return;
+    const oldItems = this.items;
+    const items: PanelObject[] = [];
+    for (const item of this.transaction.state.itemsIterator(this)) {
+      items.push(item);
     }
-    if (!this.items.length && parent) { 
-      parent.unSplit();
-      return;
-    }
-    const panelItem = this.items.find(i => i.type === LayoutObjectType.panel);
-    if (!panelItem) {
-      throw new TransactionError('Invalid state. This panel has no panels to unshift.');
-    }
-    const panel = this.layoutState.panel(panelItem.key);
-    if (!panel) {
-      throw new TransactionError('Invalid state. This panel is not managed by the State.');
-    }
-    const { items, selected } = panel;
     this.items = items;
-    this.selected = selected;
-    this.layoutState.definitions.delete(panelItem.key);
-    // TODO: add transaction track record.
+    this.selected = items[items.length - 1]?.key;
+    oldItems.forEach((item) => {
+      if (item.type === LayoutObjectType.panel) {
+        this.layoutState.definitions.delete(item.key);
+      }
+    });
   }
 
   /**

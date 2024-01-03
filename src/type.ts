@@ -35,14 +35,6 @@ export interface PanelAddOptions {
   direction?: LayoutDirection;
 }
 
-/**
- * @deprecated Remove this when ready.
- */
-export interface SerializedLayoutObject {
-  type: LayoutObjectType;
-  value: unknown;
-}
-
 export interface StateObject {
   type: LayoutObjectType;
   value: Item | Panel;

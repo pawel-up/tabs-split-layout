@@ -72,7 +72,7 @@ export class Transaction {
    * When not set it adds the panel to the root.
    * @returns A panel that has transaction methods enabled.
    */
-  add(panel: Partial<SerializedPanel>): TransactionalPanel {
+  add(panel: Partial<SerializedPanel> = {}): TransactionalPanel {
     const { state } = this;
     const result = new TransactionalPanel(this, state);
     if (panel.direction) {
@@ -93,6 +93,10 @@ export class Transaction {
     state.definitions.set(result.key, {
       type: LayoutObjectType.panel,
       value: result,
+    });
+    state.items.push({
+      type: LayoutObjectType.panel,
+      key: result.key,
     });
     return result;
   }

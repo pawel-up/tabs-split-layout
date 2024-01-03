@@ -85,7 +85,7 @@ export class Panel extends LayoutObject {
     }
   }
 
-  protected override new(schema: SerializedPanel): void {
+  override new(schema: SerializedPanel): void {
     super.new(schema);
     const { direction = LayoutDirection.horizontal, items, selected } = schema;
     this.direction = direction;

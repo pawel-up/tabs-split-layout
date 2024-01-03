@@ -9,6 +9,9 @@ export interface SerializedItem extends SerializedLayoutObject {
   /**
    * Any custom data added by the application.
    * 
+   * Use it to store item related identifiers, if needed.
+   * Do not use `key` as the identifier. It may change when moving items between panels.
+   * 
    * Example:
    * 
    * ```
@@ -108,7 +111,7 @@ export class Item extends LayoutObject implements SerializedItem {
     }
   }
 
-  protected override new(schema: SerializedItem): void {
+  override new(schema: SerializedItem): void {
     super.new(schema);
     const { custom = {}, label = '', icon, index, isDirty, loading, persistent, pinned } = schema;
     this.label = label;
@@ -176,18 +179,12 @@ export class Item extends LayoutObject implements SerializedItem {
   }
 
   /**
-   * Finds parents of an item.
+   * Finds the parent panel of the item.
    * 
-   * An `Item` can have multiple parents as the same item can be opened in different
-   * split panels.
-   * 
-   * It may return an empty array only when the item was removed from the state.
-   * 
-   * @returns The list of panels the item is added to.
+   * @returns The parent panel or null if the item was not added to a panel.
    */
-  getParents(): Panel[] {
+  getParent(): Panel | null {
     const { layoutState, key } = this;
-    const result: Panel[] = [];
     for (const { type, value } of layoutState.definitions.values()) {
       if (type !== LayoutObjectType.panel) {
         continue;
@@ -195,9 +192,9 @@ export class Item extends LayoutObject implements SerializedItem {
       const panel = value as Panel;
       const has = panel.items.some(i => i.key === key);
       if (has) {
-        result.push(panel);
+        return panel;
       }
     }
-    return result;
+    return null;
   }
 }
