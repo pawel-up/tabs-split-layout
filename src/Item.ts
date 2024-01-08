@@ -5,7 +5,9 @@ import { LayoutObjectType } from "./Enum.js";
 import type { State } from "./State.js";
 import type { Panel } from "./Panel.js";
 
-export interface SerializedItem extends SerializedLayoutObject {
+export type CustomSchema = Record<string | number | symbol, unknown>;
+
+export interface SerializedItem<T = CustomSchema> extends SerializedLayoutObject {
   /**
    * Any custom data added by the application.
    * 
@@ -16,7 +18,7 @@ export interface SerializedItem extends SerializedLayoutObject {
    * 
    * ```
    * {
-   *   "custom": { "kind": "itemA" }
+   *   "custom": { "kind": "itemA", key: "my-key" }
    * }
    * ```
    * 
@@ -33,7 +35,7 @@ export interface SerializedItem extends SerializedLayoutObject {
    * 
    * Note, on the Item instance, the `custom` property is always initialized to an empty object.
    */
-  custom?: Record<string | number | symbol, unknown>;
+  custom?: T;
 
   /**
    * The label to render in the layout tab.
@@ -64,11 +66,6 @@ export interface SerializedItem extends SerializedLayoutObject {
   icon?: SVGTemplateResult;
 
   /**
-   * A tab that is always present in the layout. The user can't close this tab.
-   */
-  persistent?: boolean;
-
-  /**
    * A property to be used by the screen to indicate the property is being loaded
    * (from a data store, file, etc).
    */
@@ -78,6 +75,15 @@ export interface SerializedItem extends SerializedLayoutObject {
    * Indicates the item has been changed and is out of sync with the data store.
    */
   isDirty?: boolean;
+
+  /**
+   * This filed is populated when a tab is **linked** from one panel to another.
+   * This operation would result in a duplicated `key`. To mitigate this, the 
+   * manager's logic creates a new `Item` on the state which is the copy of the original
+   * item. This keeps the reference to the original item so when the item is moved
+   * back it can be properly recognized.
+   */
+  linkedId?: string;
 }
 
 /**
@@ -88,7 +94,7 @@ export interface SerializedItem extends SerializedLayoutObject {
  */
 export class Item extends LayoutObject implements SerializedItem {
 
-  custom = {};
+  custom: CustomSchema = {};
 
   label = '';
 
@@ -98,11 +104,11 @@ export class Item extends LayoutObject implements SerializedItem {
 
   icon?: SVGTemplateResult;
 
-  persistent?: boolean;
-
   loading?: boolean;
 
   isDirty?: boolean;
+
+  linkedId?: string;
   
   constructor(state: State, schema?: SerializedItem) {
     super(state, Rand.id(), LayoutObjectType.item);
@@ -113,9 +119,10 @@ export class Item extends LayoutObject implements SerializedItem {
 
   override new(schema: SerializedItem): void {
     super.new(schema);
-    const { custom = {}, label = '', icon, index, isDirty, loading, persistent, pinned } = schema;
+    const { custom = {}, label = '', icon, index, isDirty, loading, pinned, linkedId } = schema;
     this.label = label;
     this.custom = custom;
+    this.linkedId = linkedId;
     if (icon) {
       this.icon = icon;
     } else {
@@ -125,11 +132,6 @@ export class Item extends LayoutObject implements SerializedItem {
       this.pinned = pinned;
     } else {
       this.pinned = undefined;
-    }
-    if (typeof persistent === 'boolean') {
-      this.persistent = persistent;
-    } else {
-      this.persistent = undefined;
     }
     if (typeof loading === 'boolean') {
       this.loading = loading;
@@ -160,9 +162,6 @@ export class Item extends LayoutObject implements SerializedItem {
     if (typeof this.pinned === 'boolean') {
       result.pinned = this.pinned;
     }
-    if (typeof this.persistent === 'boolean') {
-      result.persistent = this.persistent;
-    }
     if (typeof this.loading === 'boolean') {
       result.loading = this.loading;
     }
@@ -174,6 +173,9 @@ export class Item extends LayoutObject implements SerializedItem {
     }
     if (Object.keys(custom).length) {
       result.custom = { ...custom };
+    }
+    if (this.linkedId) {
+      result.linkedId = this.linkedId;
     }
     return result;
   }

@@ -66,6 +66,12 @@ export interface ManagerInit {
    * When set it adds the `overflow` hidden on the container that holds the tab contents.
    */
   constrain?: boolean;
+
+  /**
+   * The registered name of the `<split-view>` element, if different than default.
+   * If you need to register own name of the component, populate this with the registered name.
+   */
+  viewName?: string;
 }
 
 export interface ManagerRenderOptions {

@@ -1,3 +1,5 @@
+/* eslint-disable lit/no-invalid-html */
+/* eslint-disable lit/binding-positions */
 import { TemplateResult, html } from "lit";
 import { classMap, ClassInfo } from "lit/directives/class-map.js";
 import type { Panel } from "./Panel.js";
@@ -42,21 +44,25 @@ export class View {
         }
       }
     }
+    return this.renderView(manager, panel, content);
+  }
+
+  protected renderView(manager: Manager, panel: Panel, content: TemplateResult[]): TemplateResult {
     const { currentPanel } = manager.state;
     const classes: ClassInfo = {
       'split-view': true,
       active: currentPanel === panel.key,
-    };
-
+    };  
+    const { viewName = 'split-view' } = this.opts;
     return html`
-    <split-view 
+    <${viewName} 
       .key="${panel.key}"
       .manager="${manager}"
       .direction="${panel.direction}"
       .dragTypes="${this.opts.dragTypes}" 
       ?constrain="${this.opts.constrain}"
       class="${classMap(classes)}"
-    >${content}</split-view>
+    >${content}</${viewName}>
     `;
   }
 

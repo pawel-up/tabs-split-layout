@@ -33,7 +33,7 @@ export class Manager extends EventTarget {
   /**
    * The configuration options.
    */
-  protected readonly opts: ManagerInit;
+  readonly opts: ManagerInit;
 
   #manualRendering: boolean;
 
@@ -134,13 +134,14 @@ export class Manager extends EventTarget {
   }
 
   [findViewFromEvent](e: Event): SplitView | undefined {
+    const { viewName = 'split-view' } = this.opts;
     const path = e.composedPath();
     while (path.length) {
       const node = path.shift() as Element;
       if (node.nodeType !== Node.ELEMENT_NODE) {
         continue;
       }
-      if (node.localName === 'split-view') {
+      if (node.localName === viewName) {
         return node as SplitView;
       }
     }
@@ -189,7 +190,8 @@ export class Manager extends EventTarget {
    * @returns The `split-view` element in the document
    */
   findView(panelKey: string): SplitView | undefined {
-    const layout = document.querySelector(`split-view[key="${panelKey}"]`) as SplitView | null;
+    const { viewName = 'split-view' } = this.opts;
+    const layout = document.querySelector(`${viewName}[key="${panelKey}"]`) as SplitView | null;
     return layout || undefined;
   }
 

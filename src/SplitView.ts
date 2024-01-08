@@ -381,6 +381,15 @@ export default class SplitView extends LitElement {
     }
   }
 
+  /**
+   * A handler for the tab list drop event.
+   * The difference between the content drop is that it won't split the layout 
+   * and will drop the item on a specific index.
+   * 
+   * Above that an item can be moved to another panel or linked.
+   * When an item is linked, it creates a copy of the item (regenerating the `key`)
+   * and inserted as a new item.
+   */
   [handleTabListDrop](e: DragEvent): void {
     const { key, manager } = this;
     if (!this[panelCanDrop](e) || !key || !manager) {
@@ -400,7 +409,7 @@ export default class SplitView extends LitElement {
     }
     if (movingTab) {
       if (e.shiftKey) {
-        // with the shift key it adds the existing item to another panel.
+        // with the shift key it links an item between panels.
         const item = manager.state.item(itemKey);
         if (!item) {
           // This likely belongs to another state. Should we support this? How?
@@ -847,7 +856,7 @@ export default class SplitView extends LitElement {
     const { key, label = '', index = 0, icon, isDirty = false } = item;
     const selected = panel.selected === key;
     const nextSelected = !!nextKey && panel.selected === nextKey;
-    const closable = !item.persistent && !item.pinned;
+    const closable = !item.pinned;
     const classes = {
       'layout-tab': true,
       'is-dirty': isDirty,

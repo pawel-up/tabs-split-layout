@@ -80,30 +80,6 @@ describe('Item', () => {
       assert.isUndefined(instance.pinned);
     });
 
-    it('sets the persistent', () => {
-      const persistent = true;
-      const instance = new Item(state, {
-        key: '',
-        type: LayoutObjectType.item,
-        label: '',
-        persistent,
-      });
-      assert.isTrue(instance.persistent);
-    });
-
-    it('re-sets the persistent', () => {
-      const schema: SerializedItem = {
-        key: '',
-        type: LayoutObjectType.item,
-        label: '',
-        persistent: true,
-      }
-      const instance = new Item(state, schema);
-      delete schema.persistent;
-      instance.new(schema);
-      assert.isUndefined(instance.persistent);
-    });
-
     it('sets the loading', () => {
       const loading = true;
       const instance = new Item(state, {
@@ -224,11 +200,6 @@ describe('Item', () => {
     it('serializes the pinned', () => {
       const instance = new Item(state, { ...base, pinned: false });
       assert.isFalse(instance.toJSON().pinned);
-    });
-
-    it('serializes the persistent', () => {
-      const instance = new Item(state, { ...base, persistent: false });
-      assert.isFalse(instance.toJSON().persistent);
     });
 
     it('serializes the loading', () => {
