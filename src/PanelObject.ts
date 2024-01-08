@@ -13,4 +13,13 @@ export interface PanelObject {
    * The id of the object in the `definitions` map.
    */
   key: string;
+  /**
+   * Whether the tab is pinned (cannot be closed or moved).
+   */
+  pinned?: boolean;
+
+  /**
+   * The tab index, 0-based.
+   */
+  index?: number;
 }

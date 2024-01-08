@@ -103,8 +103,10 @@ export class TransactionalPanel extends Panel {
       // as this is a self-cleaning, which should never happen.
       return null;
     }
-    this[decreaseItemIndex](item.index || 0);
-    this[removeDefinition](item);
+    this[decreaseItemIndex](itemInfo.index || 0);
+    if (!item.getParents().length) {
+      this[removeDefinition](item);
+    }
     if (this.selected === item.key) {
       let nextKey: string | undefined;
       if (this.items[index]) {
@@ -137,18 +139,13 @@ export class TransactionalPanel extends Panel {
    * @param fromIndex The minimal index to affect.
    */
   [decreaseItemIndex](fromIndex: number): void {
-    const { layoutState } = this;
     for (const item of this.items) {
       if (item.type !== LayoutObjectType.item) {
         continue;
       }
-      const definition = layoutState.item(item.key) as TransactionalItem | null;
-      if (!definition) {
-        continue;
-      }
-      const { index = 0 } = definition;
+      const { index = 0 } = item;
       if (index >= fromIndex && index > 0) {
-        definition.update({ index: index - 1 });
+        item.index = index - 1;
       }
     }
   }
@@ -158,18 +155,13 @@ export class TransactionalPanel extends Panel {
    * @param fromIndex The minimal index to affect.
    */
   [increaseItemIndex](fromIndex: number): void {
-    const { layoutState } = this;
     for (const item of this.items) {
       if (item.type !== LayoutObjectType.item) {
         continue;
       }
-      const definition = layoutState.item(item.key) as TransactionalItem | null;
-      if (!definition) {
-        continue;
-      }
-      const { index = 0 } = definition;
+      const { index = 0 } = item;
       if (index >= fromIndex) {
-        definition.update({ index: index + 1 });
+        item.index = index + 1;
       }
     }
   }
@@ -190,17 +182,13 @@ export class TransactionalPanel extends Panel {
     if (!info) {
       throw new TransactionError(`Item ${key} does not exist on the panel.`);
     }
-    const item = this.layoutState.item(info.key) as TransactionalItem;
-    if (!item) {
-      throw new TransactionError(`Item ${key} definition does not exist.`);
-    }
     const { index, region } = opts;
     if (region) {
-      this[moveToRegion](item, region);
+      this[moveToRegion](info, region);
     } else if (typeof index === 'number') {
-      this[moveToIndex](item, index);
+      this[moveToIndex](info, index);
     } else {
-      this[moveToEnd](item);
+      this[moveToEnd](info);
     }
   }
 
@@ -210,7 +198,11 @@ export class TransactionalPanel extends Panel {
    * @param item The item to move
    * @param region The panel's region to move the item to.
    */
-  [moveToRegion](item: TransactionalItem, region: SplitRegion): void {
+  [moveToRegion](info: PanelObject, region: SplitRegion): void {
+    const item = this.layoutState.item(info.key) as TransactionalItem;
+    if (!item) {
+      throw new TransactionError(`Item ${info.key} definition does not exist.`);
+    }
     if (this.items.length < 2) {
       // nothing to split.
       return;
@@ -227,10 +219,9 @@ export class TransactionalPanel extends Panel {
       return;
     }
     this.items.splice(itemsIndex, 1);
-    this[decreaseItemIndex](item.index);
+    this[decreaseItemIndex](info.index || 0);
     const panel = this.splitByRegion(region);
-    item.index = 0;
-    panel.items = [{ key: item.key, type: LayoutObjectType.item }];
+    panel.items = [{ key: item.key, type: LayoutObjectType.item, index: 0, pinned: info.pinned }];
     panel.update({
       selected: item.key,
     });
@@ -248,23 +239,26 @@ export class TransactionalPanel extends Panel {
     }
   }
 
-  [moveToIndex](item: TransactionalItem, index: number): void {
-    if (item.index === index) {
+  [moveToIndex](info: PanelObject, index: number): void {
+    if (info.index === index) {
       return;
     }
     const hasTargetAtTarget = !!this.items[index as number];
-    this[decreaseItemIndex](item.index);
+    this[decreaseItemIndex](info.index || 0);
     if (hasTargetAtTarget) {
       this[increaseItemIndex](index);
     }
-    item.index = index;
+    info.index = index;
   }
 
-  [moveToEnd](item: TransactionalItem): void {
-    if (item.index !== undefined) {
-      this[decreaseItemIndex](item.index);
+  [moveToEnd](info: PanelObject): void {
+    if (!info) {
+      return;
     }
-    item.index = this[nextIndex]();
+    if (info.index !== undefined) {
+      this[decreaseItemIndex](info.index);
+    }
+    info.index = this[nextIndex]();
   }
 
   /**
@@ -366,8 +360,8 @@ export class TransactionalPanel extends Panel {
       delete cp.type;
     }
     const { region = SplitRegion.center } = options;
-    const hasItem = !!init.key && region === SplitRegion.center && this.hasItem(init.key);
-    if (hasItem) {
+    const alreadyInPanel = !!init.key && region === SplitRegion.center && this.hasItem(init.key);
+    if (alreadyInPanel) {
       if (init.key !== this.selected) {
         this.update({
           selected: init.key,
@@ -379,58 +373,58 @@ export class TransactionalPanel extends Panel {
       }
       return item;
     }
-    if (cp.key) {
-      const existingItem = this.layoutState.item(cp.key) as TransactionalItem | null;
-      if (existingItem) {
-        delete cp.key;
-      }
-    }
-    const { key = Rand.id() } = cp;    
-    const hasOptionIndex = typeof options.index === 'number';
-    const hasItemIndex = typeof cp.index === 'number';
-    const hasIndex = hasOptionIndex || hasItemIndex;
-    let index: number;
-    if (hasOptionIndex) {
-      index = options.index as number;
-    } else if (hasItemIndex) {
-      index = cp.index as number;
-    } else {
-      index = this[nextIndex]();
-    }
     const isCenter = region === SplitRegion.center || (!this.hasItems && !this.hasPanels);
     if (!isCenter) {
       const panel = this.splitByRegion(region);
       return panel.addItem(cp, { index: 0 });
     }
+    let existingItem: TransactionalItem | null = null;
+    if (cp.key) {
+      existingItem = this.layoutState.item(cp.key) as TransactionalItem | null;
+    }
 
+    const { key = Rand.id() } = cp;
+    const hasIndex = typeof options.index === 'number';
+    let index: number;
+    if (hasIndex) {
+      index = options.index as number;
+    } else {
+      index = this[nextIndex]();
+    }
     // add to the current items, no splitting.
     if (hasIndex) {
       this[increaseItemIndex](index);
     }
 
-    const item = new TransactionalItem(this.transaction, this.layoutState);
-    for (const _key of Object.keys(cp)) {
-      // Anyone have an idea how to deal with it?
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      item[_key] = cp[_key];
+    let result: TransactionalItem;
+    if (existingItem) {
+      result = existingItem;
+    } else {
+      const item = new TransactionalItem(this.transaction, this.layoutState);
+      for (const _key of Object.keys(cp)) {
+        // Anyone have an idea how to deal with it?
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        item[_key] = cp[_key];
+      }
+      item.key = key;
+      // The item may change here by the hosting application.
+      this.transaction.currentState.notifyItemCreated(item);
+      const definition: StateObject = {
+        type: LayoutObjectType.item,
+        value: item,
+      }
+      this.layoutState.definitions.set(key, definition);
+      result = item;
     }
-    item.key = key;
-    item.index = index;
-    // The item may change here by the hosting application.
-    this.transaction.currentState.notifyItemCreated(item);
-    const definition: StateObject = {
-      type: LayoutObjectType.item,
-      value: item,
-    }
-    this.layoutState.definitions.set(key, definition);
     const obj: PanelObject = {
-      key: item.key,
+      key: result.key,
       type: LayoutObjectType.item,
+      index,
     };
     this.items.push(obj);
-    this.selected = item.key;
-    return item;
+    this.selected = result.key;
+    return result;
   }
 
   /**
@@ -442,17 +436,13 @@ export class TransactionalPanel extends Panel {
    * @returns The index of the next item
    */
   [nextIndex](): number {
-    const { items, layoutState } = this;
+    const { items } = this;
     if (!items.length) {
       return 0;
     }
     const set = new Set<number>();
     for (const item of items) {
-      const value = layoutState.item(item.key as string);
-      if (!value) {
-        continue;
-      }
-      const { index = 0 } = value;
+      const { index = 0 } = item;
       set.add(index);
     }
     const sorted = [...set].sort();

@@ -1,6 +1,7 @@
 /* eslint-disable lit/no-invalid-html */
 /* eslint-disable lit/binding-positions */
-import { TemplateResult, html } from "lit";
+import { TemplateResult } from "lit";
+import {html, unsafeStatic} from 'lit/static-html.js';
 import { classMap, ClassInfo } from "lit/directives/class-map.js";
 import type { Panel } from "./Panel.js";
 import type { Item } from "./Item.js";
@@ -55,14 +56,14 @@ export class View {
     };  
     const { viewName = 'split-view' } = this.opts;
     return html`
-    <${viewName} 
+    <${unsafeStatic(viewName)}
       .key="${panel.key}"
       .manager="${manager}"
       .direction="${panel.direction}"
       .dragTypes="${this.opts.dragTypes}" 
       ?constrain="${this.opts.constrain}"
       class="${classMap(classes)}"
-    >${content}</${viewName}>
+    >${content}</${unsafeStatic(viewName)}>
     `;
   }
 

@@ -1,6 +1,6 @@
 # Initialization
 
-The library consists of two primary objects: the state and the layout. Use the state object to manipulate the number of rendered panels, the direction of each panel, and the rendered tabs in each panel. The layout manager renders the view and some user interactions.
+The library consists of two primary objects: the state and the layout. Use the state object to manipulate the number of rendered panels, the direction of each panel, and the rendered tabs in each panel. The layout manager generates the view and some user interactions.
 
 ## State Initialization
 
@@ -22,7 +22,7 @@ You can initialize the State class without data, rendering an empty layout. You 
 
 ### Manager Initialization
 
-When initializing the manager, you must pass the `State` class instance as the first argument. The second parameter is the configuration options, if any. We will show different configurations depending on different use cases.
+When initializing the manager, you must pass the `State` class instance as the first argument. The second parameter is the configuration options, if any. We will show different configurations depending on other use cases.
 
 ```ts
 const layout = new Manager(state, {
@@ -32,7 +32,7 @@ const layout = new Manager(state, {
 layout.connect();
 ```
 
-The `connect()` method registers event listeners the manager uses to manage user interactions. By default it listens for events on `document.body` node. However, if you want to limit the scope, you can pass the reference to the layout's parent container. It is important for the entire tabs layout to be inside the light DOM of the passed parent element.
+The `connect()` method registers event listeners the manager uses to manage user interactions. By default, it listens for events on `document.body` node. However, if you want to limit the scope, you can pass the reference to the layout's parent container. The entire tab layout needs to be inside the light DOM of the passed parent element.
 
 Previous step: [Installation](redme.md)
 Next step: [Rendering the view](rendering.md)

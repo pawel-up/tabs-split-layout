@@ -4,6 +4,8 @@ import { Item, SerializedItem } from "../src/Item.js";
 import { LayoutObjectType } from "../src/Enum.js";
 import { close as closeIcon } from '../src/lib/icons.js';
 import { Transaction } from "../src/transaction/Transaction.js";
+import { Panel } from "../src/Panel.js";
+import { TransactionalPanel } from "../src/transaction/TransactionalPanel.js";
 
 describe('Item', () => {
   describe('new()', () => {
@@ -56,30 +58,6 @@ describe('Item', () => {
       assert.isUndefined(instance.icon);
     });
 
-    it('sets the pinned', () => {
-      const pinned = true;
-      const instance = new Item(state, {
-        key: '',
-        type: LayoutObjectType.item,
-        label: '',
-        pinned,
-      });
-      assert.isTrue(instance.pinned);
-    });
-
-    it('re-sets the pinned', () => {
-      const schema: SerializedItem = {
-        key: '',
-        type: LayoutObjectType.item,
-        label: '',
-        pinned: true,
-      }
-      const instance = new Item(state, schema);
-      delete schema.pinned;
-      instance.new(schema);
-      assert.isUndefined(instance.pinned);
-    });
-
     it('sets the loading', () => {
       const loading = true;
       const instance = new Item(state, {
@@ -128,30 +106,6 @@ describe('Item', () => {
       assert.isUndefined(instance.isDirty);
     });
 
-    it('sets the index', () => {
-      const index = 1;
-      const instance = new Item(state, {
-        key: '',
-        type: LayoutObjectType.item,
-        label: '',
-        index,
-      });
-      assert.equal(instance.index, index);
-    });
-
-    it('re-sets the index', () => {
-      const schema: SerializedItem = {
-        key: '',
-        type: LayoutObjectType.item,
-        label: '',
-        index: 1,
-      }
-      const instance = new Item(state, schema);
-      delete schema.index;
-      instance.new(schema);
-      assert.equal(instance.index, 0);
-    });
-
     it('creates an empty custom object', () => {
       const instance = new Item(state);
       assert.deepEqual(instance.custom, {});
@@ -197,11 +151,6 @@ describe('Item', () => {
       assert.equal(instance.toJSON().icon, closeIcon);
     });
 
-    it('serializes the pinned', () => {
-      const instance = new Item(state, { ...base, pinned: false });
-      assert.isFalse(instance.toJSON().pinned);
-    });
-
     it('serializes the loading', () => {
       const instance = new Item(state, { ...base, loading: false });
       assert.isFalse(instance.toJSON().loading);
@@ -212,18 +161,13 @@ describe('Item', () => {
       assert.isFalse(instance.toJSON().isDirty);
     });
 
-    it('serializes the index', () => {
-      const instance = new Item(state, { ...base, index: 0 });
-      assert.equal(instance.toJSON().index, 0);
-    });
-
     it('serializes the custom object', () => {
       const instance = new Item(state, { ...base, custom: { a: 'b' } });
       assert.deepEqual(instance.toJSON().custom, { a: 'b' });
     });
   });
 
-  describe('getParent()', () => {
+  describe('getParents()', () => {
     let state: State;
     let transaction: Transaction;
 
@@ -232,17 +176,30 @@ describe('Item', () => {
       transaction = new Transaction(state);
     });
 
-    it('returns null when no parent', () => {
+    it('returns empty array when no parent', () => {
       const instance = new Item(state);
-      const result = instance.getParent();
-      assert.isNull(result);
+      const result = instance.getParents();
+      assert.deepEqual(result, []);
     });
 
-    it('returns the parent panel', () => {
+    it('returns the single parent panel', () => {
       const p1 = transaction.add();
       const i1 = p1.addItem();
-      const result = i1.getParent();
-      assert.deepEqual(result, p1);
+      transaction.commit();
+      const i1i = state.item(i1.key)!;
+      const result = i1i.getParents();
+      assert.instanceOf(result[0], Panel, 'is an instance of Panel');
+      assert.notInstanceOf(result[0], TransactionalPanel, 'is not an instance of TransactionalPanel');
+    });
+
+    it('returns multiple parent panel', () => {
+      const root = transaction.add();
+      const p1 = root.addPanel();
+      const p2 = root.addPanel();
+      const i1 = p1.addItem();
+      p2.addItem(i1);
+      const result = i1.getParents();
+      assert.deepEqual(result, [p1, p2]);
     });
   });
 });

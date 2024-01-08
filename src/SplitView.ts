@@ -566,7 +566,7 @@ export default class SplitView extends LitElement {
       throw new Error(`The "state" or "key" is not set.`);
     }
     try {
-      StateHelper.selectItem(manager, itemKey);
+      StateHelper.selectItem(manager, itemKey, key);
       this[notifyContentResize](key);
       this[activateTab](itemKey);
     } catch (e) {
@@ -853,10 +853,16 @@ export default class SplitView extends LitElement {
   }
 
   protected tabTemplate(panel: Panel, item: Item, last: boolean, nextKey?: string): TemplateResult {
-    const { key, label = '', index = 0, icon, isDirty = false } = item;
+    const info = panel.items.find(i => i.key === item.key);
+    if (!info) {
+      // this should not ever happen as the sorted items comes directly from `items`.
+      return html``;
+    }
+    const { index = 0, pinned = false } = info;
+    const { key, label = '', icon, isDirty = false } = item;
     const selected = panel.selected === key;
     const nextSelected = !!nextKey && panel.selected === nextKey;
-    const closable = !item.pinned;
+    const closable = !pinned;
     const classes = {
       'layout-tab': true,
       'is-dirty': isDirty,

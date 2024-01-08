@@ -43,3 +43,14 @@ export enum SplitPanelTarget {
    */
   other,
 }
+
+export enum TransactionState {
+  /**
+   * The transaction is running and allows committing changes.
+   */
+  running = 'running',
+  /**
+   * The transaction is done and no more commits are accepted.
+   */
+  done = 'done',
+}

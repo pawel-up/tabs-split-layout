@@ -150,12 +150,21 @@ export class Panel extends LayoutObject {
   }
 
   /**
+   * @param key The key of the item to read.
+   * @returns The panel object associated with the key.
+   */
+  getPanelObject(key: string): PanelObject | null {
+    return this.items.find(i => i.key === key) || null;
+  }
+
+  /**
    * @returns Returns a **copy** of the items array sorted by index.
    */
   sortedItems(): Item[] {
     const { items, layoutState } = this;
+    const sorted = [...items].sort((a, b) => (a.index || 0) - (b.index || 0));
     const splitItems: Item[] = [];
-    items.forEach((i) => {
+    sorted.forEach((i) => {
       if (i.type === LayoutObjectType.item) {
         const value = layoutState.item(i.key as string);
         if (value) {
@@ -163,7 +172,7 @@ export class Panel extends LayoutObject {
         }
       }
     });
-    return [...splitItems].sort((a, b) => (a.index || 0) - (b.index || 0));
+    return splitItems;
   }
 
   /**

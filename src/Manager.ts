@@ -3,7 +3,7 @@ import { StateEvent } from "./events/StateEvent.js";
 import { View } from "./View.js";
 import { Transaction } from "./transaction/Transaction.js";
 import type { State } from "./State.js";
-import type { ManagerInit, PanelRenderCallback } from "./type.js";
+import type { ManagerInit, ManagerRenderOptions, PanelRenderCallback } from "./type.js";
 import type SplitView from "./SplitView.js";
 
 export const handleStateChange = Symbol('handleStateChange');
@@ -14,6 +14,7 @@ export const notifyRender = Symbol('notifyRender');
 export const dispatchStateChange = Symbol('dispatchStateChange');
 export const computeManualRendering = Symbol('computeManualRendering');
 export const renderLayout = Symbol('renderLayout');
+export const manageStateEvents = Symbol('manageStateEvents');
 
 /**
  * The layout manager that manages the rendering process, user interactions,
@@ -23,20 +24,46 @@ export const renderLayout = Symbol('renderLayout');
  * @fires change - When the state has changed through a user interaction or otherwise internal processing the the state should be stored by the application.
  */
 export class Manager extends EventTarget {
+  /**
+   * The reference to the view object generating the layout.
+   */
   protected view: View;
 
+  #state: State;
+  
   /**
    * The state object used to represent the layout.
    */
-  state: State;
+  get state(): State {
+    return this.#state;
+  }
+
+  set state(value: State) {
+    if (this.#state === value) {
+      // simple ref check.
+      return;
+    }
+    const old = this.#state;
+    this.#state = value;
+    this[manageStateEvents](value, old);
+  }
+
+  #opts: Readonly<ManagerInit>;
 
   /**
-   * The configuration options.
+   * The original configuration options.
    */
-  readonly opts: ManagerInit;
+  get opts(): Readonly<ManagerInit> {
+    return this.#opts;
+  }
 
   #manualRendering: boolean;
 
+  /**
+   * When true then the manager won't trigger rendering function
+   * automatically (which is the default behavior) and instead the hosting application
+   * must listen to the `render` event and render the view when requested.
+   */
   get manualRendering(): boolean {
     return this.#manualRendering;
   }
@@ -56,10 +83,8 @@ export class Manager extends EventTarget {
     if (this.#renderRoot) {
       return this.#renderRoot;
     }
-    const { render } = opts;
-    if (!render) {
-      return null;
-    }
+    // this has to be set per `manualRendering`.
+    const render = opts.render as ManagerRenderOptions;
     let target: HTMLElement | null = null;
     if (typeof render.parent === 'string') {
       const node = document.querySelector(render.parent);
@@ -79,13 +104,25 @@ export class Manager extends EventTarget {
    */
   constructor(state: State, opts: ManagerInit = {}) {
     super();
-    this.state = state;
-    this.opts = Object.freeze(opts);
-    this.view = new View(this.opts);
-    state.addEventListener('change', this[handleStateChange].bind(this));
-    state.addEventListener('render', this[handleStateRender].bind(this));
+    this[handleStateChange] = this[handleStateChange].bind(this);
+    this[handleStateRender] = this[handleStateRender].bind(this);
     this[handleFocusIn] = this[handleFocusIn].bind(this);
+
+    this.#state = state;
+    this[manageStateEvents](state);
+    this.#opts = Object.freeze(opts);
+    this.view = new View(this.opts);
+    
     this.#manualRendering = this[computeManualRendering]();
+  }
+
+  [manageStateEvents](value: State, old?: State): void {
+    if (old) {
+      old.removeEventListener('change', this[handleStateChange]);
+      old.removeEventListener('render', this[handleStateRender]);
+    }
+    value.addEventListener('change', this[handleStateChange]);
+    value.addEventListener('render', this[handleStateRender]);
   }
 
   /**
@@ -189,10 +226,9 @@ export class Manager extends EventTarget {
    * @param panelKey The panel key to search for.
    * @returns The `split-view` element in the document
    */
-  findView(panelKey: string): SplitView | undefined {
+  findView(panelKey: string): SplitView | null {
     const { viewName = 'split-view' } = this.opts;
-    const layout = document.querySelector(`${viewName}[key="${panelKey}"]`) as SplitView | null;
-    return layout || undefined;
+    return document.querySelector(`${viewName}[key="${panelKey}"]`) as SplitView | null;
   }
 
   /**
