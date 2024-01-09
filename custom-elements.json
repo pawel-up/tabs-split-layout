@@ -10,18 +10,209 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "render",
+          "declaration": {
+            "name": "render",
+            "package": "lit"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "html",
+          "declaration": {
+            "name": "html",
+            "package": "lit"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "nothing",
+          "declaration": {
+            "name": "nothing",
+            "package": "lit"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Item",
+          "declaration": {
+            "name": "Item",
+            "module": "./Item.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Panel",
+          "declaration": {
+            "name": "Panel",
+            "module": "./Panel.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Transaction",
+          "declaration": {
+            "name": "Transaction",
+            "module": "./transaction/Transaction.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TransactionalItem",
+          "declaration": {
+            "name": "TransactionalItem",
+            "module": "./transaction/TransactionalItem.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TransactionalPanel",
+          "declaration": {
+            "name": "TransactionalPanel",
+            "module": "./transaction/TransactionalPanel.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TransactionalState",
+          "declaration": {
+            "name": "TransactionalState",
+            "module": "./transaction/TransactionalState.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TransactionError",
+          "declaration": {
+            "name": "TransactionError",
+            "module": "./transaction/TransactionError.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "State",
+          "declaration": {
+            "name": "State",
+            "module": "./State.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Manager",
+          "declaration": {
+            "name": "Manager",
+            "module": "./Manager.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "StateEvent",
+          "declaration": {
+            "name": "StateEvent",
+            "module": "./events/StateEvent.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "StateHelper",
+          "declaration": {
+            "name": "StateHelper",
+            "module": "./StateHelper.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TemplateResult",
+          "declaration": {
+            "name": "TemplateResult",
+            "package": "lit"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "SVGTemplateResult",
+          "declaration": {
+            "name": "SVGTemplateResult",
+            "package": "lit"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "SerializedItem",
+          "declaration": {
+            "name": "SerializedItem",
+            "module": "./Item.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "SerializedPanel",
+          "declaration": {
+            "name": "SerializedPanel",
+            "module": "./Panel.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "SerializedState",
+          "declaration": {
+            "name": "SerializedState",
+            "module": "./State.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ManagerInit",
+          "declaration": {
+            "name": "ManagerInit",
+            "module": "./type.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ManagerRenderOptions",
+          "declaration": {
+            "name": "ManagerRenderOptions",
+            "module": "./type.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PanelAddOptions",
+          "declaration": {
+            "name": "PanelAddOptions",
+            "module": "./type.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PanelRenderCallback",
+          "declaration": {
+            "name": "PanelRenderCallback",
+            "module": "./type.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/Item.ts",
       "declarations": [
         {
           "kind": "class",
-          "description": "An item represents a single tab inside a layout panel.\n\nThe item is an abstract object and is not aware of the content the tab is rendering.\nIt is used to generate tabs and to make a space for the content.",
+          "description": "An item represents a single tab inside a layout panel.\n\nAn item can be added to multiple parents. The panel state of the item (index, pinned)\nis encoded in the `items` but the common properties are held in state's `definitions`.\n\nThe item is an abstract object and is not aware of the content the tab is rendering.\nIt is used to generate tabs and to make a space for the content.",
           "name": "Item",
           "members": [
             {
               "kind": "field",
               "name": "custom",
               "type": {
-                "text": "object"
+                "text": "CustomSchema"
               },
               "default": "{}"
             },
@@ -35,31 +226,9 @@
             },
             {
               "kind": "field",
-              "name": "pinned",
-              "type": {
-                "text": "boolean | undefined"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "index",
-              "type": {
-                "text": "number"
-              },
-              "default": "0"
-            },
-            {
-              "kind": "field",
               "name": "icon",
               "type": {
                 "text": "SVGTemplateResult | undefined"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "persistent",
-              "type": {
-                "text": "boolean | undefined"
               }
             },
             {
@@ -119,7 +288,7 @@
                   "text": ""
                 }
               },
-              "description": "Finds parents of an item.\n\nAn `Item` can have multiple parents as the same item can be opened in different\nsplit panels.\n\nIt may return an empty array only when the item was removed from the state."
+              "description": "Finds all parent panels of the item."
             },
             {
               "kind": "field",
@@ -294,6 +463,10 @@
           "name": "renderLayout"
         },
         {
+          "kind": "variable",
+          "name": "manageStateEvents"
+        },
+        {
           "kind": "class",
           "description": "The layout manager that manages the rendering process, user interactions,\nand all the mechanics of representing the sate as the split layout.",
           "name": "Manager",
@@ -305,7 +478,17 @@
                 "text": "View"
               },
               "privacy": "protected",
+              "description": "The reference to the view object generating the layout.",
               "default": "new View(this.opts)"
+            },
+            {
+              "kind": "field",
+              "name": "#state",
+              "privacy": "private",
+              "type": {
+                "text": "State"
+              },
+              "default": "state"
             },
             {
               "kind": "field",
@@ -313,18 +496,23 @@
               "type": {
                 "text": "State"
               },
-              "privacy": "protected",
-              "description": "The state object used to represent the layout.",
-              "default": "state"
+              "description": "The state object used to represent the layout."
+            },
+            {
+              "kind": "field",
+              "name": "#opts",
+              "privacy": "private",
+              "type": {
+                "text": "Readonly<ManagerInit>"
+              }
             },
             {
               "kind": "field",
               "name": "opts",
               "type": {
-                "text": "ManagerInit"
+                "text": "Readonly<ManagerInit>"
               },
-              "privacy": "protected",
-              "description": "The configuration options."
+              "description": "The original configuration options."
             },
             {
               "kind": "field",
@@ -339,7 +527,8 @@
               "name": "manualRendering",
               "type": {
                 "text": "boolean"
-              }
+              },
+              "description": "When true then the manager won't trigger rendering function\nautomatically (which is the default behavior) and instead the hosting application\nmust listen to the `render` event and render the view when requested."
             },
             {
               "kind": "field",
@@ -357,6 +546,30 @@
                 "text": "HTMLElement | null"
               },
               "description": "The reference to an element where the Manager should render the layout.\nThis is only used when the `render` and `parent` properties are set on the \nManager's configuration object."
+            },
+            {
+              "kind": "method",
+              "name": "[manageStateEvents]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "value",
+                  "type": {
+                    "text": "State"
+                  }
+                },
+                {
+                  "name": "old",
+                  "optional": true,
+                  "type": {
+                    "text": "State"
+                  }
+                }
+              ]
             },
             {
               "kind": "method",
@@ -507,6 +720,15 @@
               "description": "Called when the Manager takes over the rendering process.\nIt render the view into the configured parent."
             },
             {
+              "kind": "method",
+              "name": "transaction",
+              "return": {
+                "type": {
+                  "text": "Transaction"
+                }
+              }
+            },
+            {
               "kind": "field"
             }
           ],
@@ -594,6 +816,14 @@
           "name": "renderLayout",
           "declaration": {
             "name": "renderLayout",
+            "module": "src/Manager.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "manageStateEvents",
+          "declaration": {
+            "name": "manageStateEvents",
             "module": "src/Manager.ts"
           }
         },
@@ -728,6 +958,24 @@
                 }
               ],
               "description": "Checks whether this panel contains an item"
+            },
+            {
+              "kind": "method",
+              "name": "getPanelObject",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to read."
+                }
+              ]
             },
             {
               "kind": "method",
@@ -1027,12 +1275,12 @@
             },
             {
               "kind": "field",
-              "name": "state",
+              "name": "manager",
               "type": {
-                "text": "State | undefined"
+                "text": "Manager | undefined"
               },
               "description": "A reference to the layout state object.\nSet the `key` property to inform which panel is being rendered.\nThe panel is computed when both values are set.",
-              "attribute": "state"
+              "attribute": "manager"
             },
             {
               "kind": "field",
@@ -1048,7 +1296,6 @@
               "type": {
                 "text": "boolean"
               },
-              "privacy": "protected",
               "default": "false",
               "description": "Whether dragging is occurring over the element."
             },
@@ -1058,7 +1305,6 @@
               "type": {
                 "text": "SplitRegion | undefined"
               },
-              "privacy": "protected",
               "description": "The drop region the current drag is leaning to."
             },
             {
@@ -1132,7 +1378,7 @@
                   "name": "old",
                   "optional": true,
                   "type": {
-                    "text": "State"
+                    "text": "Manager"
                   },
                   "description": "The old state object, if any, to remove event listeners."
                 }
@@ -1284,7 +1530,8 @@
                     "text": "DragEvent"
                   }
                 }
-              ]
+              ],
+              "description": "A handler for the tab list drop event.\nThe difference between the content drop is that it won't split the layout \nand will drop the item on a specific index.\n\nAbove that an item can be moved to another panel or linked.\nWhen an item is linked, it creates a copy of the item (regenerating the `key`)\nand inserted as a new item."
             },
             {
               "kind": "method",
@@ -1737,12 +1984,12 @@
               "fieldName": "key"
             },
             {
-              "name": "state",
+              "name": "manager",
               "type": {
-                "text": "State | undefined"
+                "text": "Manager | undefined"
               },
               "description": "A reference to the layout state object.\nSet the `key` property to inform which panel is being rendered.\nThe panel is computed when both values are set.",
-              "fieldName": "state"
+              "fieldName": "manager"
             },
             {
               "name": "dragTypes",
@@ -2197,35 +2444,6 @@
             },
             {
               "kind": "method",
-              "name": "transaction",
-              "return": {
-                "type": {
-                  "text": "Transaction"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "parents",
-              "return": {
-                "type": {
-                  "text": ""
-                }
-              },
-              "parameters": [
-                {
-                  "name": "key",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The key of the panel or an item."
-                }
-              ],
-              "description": "Finds parents of an item or a parent of a panel.\n\nAn item can have multiple parents. A panel can only have a single parent.",
-              "deprecated": "This should not be here. Instead use the item's reference."
-            },
-            {
-              "kind": "method",
               "name": "clone",
               "return": {
                 "type": {
@@ -2242,7 +2460,7 @@
                   "text": ""
                 }
               },
-              "description": "Finds a reference to the \"active\" panel.\nAn active panel is the one the user focused last, or when not \nfocused before, the first panel that hosts items."
+              "description": "An active panel is the one the user focused last or the first panel that can host items."
             },
             {
               "kind": "method",
@@ -2269,7 +2487,7 @@
               "name": "notifyItemCreated",
               "return": {
                 "type": {
-                  "text": "void"
+                  "text": "CustomEvent"
                 }
               },
               "parameters": [
@@ -2285,7 +2503,7 @@
             },
             {
               "kind": "method",
-              "name": "panelIterator",
+              "name": "panelsIterator",
               "return": {
                 "type": {
                   "text": "Generator<Panel>"
@@ -2350,11 +2568,8 @@
               "description": "When the internal state has changed."
             },
             {
-              "name": "created",
-              "type": {
-                "text": "CustomEvent"
-              },
-              "description": "A custom event when an item was created. The detail object contains the `TransactionalItem` object which can be manipulated if needed."
+              "description": "A custom event when an item was created. The detail object contains the `TransactionalItem` object which can be manipulated if needed.",
+              "name": "created"
             }
           ],
           "superclass": {
@@ -2418,18 +2633,21 @@
               },
               "parameters": [
                 {
-                  "name": "state",
+                  "name": "manager",
                   "type": {
-                    "text": "State"
-                  },
-                  "description": "The state object to remove the item from."
+                    "text": "Manager"
+                  }
                 },
                 {
-                  "name": "key",
+                  "name": "itemKey",
                   "type": {
                     "text": "string"
                   },
                   "description": "The key of the item to remove."
+                },
+                {
+                  "description": "The state object to remove the item from.",
+                  "name": "state"
                 }
               ],
               "description": "Creates a transaction and removes an item from the state and all parents."
@@ -2445,25 +2663,28 @@
               },
               "parameters": [
                 {
-                  "name": "state",
+                  "name": "manager",
                   "type": {
-                    "text": "State"
-                  },
-                  "description": "The state object to remove the item from."
+                    "text": "Manager"
+                  }
                 },
                 {
-                  "name": "key",
+                  "name": "itemKey",
                   "type": {
                     "text": "string"
                   },
                   "description": "The key of the item to remove."
                 },
                 {
-                  "name": "parent",
+                  "name": "parentKey",
                   "type": {
                     "text": "string"
                   },
                   "description": "When set it removes the item from the specific panel only."
+                },
+                {
+                  "description": "The state object to remove the item from.",
+                  "name": "state"
                 }
               ],
               "description": "Creates a transaction and removes an item from a specific parent.\nWhen the item has only single parent, it is removed from the state."
@@ -2479,29 +2700,31 @@
               },
               "parameters": [
                 {
-                  "name": "state",
+                  "name": "manager",
                   "type": {
-                    "text": "State"
-                  },
-                  "description": "The state object to remove the item from."
+                    "text": "Manager"
+                  }
                 },
                 {
-                  "name": "key",
+                  "name": "itemKey",
                   "type": {
                     "text": "string"
                   },
                   "description": "The key of the item to remove."
                 },
                 {
-                  "name": "parent",
+                  "name": "parentKey",
                   "optional": true,
                   "type": {
                     "text": "string"
-                  },
-                  "description": "When set it removes the item from the specific panel only."
+                  }
+                },
+                {
+                  "description": "The state object to remove the item from.",
+                  "name": "state"
                 }
               ],
-              "description": "Creates a transaction and removes an item from the state.\nIt also removes the item from all parents it was added to, if \nthe parent is not specified."
+              "description": "Creates a transaction and removes an item from the state.\nIt also removes the item from all parents it was added to, if \nthe parent is not specified.\n\nThis function takes care of removing panels that do not have \nchildren after removing the item. If the parent panel to the panel is \nleft with only one panel as a child, then it is removed."
             },
             {
               "kind": "method",
@@ -2514,28 +2737,31 @@
               },
               "parameters": [
                 {
-                  "name": "state",
+                  "name": "manager",
                   "type": {
-                    "text": "State"
-                  },
-                  "description": "The state object to use to change the selected state."
+                    "text": "Manager"
+                  }
                 },
                 {
-                  "name": "key",
+                  "name": "itemKey",
                   "type": {
                     "text": "string"
                   },
                   "description": "The key of the item to select on the panel."
                 },
                 {
-                  "name": "parent",
+                  "name": "parentKey",
                   "type": {
                     "text": "string"
                   },
-                  "description": "The parent panel of the item to select the item on."
+                  "description": "The key of the parent panel of the item."
+                },
+                {
+                  "description": "The state object to use to change the selected state.",
+                  "name": "state"
                 }
               ],
-              "description": "Crates a transaction and marks an item as selected on a given panel.\nAn item can be added to multiple panels so the parent panel must be specified."
+              "description": "Crates a transaction and marks an item as selected on a given panel."
             },
             {
               "kind": "method",
@@ -2548,11 +2774,10 @@
               },
               "parameters": [
                 {
-                  "name": "state",
+                  "name": "manager",
                   "type": {
-                    "text": "State"
-                  },
-                  "description": "The current state object to manipulate."
+                    "text": "Manager"
+                  }
                 },
                 {
                   "name": "fromParent",
@@ -2569,7 +2794,7 @@
                   "description": "The parent to move the item to. May be the same as `fromParent`."
                 },
                 {
-                  "name": "key",
+                  "name": "itemKey",
                   "type": {
                     "text": "string"
                   },
@@ -2582,6 +2807,10 @@
                     "text": "TabsLayoutAddOptions"
                   },
                   "description": "Move options."
+                },
+                {
+                  "description": "The current state object to manipulate.",
+                  "name": "state"
                 }
               ],
               "description": "A method to move an item within a panel of between panels."
@@ -2597,25 +2826,24 @@
               },
               "parameters": [
                 {
-                  "name": "state",
+                  "name": "manager",
                   "type": {
-                    "text": "State"
-                  },
-                  "description": "The current state object to manipulate."
+                    "text": "Manager"
+                  }
                 },
                 {
-                  "name": "parent",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The parent panel of the item. Note, an item may be opened in multiple panels."
-                },
-                {
-                  "name": "key",
+                  "name": "itemKey",
                   "type": {
                     "text": "string"
                   },
                   "description": "The key of the item to move."
+                },
+                {
+                  "name": "parentKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the parent panel."
                 },
                 {
                   "name": "opts",
@@ -2624,6 +2852,10 @@
                     "text": "TabsLayoutAddOptions"
                   },
                   "description": "Item manipulation options."
+                },
+                {
+                  "description": "The current state object to manipulate.",
+                  "name": "state"
                 }
               ],
               "description": "Moves an item within the same panel."
@@ -2639,11 +2871,10 @@
               },
               "parameters": [
                 {
-                  "name": "state",
+                  "name": "manager",
                   "type": {
-                    "text": "State"
-                  },
-                  "description": "The current state object to manipulate."
+                    "text": "Manager"
+                  }
                 },
                 {
                   "name": "fromParent",
@@ -2660,7 +2891,7 @@
                   "description": "The parent to move the item to. May be the same as `fromParent`."
                 },
                 {
-                  "name": "key",
+                  "name": "itemKey",
                   "type": {
                     "text": "string"
                   },
@@ -2672,6 +2903,10 @@
                   "type": {
                     "text": "TabsLayoutAddOptions"
                   }
+                },
+                {
+                  "description": "The current state object to manipulate.",
+                  "name": "state"
                 },
                 {
                   "description": "The position on which to insert the item at. When not set, adds it to the end of items.",
@@ -2691,14 +2926,13 @@
               },
               "parameters": [
                 {
-                  "name": "state",
+                  "name": "manager",
                   "type": {
-                    "text": "State"
-                  },
-                  "description": "The current state object to manipulate."
+                    "text": "Manager"
+                  }
                 },
                 {
-                  "name": "parent",
+                  "name": "parentKey",
                   "type": {
                     "text": "string"
                   },
@@ -2716,8 +2950,13 @@
                   "type": {
                     "text": "TabsLayoutAddOptions"
                   }
+                },
+                {
+                  "description": "The current state object to manipulate.",
+                  "name": "state"
                 }
-              ]
+              ],
+              "description": "A shortcut to create an item inside a panel."
             }
           ]
         }
@@ -2732,6 +2971,12 @@
           }
         }
       ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/type.ts",
+      "declarations": [],
+      "exports": []
     },
     {
       "kind": "javascript-module",
@@ -2752,9 +2997,9 @@
               },
               "parameters": [
                 {
-                  "name": "state",
+                  "name": "manager",
                   "type": {
-                    "text": "State"
+                    "text": "Manager"
                   }
                 },
                 {
@@ -2782,9 +3027,9 @@
               },
               "parameters": [
                 {
-                  "name": "state",
+                  "name": "manager",
                   "type": {
-                    "text": "State"
+                    "text": "Manager"
                   }
                 },
                 {
@@ -2797,6 +3042,36 @@
                   "name": "itemCallback",
                   "type": {
                     "text": "PanelRenderCallback"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderView",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "manager",
+                  "type": {
+                    "text": "Manager"
+                  }
+                },
+                {
+                  "name": "panel",
+                  "type": {
+                    "text": "Panel"
+                  }
+                },
+                {
+                  "name": "content",
+                  "type": {
+                    "text": "TemplateResult[]"
                   }
                 }
               ]
@@ -2847,198 +3122,19 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/index.ts",
+      "path": "coverage/lcov-report/block-navigation.js",
       "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "render",
-          "declaration": {
-            "name": "render",
-            "package": "lit"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "html",
-          "declaration": {
-            "name": "html",
-            "package": "lit"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "nothing",
-          "declaration": {
-            "name": "nothing",
-            "package": "lit"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "Item",
-          "declaration": {
-            "name": "Item",
-            "module": "./Item.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "Panel",
-          "declaration": {
-            "name": "Panel",
-            "module": "./Panel.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "Transaction",
-          "declaration": {
-            "name": "Transaction",
-            "module": "./transaction/Transaction.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "TransactionalItem",
-          "declaration": {
-            "name": "TransactionalItem",
-            "module": "./transaction/TransactionalItem.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "TransactionalPanel",
-          "declaration": {
-            "name": "TransactionalPanel",
-            "module": "./transaction/TransactionalPanel.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "TransactionalState",
-          "declaration": {
-            "name": "TransactionalState",
-            "module": "./transaction/TransactionalState.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "TransactionError",
-          "declaration": {
-            "name": "TransactionError",
-            "module": "./transaction/TransactionError.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "State",
-          "declaration": {
-            "name": "State",
-            "module": "./State.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "Manager",
-          "declaration": {
-            "name": "Manager",
-            "module": "./Manager.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "StateEvent",
-          "declaration": {
-            "name": "StateEvent",
-            "module": "./events/StateEvent.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "StateHelper",
-          "declaration": {
-            "name": "StateHelper",
-            "module": "./StateHelper.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "TemplateResult",
-          "declaration": {
-            "name": "TemplateResult",
-            "package": "lit"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "SVGTemplateResult",
-          "declaration": {
-            "name": "SVGTemplateResult",
-            "package": "lit"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "SerializedItem",
-          "declaration": {
-            "name": "SerializedItem",
-            "module": "./Item.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "SerializedPanel",
-          "declaration": {
-            "name": "SerializedPanel",
-            "module": "./Panel.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "SerializedState",
-          "declaration": {
-            "name": "SerializedState",
-            "module": "./State.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "ManagerInit",
-          "declaration": {
-            "name": "ManagerInit",
-            "module": "./type.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "ManagerRenderOptions",
-          "declaration": {
-            "name": "ManagerRenderOptions",
-            "module": "./type.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "PanelAddOptions",
-          "declaration": {
-            "name": "PanelAddOptions",
-            "module": "./type.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "PanelRenderCallback",
-          "declaration": {
-            "name": "PanelRenderCallback",
-            "module": "./type.js"
-          }
-        }
-      ]
+      "exports": []
     },
     {
       "kind": "javascript-module",
-      "path": "src/type.ts",
+      "path": "coverage/lcov-report/prettify.js",
+      "declarations": [],
+      "exports": []
+    },
+    {
+      "kind": "javascript-module",
+      "path": "coverage/lcov-report/sorter.js",
       "declarations": [],
       "exports": []
     },
@@ -3099,6 +3195,69 @@
           "declaration": {
             "name": "StateEvent",
             "module": "src/events/StateEvent.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/lib/icons.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "iconWrapper",
+          "return": {
+            "type": {
+              "text": ""
+            }
+          },
+          "parameters": [
+            {
+              "name": "tpl",
+              "type": {
+                "text": "SVGTemplateResult"
+              },
+              "description": "Icon definition"
+            },
+            {
+              "name": "width",
+              "default": "24"
+            },
+            {
+              "name": "height",
+              "default": "24"
+            },
+            {
+              "name": "top",
+              "default": "0"
+            },
+            {
+              "name": "left",
+              "default": "0"
+            }
+          ],
+          "description": "Wraps icon into an SVG container."
+        },
+        {
+          "kind": "variable",
+          "name": "close"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "iconWrapper",
+          "declaration": {
+            "name": "iconWrapper",
+            "module": "src/lib/icons.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "close",
+          "declaration": {
+            "name": "close",
+            "module": "src/lib/icons.ts"
           }
         }
       ]
@@ -3373,69 +3532,6 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/lib/icons.ts",
-      "declarations": [
-        {
-          "kind": "function",
-          "name": "iconWrapper",
-          "return": {
-            "type": {
-              "text": ""
-            }
-          },
-          "parameters": [
-            {
-              "name": "tpl",
-              "type": {
-                "text": "SVGTemplateResult"
-              },
-              "description": "Icon definition"
-            },
-            {
-              "name": "width",
-              "default": "24"
-            },
-            {
-              "name": "height",
-              "default": "24"
-            },
-            {
-              "name": "top",
-              "default": "0"
-            },
-            {
-              "name": "left",
-              "default": "0"
-            }
-          ],
-          "description": "Wraps icon into an SVG container."
-        },
-        {
-          "kind": "variable",
-          "name": "close"
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "iconWrapper",
-          "declaration": {
-            "name": "iconWrapper",
-            "module": "src/lib/icons.ts"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "close",
-          "declaration": {
-            "name": "close",
-            "module": "src/lib/icons.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
       "path": "src/transaction/Transaction.ts",
       "declarations": [
         {
@@ -3445,31 +3541,36 @@
           "members": [
             {
               "kind": "field",
+              "name": "#state",
+              "privacy": "private",
+              "type": {
+                "text": "TransactionalState"
+              },
+              "default": "new TransactionalState(this, currentState.toJSON())"
+            },
+            {
+              "kind": "field",
               "name": "state",
               "type": {
                 "text": "TransactionalState"
               },
-              "description": "The working state for the transaction.",
-              "default": "new TransactionalState(this, copy)"
+              "description": "The working state for the transaction.\nIt is used internally to conduct operations on the state and transferred to\nthe `currentState` when committed."
             },
             {
-              "kind": "method",
-              "name": "get",
-              "return": {
-                "type": {
-                  "text": ""
-                }
+              "kind": "field",
+              "name": "#status",
+              "privacy": "private",
+              "type": {
+                "text": "TransactionState"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "status",
+              "type": {
+                "text": "TransactionState"
               },
-              "parameters": [
-                {
-                  "name": "key",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The key of the panel or the item to return."
-                }
-              ],
-              "description": "Finds a panel or item that has additional methods available only during \na transaction."
+              "description": "The status of this transaction.\nA transaction can be committed when its status is \"running.\""
             },
             {
               "kind": "method",
@@ -3482,6 +3583,7 @@
               "parameters": [
                 {
                   "name": "panel",
+                  "default": "{}",
                   "type": {
                     "text": "Partial<SerializedPanel>"
                   },
@@ -3512,7 +3614,7 @@
                   "text": "void"
                 }
               },
-              "description": "Resets the State object to the initial values."
+              "description": "Resets the State object to the initial values.\nNote, this does not change the `status` of the transaction."
             }
           ]
         }
@@ -3524,31 +3626,6 @@
           "declaration": {
             "name": "Transaction",
             "module": "src/transaction/Transaction.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/transaction/TransactionError.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "",
-          "name": "TransactionError",
-          "superclass": {
-            "name": "Error",
-            "module": "src/transaction/TransactionError.ts"
-          }
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "TransactionError",
-          "declaration": {
-            "name": "TransactionError",
-            "module": "src/transaction/TransactionError.ts"
           }
         }
       ]
@@ -3570,7 +3647,7 @@
                   "text": "void"
                 }
               },
-              "description": "Removes this item from all panels it is opened in.\nIt is the same as finding all parents of this item and calling \nthe `removeChild()` on each."
+              "description": "Removes this item from all parents.\nIt is the same as finding each parent and calling the `removeItem()` on them.\n\nNote, you may want to use the `StateHelper.removeItem()` as it has additional logic\nthat takes care of empty panels."
             },
             {
               "kind": "method",
@@ -3580,17 +3657,78 @@
                   "text": "TransactionalPanel[]"
                 }
               },
-              "description": "Finds parents of an item.\n\nAn `Item` can have multiple parents as the same item can be opened in different\nsplit panels.\n\nIt may return an empty array only when the item was removed from the state.",
+              "description": "Finds all parent panels of the item.",
               "inheritedFrom": {
                 "name": "Item",
                 "module": "src/Item.ts"
               }
             },
             {
+              "kind": "method",
+              "name": "move",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "parentKey",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The parent panel the item should be moved within."
+                },
+                {
+                  "name": "opts",
+                  "optional": true,
+                  "type": {
+                    "text": "TabsLayoutAddOptions"
+                  },
+                  "description": "Optional add options."
+                }
+              ],
+              "description": "Moves this item within a panel."
+            },
+            {
+              "kind": "method",
+              "name": "moveTo",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "fromPanel",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the source panel to move this item from."
+                },
+                {
+                  "name": "toPanel",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the target panel to move this item to."
+                },
+                {
+                  "name": "opts",
+                  "optional": true,
+                  "type": {
+                    "text": "TabsLayoutAddOptions"
+                  },
+                  "description": "Optional add options."
+                }
+              ],
+              "description": "Moves this item to another panel.\n\nNote, this function takes care of the selection process in the form/to panel\nbut it won't remove the empty from panel after removing the item."
+            },
+            {
               "kind": "field",
               "name": "custom",
               "type": {
-                "text": "object"
+                "text": "CustomSchema"
               },
               "default": "{}",
               "inheritedFrom": {
@@ -3612,43 +3750,9 @@
             },
             {
               "kind": "field",
-              "name": "pinned",
-              "type": {
-                "text": "boolean | undefined"
-              },
-              "inheritedFrom": {
-                "name": "Item",
-                "module": "src/Item.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "index",
-              "type": {
-                "text": "number"
-              },
-              "default": "0",
-              "inheritedFrom": {
-                "name": "Item",
-                "module": "src/Item.ts"
-              }
-            },
-            {
-              "kind": "field",
               "name": "icon",
               "type": {
                 "text": "SVGTemplateResult | undefined"
-              },
-              "inheritedFrom": {
-                "name": "Item",
-                "module": "src/Item.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "persistent",
-              "type": {
-                "text": "boolean | undefined"
               },
               "inheritedFrom": {
                 "name": "Item",
@@ -3848,7 +3952,7 @@
                   "description": "The key of the item to remove."
                 }
               ],
-              "description": "Removes a single item from the panel.\n\nIt takes care about the item indexes (decreases higher indexes) and the `selected` state.\n\nNote, it is possible to leave a panel without any item added. This means that such a\npanel can accept items or a new panel (and becoming a split panel). \nYou should handle this situation if you'd like to remove the panel\nif it has no more children."
+              "description": "Removes a single item from the panel.\n\nIt takes care about the item indexes (decreases higher indexes) and the `selected` state.\n\nNote, it is possible to leave a panel without any item added. This means that such a\npanel can accept items or a new panel (and becoming a split panel). \nYou should handle this situation if you'd like to remove the panel\nif it has no more children.\n\nNote, you may want to use the `StateHelper.removeItem()` as it has additional logic\nthat takes care of empty panels."
             },
             {
               "kind": "method",
@@ -3944,18 +4048,24 @@
               },
               "parameters": [
                 {
-                  "name": "item",
+                  "name": "info",
                   "type": {
-                    "text": "TransactionalItem"
+                    "text": "PanelObject"
                   }
                 },
                 {
                   "name": "region",
                   "type": {
                     "text": "SplitRegion"
-                  }
+                  },
+                  "description": "The panel's region to move the item to."
+                },
+                {
+                  "description": "The item to move",
+                  "name": "item"
                 }
-              ]
+              ],
+              "description": "Moves an item from this panel to the panel's region, splitting the panel."
             },
             {
               "kind": "method",
@@ -3967,9 +4077,9 @@
               },
               "parameters": [
                 {
-                  "name": "item",
+                  "name": "info",
                   "type": {
-                    "text": "TransactionalItem"
+                    "text": "PanelObject"
                   }
                 },
                 {
@@ -3990,9 +4100,9 @@
               },
               "parameters": [
                 {
-                  "name": "item",
+                  "name": "info",
                   "type": {
-                    "text": "TransactionalItem"
+                    "text": "PanelObject"
                   }
                 }
               ]
@@ -4043,7 +4153,7 @@
                   "description": "THe add options, if any. By default it adds the item at the end of the current panel."
                 }
               ],
-              "description": "Adds a new item to the layout."
+              "description": "Adds a new item to the layout.\n\nNote, if the item already exists, a new item with a new, random key will be inserted."
             },
             {
               "kind": "method",
@@ -4099,7 +4209,7 @@
                   "text": "void"
                 }
               },
-              "description": "Takes the first panel from the current panel's items list and \nreplaces the current panel `items` and `selected` with the old panel."
+              "description": "Moves all items from panels below to this panel and removes the other panels."
             },
             {
               "kind": "method",
@@ -4253,6 +4363,28 @@
                 }
               ],
               "description": "Checks whether this panel contains an item",
+              "inheritedFrom": {
+                "name": "Panel",
+                "module": "src/Panel.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getPanelObject",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  },
+                  "description": "The key of the item to read."
+                }
+              ],
               "inheritedFrom": {
                 "name": "Panel",
                 "module": "src/Panel.ts"
@@ -4492,20 +4624,6 @@
             },
             {
               "kind": "method",
-              "name": "activePanel",
-              "return": {
-                "type": {
-                  "text": "TransactionalPanel | null"
-                }
-              },
-              "description": "Finds a reference to the \"active\" panel.\nAn active panel is the one the user focused last, or when not \nfocused before, the first panel that hosts items.",
-              "inheritedFrom": {
-                "name": "State",
-                "module": "src/State.ts"
-              }
-            },
-            {
-              "kind": "method",
               "name": "addPanel",
               "return": {
                 "type": {
@@ -4570,6 +4688,20 @@
             },
             {
               "kind": "method",
+              "name": "activePanel",
+              "return": {
+                "type": {
+                  "text": "TransactionalPanel | null"
+                }
+              },
+              "description": "An active panel is the one the user focused last or the first panel that can host items.",
+              "inheritedFrom": {
+                "name": "State",
+                "module": "src/State.ts"
+              }
+            },
+            {
+              "kind": "method",
               "name": "panel",
               "return": {
                 "type": {
@@ -4616,7 +4748,7 @@
             },
             {
               "kind": "method",
-              "name": "panelIterator",
+              "name": "panelsIterator",
               "return": {
                 "type": {
                   "text": "Generator<TransactionalPanel>"
@@ -4762,43 +4894,6 @@
             },
             {
               "kind": "method",
-              "name": "transaction",
-              "return": {
-                "type": {
-                  "text": "Transaction"
-                }
-              },
-              "inheritedFrom": {
-                "name": "State",
-                "module": "src/State.ts"
-              }
-            },
-            {
-              "kind": "method",
-              "name": "parents",
-              "return": {
-                "type": {
-                  "text": ""
-                }
-              },
-              "parameters": [
-                {
-                  "name": "key",
-                  "type": {
-                    "text": "string"
-                  },
-                  "description": "The key of the panel or an item."
-                }
-              ],
-              "description": "Finds parents of an item or a parent of a panel.\n\nAn item can have multiple parents. A panel can only have a single parent.",
-              "deprecated": "This should not be here. Instead use the item's reference.",
-              "inheritedFrom": {
-                "name": "State",
-                "module": "src/State.ts"
-              }
-            },
-            {
-              "kind": "method",
               "name": "clone",
               "return": {
                 "type": {
@@ -4844,7 +4939,7 @@
               "name": "notifyItemCreated",
               "return": {
                 "type": {
-                  "text": "void"
+                  "text": "CustomEvent"
                 }
               },
               "parameters": [
@@ -4929,11 +5024,8 @@
               }
             },
             {
-              "name": "created",
-              "type": {
-                "text": "CustomEvent"
-              },
               "description": "A custom event when an item was created. The detail object contains the `TransactionalItem` object which can be manipulated if needed.",
+              "name": "created",
               "inheritedFrom": {
                 "name": "State",
                 "module": "src/State.ts"
@@ -4957,6 +5049,31 @@
           "declaration": {
             "name": "TransactionalState",
             "module": "src/transaction/TransactionalState.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/transaction/TransactionError.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "TransactionError",
+          "superclass": {
+            "name": "Error",
+            "module": "src/transaction/TransactionError.ts"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "TransactionError",
+          "declaration": {
+            "name": "TransactionError",
+            "module": "src/transaction/TransactionError.ts"
           }
         }
       ]

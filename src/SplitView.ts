@@ -88,12 +88,12 @@ export default class SplitView extends LitElement {
   /**
    * Whether dragging is occurring over the element.
    */
-  @state() protected inDrag = false;
+  @state() inDrag = false;
 
   /**
    * The drop region the current drag is leaning to.
    */
-  @state() protected dragRegion?: SplitRegion = SplitRegion.center;
+  @state() dragRegion?: SplitRegion = SplitRegion.center;
 
   /**
    * When set it adds the `overflow` hidden on the container that holds the tab contents.
@@ -348,7 +348,6 @@ export default class SplitView extends LitElement {
     if (!tab) {
       return;
     }
-    dt.effectAllowed = 'linkMove';
     const { key: itemKey } = tab.dataset;
     if (!itemKey) {
       return;
@@ -357,6 +356,7 @@ export default class SplitView extends LitElement {
     if (!item) {
       return;
     }
+    dt.effectAllowed = 'linkMove';
     dt.setData('item/key', itemKey);
     dt.setData('item/source', this.localName);
     dt.setData('item/custom', JSON.stringify(item.custom));
@@ -381,6 +381,15 @@ export default class SplitView extends LitElement {
     }
   }
 
+  /**
+   * A handler for the tab list drop event.
+   * The difference between the content drop is that it won't split the layout 
+   * and will drop the item on a specific index.
+   * 
+   * Above that an item can be moved to another panel or linked.
+   * When an item is linked, it creates a copy of the item (regenerating the `key`)
+   * and inserted as a new item.
+   */
   [handleTabListDrop](e: DragEvent): void {
     const { key, manager } = this;
     if (!this[panelCanDrop](e) || !key || !manager) {
@@ -399,8 +408,8 @@ export default class SplitView extends LitElement {
       return;
     }
     if (movingTab) {
-      if (e.shiftKey) {
-        // with the shift key it adds the existing item to another panel.
+      if (e.shiftKey && srcPanelKey !== this.key) {
+        // with the shift key it links an item between panels.
         const item = manager.state.item(itemKey);
         if (!item) {
           // This likely belongs to another state. Should we support this? How?
@@ -557,7 +566,7 @@ export default class SplitView extends LitElement {
       throw new Error(`The "state" or "key" is not set.`);
     }
     try {
-      StateHelper.selectItem(manager, itemKey);
+      StateHelper.selectItem(manager, itemKey, key);
       this[notifyContentResize](key);
       this[activateTab](itemKey);
     } catch (e) {
@@ -619,6 +628,7 @@ export default class SplitView extends LitElement {
       cancel = true;
     } else if (key === 'F10' && e.shiftKey) {
       this[notifyContextualMenu](e);
+      cancel = true;
     }
     if (cancel) {
       e.preventDefault();
@@ -844,13 +854,20 @@ export default class SplitView extends LitElement {
   }
 
   protected tabTemplate(panel: Panel, item: Item, last: boolean, nextKey?: string): TemplateResult {
-    const { key, label = '', index = 0, icon, isDirty = false } = item;
+    const info = panel.items.find(i => i.key === item.key);
+    if (!info) {
+      // this should not ever happen as the sorted items comes directly from `items`.
+      return html``;
+    }
+    const { index = 0, pinned = false } = info;
+    const { key, label = '', icon, isDirty = false } = item;
     const selected = panel.selected === key;
     const nextSelected = !!nextKey && panel.selected === nextKey;
-    const closable = !item.persistent && !item.pinned;
+    const closable = !pinned;
     const classes = {
       'layout-tab': true,
       'is-dirty': isDirty,
+      pinned: !!pinned,
       selected,
     };
     let title = label;
@@ -866,11 +883,11 @@ export default class SplitView extends LitElement {
       data-index="${index}"
       data-dirty="${isDirty}"
       data-panel="${ifDefined(panel?.key)}"
-      role="tab"
       class="${classMap(classes)}" 
-      draggable="true"
+      draggable="${pinned ? "false" : "true"}"
       tabindex="${selected ? "0" : "-1"}"
       title="${title}"
+      role="tab"
       aria-selected="${selected ? "true" : "false"}"
       aria-controls="${ifDefined(controls)}"
       @dragstart="${this[handleTabDragStart]}"

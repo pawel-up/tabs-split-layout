@@ -111,10 +111,10 @@ describe('transaction/TransactionalPanel', () => {
       const i4 = panel.addItem({ key: 'i4' });
       const i5 = panel.addItem({ key: 'i5' });
       panel.removeItem(i3.key);
-      assert.equal(i1.index, 0, 'i1 index has not changed');
-      assert.equal(i2.index, 1, 'i2 index has not changed');
-      assert.equal(i4.index, 2, 'i4 index decreased');
-      assert.equal(i5.index, 3, 'i5 index decreased');
+      assert.equal(panel.getPanelObject(i1.key)!.index, 0, 'i1 index has not changed');
+      assert.equal(panel.getPanelObject(i2.key)!.index, 1, 'i2 index has not changed');
+      assert.equal(panel.getPanelObject(i4.key)!.index, 2, 'i4 index decreased');
+      assert.equal(panel.getPanelObject(i5.key)!.index, 3, 'i5 index decreased');
     });
 
     it('does not change indexes when removing the last item', () => {
@@ -124,10 +124,10 @@ describe('transaction/TransactionalPanel', () => {
       const i4 = panel.addItem({ key: 'i4' });
       const i5 = panel.addItem({ key: 'i5' });
       panel.removeItem(i5.key);
-      assert.equal(i1.index, 0, 'i1 index has not changed');
-      assert.equal(i2.index, 1, 'i2 index has not changed');
-      assert.equal(i3.index, 2, 'i4 index has not changed');
-      assert.equal(i4.index, 3, 'i5 index has not changed');
+      assert.equal(panel.getPanelObject(i1.key)!.index, 0, 'i1 index has not changed');
+      assert.equal(panel.getPanelObject(i2.key)!.index, 1, 'i2 index has not changed');
+      assert.equal(panel.getPanelObject(i3.key)!.index, 2, 'i4 index has not changed');
+      assert.equal(panel.getPanelObject(i4.key)!.index, 3, 'i5 index has not changed');
     });
 
     it('does not change the panel selection when item is not selected', () => {
@@ -197,9 +197,9 @@ describe('transaction/TransactionalPanel', () => {
       const i2 = panel.addItem();
       const i3 = panel.addItem();
       panel[decreaseItemIndex](1);
-      assert.equal(i1.index, 0);
-      assert.equal(i2.index, 0);
-      assert.equal(i3.index, 1);
+      assert.equal(panel.getPanelObject(i1.key)!.index, 0);
+      assert.equal(panel.getPanelObject(i2.key)!.index, 0);
+      assert.equal(panel.getPanelObject(i3.key)!.index, 1);
     });
 
     it('ignores index out-of-bounds', () => {
@@ -207,9 +207,9 @@ describe('transaction/TransactionalPanel', () => {
       const i2 = panel.addItem();
       const i3 = panel.addItem();
       panel[decreaseItemIndex](5);
-      assert.equal(i1.index, 0);
-      assert.equal(i2.index, 1);
-      assert.equal(i3.index, 2);
+      assert.equal(panel.getPanelObject(i1.key)!.index, 0);
+      assert.equal(panel.getPanelObject(i2.key)!.index, 1);
+      assert.equal(panel.getPanelObject(i3.key)!.index, 2);
     });
   });
 
@@ -248,9 +248,9 @@ describe('transaction/TransactionalPanel', () => {
       const i2 = panel.addItem();
       const i3 = panel.addItem();
       panel[increaseItemIndex](1);
-      assert.equal(i1.index, 0);
-      assert.equal(i2.index, 2);
-      assert.equal(i3.index, 3);
+      assert.equal(panel.getPanelObject(i1.key)!.index, 0);
+      assert.equal(panel.getPanelObject(i2.key)!.index, 2);
+      assert.equal(panel.getPanelObject(i3.key)!.index, 3);
     });
 
     it('ignores index out-of-bounds', () => {
@@ -258,9 +258,9 @@ describe('transaction/TransactionalPanel', () => {
       const i2 = panel.addItem();
       const i3 = panel.addItem();
       panel[increaseItemIndex](5);
-      assert.equal(i1.index, 0);
-      assert.equal(i2.index, 1);
-      assert.equal(i3.index, 2);
+      assert.equal(panel.getPanelObject(i1.key)!.index, 0);
+      assert.equal(panel.getPanelObject(i2.key)!.index, 1);
+      assert.equal(panel.getPanelObject(i3.key)!.index, 2);
     });
   });
 
@@ -280,9 +280,9 @@ describe('transaction/TransactionalPanel', () => {
       const i2 = panel.addItem();
       const i3 = panel.addItem();
       panel.move(i1.key);
-      assert.equal(i1.index, 2, 'the item is moved to the end');
-      assert.equal(i2.index, 0, 'item 2 is now first');
-      assert.equal(i3.index, 1, 'item 3 is now second');
+      assert.equal(panel.getPanelObject(i1.key)!.index, 2, 'the item is moved to the end');
+      assert.equal(panel.getPanelObject(i2.key)!.index, 0, 'item 2 is now first');
+      assert.equal(panel.getPanelObject(i3.key)!.index, 1, 'item 3 is now second');
     });
 
     it('moves the item to a specific index', () => {
@@ -290,9 +290,9 @@ describe('transaction/TransactionalPanel', () => {
       const i2 = panel.addItem();
       const i3 = panel.addItem();
       panel.move(i2.key, { index: 0 });
-      assert.equal(i1.index, 1, 'item 1 is moved to position 2');
-      assert.equal(i2.index, 0, 'item 2 is moved to position 0');
-      assert.equal(i3.index, 2, 'item 3 stays in the same place');
+      assert.equal(panel.getPanelObject(i1.key)!.index, 1, 'item 1 is moved to position 2');
+      assert.equal(panel.getPanelObject(i2.key)!.index, 0, 'item 2 is moved to position 0');
+      assert.equal(panel.getPanelObject(i3.key)!.index, 2, 'item 3 stays in the same place');
     });
 
     it('moves the item to the east region', () => {
@@ -306,9 +306,9 @@ describe('transaction/TransactionalPanel', () => {
       assert.equal(p1.items[0].key, i1.key, 'item 1 is in the west region');
       assert.equal(p1.items[1].key, i3.key, 'item 3 is in the west region');
       assert.equal(p2.items[0].key, i2.key, 'item 2 is in the east region');
-      assert.equal(i1.index, 0, 'item 1 has unchanged index');
-      assert.equal(i2.index, 0, 'item 2 has new index');
-      assert.equal(i3.index, 1, 'item 3 has decreased index');
+      assert.equal(p1.getPanelObject(i1.key)!.index, 0, 'item 1 has unchanged index');
+      assert.equal(p2.getPanelObject(i2.key)!.index, 0, 'item 2 has new index');
+      assert.equal(p1.getPanelObject(i3.key)!.index, 1, 'item 3 has decreased index');
     });
 
     it('moves the item to the west region', () => {
@@ -322,9 +322,9 @@ describe('transaction/TransactionalPanel', () => {
       assert.equal(p2.items[0].key, i1.key, 'item 1 is in the east region');
       assert.equal(p2.items[1].key, i3.key, 'item 3 is in the east region');
       assert.equal(p1.items[0].key, i2.key, 'item 2 is in the west region');
-      assert.equal(i1.index, 0, 'item 1 has unchanged index');
-      assert.equal(i2.index, 0, 'item 2 has new index');
-      assert.equal(i3.index, 1, 'item 3 has decreased index');
+      assert.equal(p2.getPanelObject(i1.key)!.index, 0, 'item 1 has unchanged index');
+      assert.equal(p2.getPanelObject(i3.key)!.index, 1, 'item 3 has decreased index');
+      assert.equal(p1.getPanelObject(i2.key)!.index, 0, 'item 2 has new index');
     });
 
     it('moves the item to the north region', () => {
@@ -338,9 +338,9 @@ describe('transaction/TransactionalPanel', () => {
       assert.equal(p2.items[0].key, i1.key, 'item 1 is in the south region');
       assert.equal(p2.items[1].key, i3.key, 'item 3 is in the south region');
       assert.equal(p1.items[0].key, i2.key, 'item 2 is in the north region');
-      assert.equal(i1.index, 0, 'item 1 has unchanged index');
-      assert.equal(i2.index, 0, 'item 2 has new index');
-      assert.equal(i3.index, 1, 'item 3 has decreased index');
+      assert.equal(p2.getPanelObject(i1.key)!.index, 0, 'item 1 has unchanged index');
+      assert.equal(p2.getPanelObject(i3.key)!.index, 1, 'item 3 has decreased index');
+      assert.equal(p1.getPanelObject(i2.key)!.index, 0, 'item 2 has new index');
     });
 
     it('moves the item to the south region', () => {
@@ -354,9 +354,9 @@ describe('transaction/TransactionalPanel', () => {
       assert.equal(p1.items[0].key, i1.key, 'item 1 is in the north region');
       assert.equal(p1.items[1].key, i3.key, 'item 3 is in the north region');
       assert.equal(p2.items[0].key, i2.key, 'item 2 is in the south region');
-      assert.equal(i1.index, 0, 'item 1 has unchanged index');
-      assert.equal(i2.index, 0, 'item 2 has new index');
-      assert.equal(i3.index, 1, 'item 3 has decreased index');
+      assert.equal(p1.getPanelObject(i1.key)!.index, 0, 'item 1 has unchanged index');
+      assert.equal(p1.getPanelObject(i3.key)!.index, 1, 'item 3 has decreased index');
+      assert.equal(p2.getPanelObject(i2.key)!.index, 0, 'item 2 has new index');
     });
 
     it('does not move to a region when only one item', () => {
@@ -704,12 +704,29 @@ describe('transaction/TransactionalPanel', () => {
         assert.deepEqual(item.value, i1);
       });
 
-      it('generates a new key when an existing key is already used', () => {
+      it('creates a linked item when adding the same item to another panel', () => {
         const p1 = panel.addPanel();
         const p2 = panel.addPanel();
         const i1 = p1.addItem();
         const i2 = p2.addItem(i1);
-        assert.notEqual(i1.key, i2.key);
+        assert.equal(i1.key, i2.key, 'definition items have the same key');
+        const p1Object = p1.getPanelObject(i1.key)!;
+        const p2Object = p2.getPanelObject(i2.key)!;
+        assert.deepEqual(p1Object, p2Object, 'created panel items are the same');
+      });
+
+      it('creates a linked with an index', () => {
+        const p1 = panel.addPanel();
+        const p2 = panel.addPanel();
+        const i1 = p1.addItem();
+        p2.addItem();
+        const i3 = p2.addItem(i1);
+        assert.equal(i1.key, i3.key, 'definition items have the same key');
+        const p1Object = p1.getPanelObject(i1.key)!;
+        const p2Object = p2.getPanelObject(i3.key)!;
+        assert.equal(p1Object.key, p2Object.key, 'created panel items have the same keys');
+        assert.equal(p1Object.index, 0, 'item 1 has index 0');
+        assert.equal(p2Object.index, 1, 'item 3 has index 1');
       });
 
       it('uses the passed key', () => {
@@ -734,27 +751,18 @@ describe('transaction/TransactionalPanel', () => {
         assert.equal(p1.items[0].key, i1.key, 'item 1 is in the west region');
         assert.equal(p1.items[1].key, i2.key, 'item 2 is in the west region');
         assert.equal(p2.items[0].key, i3.key, 'item 3 is in the east region');
-        assert.equal(i1.index, 0, 'item 1 has index = 0');
-        assert.equal(i2.index, 1, 'item 2 has index = 1');
-        assert.equal(i3.index, 0, 'item 3 has index = 0');
+        assert.equal(p1.getPanelObject(i1.key)!.index, 0, 'item 1 has index = 0');
+        assert.equal(p1.getPanelObject(i2.key)!.index, 1, 'item 2 has index = 1');
+        assert.equal(p2.getPanelObject(i3.key)!.index, 0, 'item 3 has index = 0');
       });
 
       it('adds an item to a specific index', () => {
         const i1 = panel.addItem();
         const i2 = panel.addItem();
         const i3 = panel.addItem({}, { index: 1 });
-        assert.equal(i1.index, 0, 'item 1 is unchanged');
-        assert.equal(i2.index, 2, 'item 2 increased index');
-        assert.equal(i3.index, 1, 'item 3 has the set index');
-      });
-
-      it('uses item defined index', () => {
-        const i1 = panel.addItem();
-        const i2 = panel.addItem();
-        const i3 = panel.addItem({ index: 1 });
-        assert.equal(i1.index, 0, 'item 1 is unchanged');
-        assert.equal(i2.index, 2, 'item 2 increased index');
-        assert.equal(i3.index, 1, 'item 3 has the set index');
+        assert.equal(panel.getPanelObject(i1.key)!.index, 0, 'item 1 is unchanged');
+        assert.equal(panel.getPanelObject(i2.key)!.index, 2, 'item 2 increased index');
+        assert.equal(panel.getPanelObject(i3.key)!.index, 1, 'item 3 has the set index');
       });
 
       it('sets the item selected', () => {
@@ -762,11 +770,6 @@ describe('transaction/TransactionalPanel', () => {
         assert.equal(panel.selected, i1.key);
         const i2 = panel.addItem();
         assert.equal(panel.selected, i2.key);
-      });
-
-      it('uses option\'s index with priority', () => {
-        const i1 = panel.addItem({ key: 'i1', index: 1 }, { index: 2 });
-        assert.equal(i1.index, 2);
       });
     });
   });
@@ -794,30 +797,30 @@ describe('transaction/TransactionalPanel', () => {
     });
 
     it('sets the next available index with a gap', () => {
-      const p1 = panel.addItem({ key: 'i1' });
-      p1.index = 4;
+      const i1 = panel.addItem({ key: 'i1' });
+      panel.getPanelObject(i1.key)!.index = 4;
       const result = panel[nextIndex]();
       assert.equal(result, 0);
     });
 
     it('returns the index after multiple items', () => {
       const i1 = panel.addItem({ key: 'i1' });
-      i1.index = 0;
+      panel.getPanelObject(i1.key)!.index = 0;
       const i2 = panel.addItem({ key: 'i2' });
-      i2.index = 1;
+      panel.getPanelObject(i2.key)!.index = 1;
       const i3 = panel.addItem({ key: 'i3' });
-      i3.index = 2;
+      panel.getPanelObject(i3.key)!.index = 2;
       const result = panel[nextIndex]();
       assert.equal(result, 3);
     });
 
     it('returns the index with a gap', () => {
       const i1 = panel.addItem({ key: 'i1' });
-      i1.index = 0;
+      panel.getPanelObject(i1.key)!.index = 0;
       const i2 = panel.addItem({ key: 'i2' });
-      i2.index = 2;
+      panel.getPanelObject(i2.key)!.index = 2;
       const i3 = panel.addItem({ key: 'i3' });
-      i3.index = 3;
+      panel.getPanelObject(i3.key)!.index = 3;
       const result = panel[nextIndex]();
       assert.equal(result, 1);
     });

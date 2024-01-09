@@ -1,8 +1,6 @@
-import type { Item } from "../Item.js";
-import type { Panel, SerializedPanel } from "../Panel.js";
+import type { SerializedPanel } from "../Panel.js";
 import type { State } from "../State.js";
-import { LayoutObjectType } from "../Enum.js";
-import { TransactionalItem } from "./TransactionalItem.js";
+import { LayoutObjectType, TransactionState } from "../Enum.js";
 import { TransactionalPanel } from "./TransactionalPanel.js";
 import { TransactionalState } from "./TransactionalState.js";
 
@@ -24,36 +22,32 @@ import { TransactionalState } from "./TransactionalState.js";
  * ```
  */
 export class Transaction {
+  #state: TransactionalState;
+  
   /**
    * The working state for the transaction.
+   * It is used internally to conduct operations on the state and transferred to
+   * the `currentState` when committed.
    */
-  state: TransactionalState;
+  get state(): TransactionalState {
+    return this.#state;
+  }
 
-  constructor(readonly currentState: State) {
-    const copy = currentState.toJSON();
-    this.state = new TransactionalState(this, copy);
+  #status: TransactionState = TransactionState.running;
+
+  /**
+   * The status of this transaction.
+   * A transaction can be committed when its status is "running."
+   */
+  get status(): TransactionState {
+    return this.#status;
   }
 
   /**
-   * Finds a panel or item that has additional methods available only during 
-   * a transaction.
-   * 
-   * @param key The key of the panel or the item to return.
-   * @returns A transaction ready Panel or Item
+   * @param currentState A reference to the manager's current state. This is only changed when the `commit()` is called.
    */
-  get(key: string): TransactionalPanel | TransactionalItem | null {
-    const { state } = this;
-    const value = state.get(key);
-    if (!value) {
-      return value;
-    }
-    if (value.type === LayoutObjectType.item) {
-      return new TransactionalItem(this, state, (value as Item).toJSON());
-    }
-    if (value.type === LayoutObjectType.panel) {
-      return new TransactionalPanel(this, state, (value as Panel).toJSON());
-    }
-    return null;
+  constructor(readonly currentState: State) {
+    this.#state = new TransactionalState(this, currentState.toJSON());
   }
 
   /**
@@ -108,16 +102,21 @@ export class Transaction {
    * You need to `rollback()` the transaction to restore the state on the layout. 
    */
   commit(): void {
-    const { currentState, state } = this;
+    const { currentState, state, status } = this;
+    if (status === TransactionState.done) {
+      throw new Error(`This transaction has been committed. Create a new transaction to manipulate the state.`);
+    }
     currentState.new(state.toJSON());
     currentState.notifyChange();
     currentState.notifyRender();
+    this.#status = TransactionState.done;
   }
 
   /**
    * Resets the State object to the initial values.
+   * Note, this does not change the `status` of the transaction.
    */
   reset(): void {
-    this.state = new TransactionalState(this);
+    this.#state = new TransactionalState(this);
   }
 }

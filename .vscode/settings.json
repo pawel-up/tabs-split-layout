@@ -1,5 +1,16 @@
 {
   "cSpell.words": [
     "closetab"
+  ],
+  "grammarly.selectors": [
+    {
+      "language": "typescript",
+      "scheme": "file",
+      "pattern": "src/transaction/Transaction.ts"
+    },
+    {
+      "language": "markdown",
+      "scheme": "file"
+    }
   ]
 }

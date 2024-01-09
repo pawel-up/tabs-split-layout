@@ -163,9 +163,9 @@ describe('Panel', () => {
     });
 
     it('sorts the items', () => {
-      items[0].index = 1;
-      items[1].index = 0;
-      items[2].index = 2;
+      panel.getPanelObject(items[0].key)!.index = 1;
+      panel.getPanelObject(items[1].key)!.index = 0;
+      panel.getPanelObject(items[2].key)!.index = 2;
       const result = panel.sortedItems();
       assert.deepEqual(result, [items[1], items[0], items[2]]);
     });

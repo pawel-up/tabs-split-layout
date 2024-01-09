@@ -14,21 +14,21 @@ export class TransactionalItem extends Item {
   }
 
   /**
-   * Removes this item from the parent.
-   * It is the same as finding the parent and calling the `removeItem()` on it.
+   * Removes this item from all parents.
+   * It is the same as finding each parent and calling the `removeItem()` on them.
    * 
    * Note, you may want to use the `StateHelper.removeItem()` as it has additional logic
    * that takes care of empty panels.
    */
   remove(): void {
-    const parent = this.getParent();
-    if (parent) {
+    const parents = this.getParents();
+    for (const parent of parents) {
       parent.removeItem(this.key);
     }
   }
 
-  override getParent(): TransactionalPanel {
-    return super.getParent() as TransactionalPanel;
+  override getParents(): TransactionalPanel[] {
+    return super.getParents() as TransactionalPanel[];
   }
 
   /**
@@ -46,13 +46,9 @@ export class TransactionalItem extends Item {
   update(info: Partial<SerializedItem>): void {
     const cp = { ...info } as Partial<SerializedItem>;
     if (cp.key) {
-      // eslint-disable-next-line no-console
-      console.error(`Tried to update the "key" of an item but this is prohibited.`);
       delete cp.key;
     }
     if (cp.type) {
-      // eslint-disable-next-line no-console
-      console.error(`Tried to update the "type" of an item but this is prohibited.`);
       delete cp.type;
     }
     const keys = Object.keys(cp) as (keyof SerializedItem)[];
@@ -78,10 +74,11 @@ export class TransactionalItem extends Item {
   /**
    * Moves this item within a panel.
    * 
+   * @param parentKey The parent panel the item should be moved within.
    * @param opts Optional add options.
    */
-  move(opts?: TabsLayoutAddOptions): void {
-    const panel = this.getParent();
+  move(parentKey: string, opts?: TabsLayoutAddOptions): void {
+    const panel = this.getParents().find(i => i.key === parentKey);
     if (!panel) {
       throw new TransactionError(`The parent panel of the move operation does not exist.`);
     }
@@ -91,41 +88,30 @@ export class TransactionalItem extends Item {
   /**
    * Moves this item to another panel.
    * 
-   * @param panel The key of the target panel to move this item to.
+   * Note, this function takes care of the selection process in the form/to panel
+   * but it won't remove the empty from panel after removing the item.
+   * 
+   * @param fromPanel The key of the source panel to move this item from.
+   * @param toPanel The key of the target panel to move this item to.
    * @param opts Optional add options.
    */
-  moveTo(panel: string, opts?: TabsLayoutAddOptions): void {
+  moveTo(fromPanel: string, toPanel: string, opts?: TabsLayoutAddOptions): void {
     const { key } = this;
-    const from = this.getParent();
+    const from = this.getParents().find(i => i.key === fromPanel);
     if (!from) {
       throw new TransactionError(`The parent panel of the move operation does not exist.`);
     }
-    const to = this.key === panel ? from : this.transaction.state.panel(panel);
+    const to = this.key === toPanel ? from : this.transaction.state.panel(toPanel);
     if (!to) {
       throw new TransactionError(`The destination panel of the move operation does not exist.`);
     }
-    const orderedItems = from.sortedItems();
-    const item = from.removeItem(key);
-    if (!item) {
-      throw new TransactionError(`The target item of the move operation does not exist.`);
-    }
-    if (!from.hasItems) {
-      from.remove();
-    } else if (from.selected === key) {
-      const index = orderedItems.findIndex(i => i.key === key);
-      let selected = orderedItems[index + 1]?.key;
-      if (!selected) {
-        selected = orderedItems[index - 1]?.key;
-      }
-      from.update({
-        selected,
-      });
-    }
+    // it's safe to cast as from has to be a parent so it has the item.
+    const item = from.removeItem(key) as TransactionalItem;
     if (!to.hasItem(item.key)) {
       to.addItem(item.toJSON(), opts);
-      to.update({
-        selected: item.key,
-      });
     }
+    to.update({
+      selected: item.key,
+    });
   }
 }
