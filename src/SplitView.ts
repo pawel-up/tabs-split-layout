@@ -88,12 +88,12 @@ export default class SplitView extends LitElement {
   /**
    * Whether dragging is occurring over the element.
    */
-  @state() protected inDrag = false;
+  @state() inDrag = false;
 
   /**
    * The drop region the current drag is leaning to.
    */
-  @state() protected dragRegion?: SplitRegion = SplitRegion.center;
+  @state() dragRegion?: SplitRegion = SplitRegion.center;
 
   /**
    * When set it adds the `overflow` hidden on the container that holds the tab contents.
@@ -348,7 +348,6 @@ export default class SplitView extends LitElement {
     if (!tab) {
       return;
     }
-    dt.effectAllowed = 'linkMove';
     const { key: itemKey } = tab.dataset;
     if (!itemKey) {
       return;
@@ -357,6 +356,7 @@ export default class SplitView extends LitElement {
     if (!item) {
       return;
     }
+    dt.effectAllowed = 'linkMove';
     dt.setData('item/key', itemKey);
     dt.setData('item/source', this.localName);
     dt.setData('item/custom', JSON.stringify(item.custom));
@@ -408,7 +408,7 @@ export default class SplitView extends LitElement {
       return;
     }
     if (movingTab) {
-      if (e.shiftKey) {
+      if (e.shiftKey && srcPanelKey !== this.key) {
         // with the shift key it links an item between panels.
         const item = manager.state.item(itemKey);
         if (!item) {
@@ -628,6 +628,7 @@ export default class SplitView extends LitElement {
       cancel = true;
     } else if (key === 'F10' && e.shiftKey) {
       this[notifyContextualMenu](e);
+      cancel = true;
     }
     if (cancel) {
       e.preventDefault();
@@ -866,6 +867,7 @@ export default class SplitView extends LitElement {
     const classes = {
       'layout-tab': true,
       'is-dirty': isDirty,
+      pinned: !!pinned,
       selected,
     };
     let title = label;
@@ -881,11 +883,11 @@ export default class SplitView extends LitElement {
       data-index="${index}"
       data-dirty="${isDirty}"
       data-panel="${ifDefined(panel?.key)}"
-      role="tab"
       class="${classMap(classes)}" 
-      draggable="true"
+      draggable="${pinned ? "false" : "true"}"
       tabindex="${selected ? "0" : "-1"}"
       title="${title}"
+      role="tab"
       aria-selected="${selected ? "true" : "false"}"
       aria-controls="${ifDefined(controls)}"
       @dragstart="${this[handleTabDragStart]}"

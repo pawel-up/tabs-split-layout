@@ -14,6 +14,11 @@ export interface TabsLayoutAddOptions {
    * By default it is added as a last item.
    */
   index?: number;
+
+  /**
+   * When set it adds the tab as pinned.
+   */
+  pinned?: boolean;
 }
 
 export interface PanelSplitOptions {

@@ -359,7 +359,7 @@ export class TransactionalPanel extends Panel {
     if (cp.type) {
       delete cp.type;
     }
-    const { region = SplitRegion.center } = options;
+    const { region = SplitRegion.center, pinned } = options;
     const alreadyInPanel = !!init.key && region === SplitRegion.center && this.hasItem(init.key);
     if (alreadyInPanel) {
       if (init.key !== this.selected) {
@@ -421,6 +421,7 @@ export class TransactionalPanel extends Panel {
       key: result.key,
       type: LayoutObjectType.item,
       index,
+      pinned,
     };
     this.items.push(obj);
     this.selected = result.key;
