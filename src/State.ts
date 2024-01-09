@@ -184,11 +184,9 @@ export class State extends EventTarget {
   }
 
   /**
-   * Finds a reference to the "active" panel.
-   * An active panel is the one the user focused last, or when not 
-   * focused before, the first panel that hosts items.
+   * An active panel is the one the user focused last or the first panel that can host items.
    * 
-   * @returns The reference to the active panel.
+   * @returns The reference to the active panel or null when no panels are defined.
    */
   activePanel(): Panel | null {
     const { currentPanel } = this;
@@ -199,7 +197,7 @@ export class State extends EventTarget {
       }
     }
     for (const panel of this.panelsIterator()) {
-      if (panel.hasItems) {
+      if (panel.hasItems || !panel.hasPanels) {
         return panel;
       }
     }
@@ -225,10 +223,13 @@ export class State extends EventTarget {
    * Notifies listeners about an item being created.
    * @param item The item that just been created.
    */
-  notifyItemCreated(item: TransactionalItem): void {
-    this.dispatchEvent(new CustomEvent('created', {
+  notifyItemCreated(item: TransactionalItem): CustomEvent {
+    const event = new CustomEvent('created', {
+      cancelable: true,
       detail: item,
-    }));
+    })
+    this.dispatchEvent(event);
+    return event;
   }
 
   /**

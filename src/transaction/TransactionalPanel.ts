@@ -409,7 +409,10 @@ export class TransactionalPanel extends Panel {
       }
       item.key = key;
       // The item may change here by the hosting application.
-      this.transaction.currentState.notifyItemCreated(item);
+      const event = this.transaction.currentState.notifyItemCreated(item);
+      if (event.defaultPrevented) {
+        throw new TransactionError(`The operation cancelled by the application.`);
+      }
       const definition: StateObject = {
         type: LayoutObjectType.item,
         value: item,
