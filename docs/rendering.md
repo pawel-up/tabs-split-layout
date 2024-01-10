@@ -56,11 +56,11 @@ render(content, parent);
 
 A lot to unpack here.
 
-The `layout.render()` function takes a single argument which is the callback function called for each item rendered in each panel. When the callback is called, it has two argument: the item to render and whether the item is currently visible to the user. Depending on your rendering strategy, you can choose to hide the tab content (line in the example above) or you can ignore rendering anything.
+The `layout.render()` function takes a single argument, which is the callback function called for each item rendered in each panel. When the callback is called, it has two arguments: the item to render and whether the item is currently visible to the user. Depending on your rendering strategy, you can choose to hide the tab content (line in the example above), or you can ignore rendering anything.
 
 If you decide to render the content, add the `data-key` with the item's key to the parent element of the content. The view uses it in some cases, like dispatching the `resize` event on the element when it becomes visible. It is also used to handle accessibility.
 
-The library uses the highly efficient `lit-html` library to render the view. The `lit-html` uses the template literals to render the markup. It uses it's own notation system to manipulate attributes, properties, and events. Learn more about template rendering in [lit documentation](https://lit.dev/docs/components/rendering/).
+The library uses the highly efficient `lit-html` library to render the view. The `lit-html` uses the template literals to render the markup. It uses its notation system to manipulate attributes, properties, and events. Learn more about template rendering in [lit documentation](https://lit.dev/docs/components/rendering/).
 
 If you are using VSCode, you can install the [Lit Plugin](https://marketplace.visualstudio.com/items?itemName=runem.lit-plugin) for templates syntax support.
 
@@ -68,7 +68,7 @@ Finally, use the `render` function that is exported by the library to translate 
 
 ### Automatic rendering
 
-On the other hand, you can just point to the container element in the Manager configuration and pass the render function and the manager will take care of rendering the view when needed.
+On the other hand, you can point to the container element in the Manager configuration and pass the render function, and the manager will render the view when needed.
 
 ```ts
 // Full example
@@ -91,7 +91,7 @@ const layout = new Manager(state, {
 
 ### Layout container
 
-Recommended setup to begin with is the following:
+The recommended setup to begin with is the following:
 
 ```css
 .layout {
@@ -101,15 +101,15 @@ Recommended setup to begin with is the following:
 }
 ```
 
-Assuming the `layout` is the class name added to the parent. With this setup the layout will render to the full available height and will force the content to shrink inside the layout instead of pushing whe width of the layout (the `overflow` property).
+Assuming the `layout` is the class name added to the parent. With this setup, the layout will render to the total available height and force the content to shrink inside the layout instead of pushing the width of the layout (the `overflow` property).
 
-Note, the layout has minimal styling just to get you started. You can control many aspects of the view rendering through the CSS.
+Note that the layout has minimal styling to get you started. You can control many aspects of the view rendering through the CSS.
 
 ### Events scoping
 
-When you attach events to the template inside the `html` function, by default, the scope of the event will be attached to the element. This is consistent with what you'd expect from regular web browser behavior. Sometimes it is not desired, especially when working with classes.
+When you attach events to the template inside the `html` function, by default, the scope of the event will be attached to the element. It is consistent with what you'd expect from regular web browser behavior. Sometimes, it is not desired, especially when working with classes.
 
-For that issue, the `lit-html` library allows you to specify the `host` property during the render phase where you can set the scope for the events. Once set, you do not have to `.bind(this)` callback functions.
+For that issue, the `lit-html` library allows you to specify the `host` property during the render phase, where you can set the scope for the events. Once set, you do not have to `.bind(this)` callback functions.
 
 Example:
 
@@ -145,3 +145,6 @@ class MyPage {
   }
 }
 ```
+
+Previous step: [Initialization](initialization.md)
+Next step: [State management](state.md)

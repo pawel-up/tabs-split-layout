@@ -1,6 +1,6 @@
 # Supporting Drag and Drop
 
-The Manager can support drag and drop of external items. This way, you can program an interaction where the user can drop an element into a split panel and add a new item to that panel. To support that, you should pass the configuration option to the `Manager` with all mime types that the dragged element must have to be accepted by the layout. This is optional though and is only used to limit the number of items the layout is interaction with.
+The Manager can support the drag and drop of external items. This way, you can program an interaction where the user can drop an element into a split panel and add a new item to that panel. To support that, you should pass the configuration option to the `Manager` with all mime types that the dragged element must have to be accepted by the layout. It is optional, though, and is only used to limit the number of items the layout is interacting with.
 
 ```ts
 const layout = new Manager(state, {
@@ -27,7 +27,7 @@ handleDragStart(e: DragEvent): void {
 
 An element prepared this way when the drag starts will be accepted as an item of the layout. 
 
-You may notice that the Manager will insert a new tab with a default label. For that, the State will dispatch the `created` event to the hosting application. It is dispatched when a new item is added to the transaction. Mind, that for convenience, the event is dispatched from the Manager's state, not transaction's.
+You may notice that the Manager will insert a new tab with a default label. The State will dispatch the `created` event to the hosting application. It is dispatched when a new item is added to the transaction. Mind that for convenience, the event is dispatched from the Manager's state, not the transaction's.
 
 You can cancel the event to indicate that the item should not be added to the layout, or you can update the state of the created item. The CustomEvent contains an item within a transaction.
 
@@ -45,7 +45,7 @@ layout.addEventListener('created', (e: CustomEvent<TransactionalItem>) => {
 
 ## Custom Data
 
-An item can have custom data set by the drag and drop operation. Any serialized value set under the `item/custom` type of the `DataTransfer` object (see above) will automatically be used to populate the item's `custom` property.
+An item can have a custom data set by the drag and drop operation. Any serialized value set under the `item/custom` type of the `DataTransfer` object (see above) will automatically be used to populate the item's `custom` property.
 
 ```ts
 // during the dragstart event 
@@ -62,3 +62,6 @@ layout.addEventListener('created', (e: CustomEvent<TransactionalItem>) => {
   item.update({ label: 'My kind' });
 });
 ```
+
+Previous step: [State management](state.md)
+Next step: [References usage](references.md)

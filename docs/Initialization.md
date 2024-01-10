@@ -4,7 +4,7 @@ The library consists of two primary objects: the state and the layout. Use the s
 
 ## State Initialization
 
-Initialize the state object as empty or restore the previously stored state. The state object is serializable by the `JSON.stringify()` function. Therefore, it is safe to pass the state instance to the indexed DB when storing user data.
+Initialize the state object as empty or restore the previously stored state. The state object is serializable by the `JSON.stringify()` function. Therefore, passing the state instance to the indexed DB is safe when storing user data.
 
 ```ts
 import { State, SerializedState, Manager } from '@pawel-up/tabs-split-layout';
@@ -34,5 +34,5 @@ layout.connect();
 
 The `connect()` method registers event listeners the manager uses to manage user interactions. By default, it listens for events on `document.body` node. However, if you want to limit the scope, you can pass the reference to the layout's parent container. The entire tab layout needs to be inside the light DOM of the passed parent element.
 
-Previous step: [Installation](redme.md)
+Previous step: [Installation](readme.md)
 Next step: [Rendering the view](rendering.md)

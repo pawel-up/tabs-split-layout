@@ -1,6 +1,6 @@
 # State Management
 
-Manipulate the state through a transaction. It's a special kind of `Panel` or `Item` that has methods allowing changing the state that is reflected in the DOM as efficiently as possible.
+Manipulate the state through a transaction. It's a special kind of `Panel` or `Item` with methods that allow changing the state reflected in the DOM as efficiently as possible.
 
 ## Reacting to State Changes
 
@@ -18,7 +18,7 @@ layout.addEventListener('change', (e: StateEvent) => {
 
 Consider the state as an immutable object. Changing any property of the `State` object won't trigger any change in the UI. The change would be transparent to the manager or the state itself and could produce unexpected results.
 
-Instead, we introduced a `Transaction` which allows manipulating objects in the state.
+Instead, we introduced a `Transaction` that allows manipulating objects in the state.
 
 ```ts
 const transaction = layout.transaction();
@@ -27,9 +27,9 @@ panel.addItem({ key: 'item key', label: 'My item' });
 transaction.commit();
 ```
 
-First we create a transaction. During this process the state is copied as a new object that can be manipulated without triggering the render process. Then we lookup a panel by it's key. The `.panel()` method on a `Transaction` object returns an instance of a panel that has methods allowing you to manipulate panel's properties and items. Here, we are adding an item (a tab) to the panel. Note, you can add an item to a panel that has no other panels as children.
+First, we create a transaction. During this process, the state is copied as a new object that can be manipulated without triggering the render process. Then, we search for a panel by its key. The `.panel()` method on a `Transaction` object returns an instance of a panel with methods allowing you to manipulate the panel's properties and items. Here, we add an item (a tab) to the panel. Note that you can only add an item to a panel that has no other panels as children.
 
-Finally, we `.commit()` the transaction. In this step, the changed state is copied back to the manager's state and the render cycle is triggered. At the same time the `change` event is dispatched so you can store the state.
+Finally, we `.commit()` the transaction. In this step, the changed state is copied back to the manager's state, and the render cycle is triggered. At the same time, the `change` event is dispatched so you can store the state.
 
 ### Adding an Item
 
@@ -67,12 +67,12 @@ right.addItem(item);
 transaction.commit();
 ```
 
-Only a single `item` is inserted into the internal state during the `commit` phase. If you open the same item in each split layout, you will get the same reference to the item object when rendering the DOM. While you must render the markup for that item multiple times, essentially, the same state is propagated to these views.
+Only one `item` is inserted into the internal state during the `commit` phase. If you open the same item in each split layout, you will get the same reference to the item object when rendering the DOM. While you must render the markup for that item multiple times, essentially, the same state is propagated to these views.
 
-Note, the `index` and `pinned` properties of an `Item` are not stored within the `Item` instance as they are panel dependent. Instead, it is stored within `Panel.items` array.
+Note that the `index` and `pinned` properties of an `Item` are not stored within the `Item` instance as they are panel-dependent. Instead, it is stored within `Panel.items` array.
 
 ```ts
-// Removing an item from a single panel.
+// Removing an item from one panel.
 const transaction = layout.transaction();
 const left = tx.state.panel('left');
 left.removeItem('3');
@@ -89,11 +89,11 @@ transaction.commit();
 
 ## The StateHelper
 
-From the previous example, you may notice that you have left with 2 empty layouts. With that, we can check whether these layouts have children and remove them. However, for common use cases we have the `StateHelper` class that deals with common scenarios.
+From the previous example, you may notice that you have left with two empty layouts. With that, we can check whether these layouts have children and remove them. However, for common use cases we have the `StateHelper` class that deals with common scenarios.
 
 ### Removing an Item
 
-Assuming we have added the same item to multiple panels, but we want to remove the item from only one panel.
+Assuming we have added the same item to multiple panels but we want to remove the item from only one panel.
 
 ```ts
 import { StateHelper } from '@pawel-up/tabs-split-layout';
@@ -103,11 +103,11 @@ StateHelper.removeItem(layout, 'item key', 'panel key');
 
 That's it. It creates a transaction, removes an item, and removes empty panels. It also "un-splits" panels that have a single child as another panel.
 
-The "panel key" argument is optional and when not provided it removes the item from all panels and the state.
+The "panel key" argument is optional, and when not provided, it removes the item from all panels and the state.
 
 ### Selecting an Item on a Panel
 
-You need to specify which panel you mean. We do not allow defaults here not to confuse you what is happening.
+You need to specify which panel you mean. We do not allow defaults here to avoid confusing you with what is happening.
 
 ```ts
 StateHelper.selectItem(layout, 'item key', 'panel key');
@@ -115,11 +115,11 @@ StateHelper.selectItem(layout, 'item key', 'panel key');
 
 ### Moving an Item
 
-An item can be moved withing a panel or between them. In both cases you can specify whether you want to move an item into a position (default behavior, moves an item to the end) or to a split region.
+An item can be moved within a panel or between them. In both cases, you can specify whether you want to move an item into a position (default behavior, moves an item to the end) or to a split region.
 
 #### Moving Within a Single Panel
 
-Let's start with moving an item withing the same panel. If you specify the `index` option the item only changes the index in the tab list.
+Let's start with moving an item within the same panel. If you specify the `index` option, the item only changes the index in the tab list.
 
 ```ts
 StateHelper.moveItem(layout, 'panel key', 'panel key', 'item key', { index: 2 });
@@ -131,7 +131,7 @@ All other indexes are also recalculated (increased or decreased depending on the
 
 #### Splitting a Panel
 
-The power of this layout system is that you can easily split layout into two by defining the target `region` where the item should be placed. YOu can choose between `west`, `east`, `north`, `south`, and `center`. `center` is the default value and means that the move is without splitting the layout. Depending on the region the layout is split horizontally (`west` and `east`) or vertically (`north` and `south`).
+The power of this layout system is that you can easily split the layout into two by defining the target `region` where the item should be placed. YOu can choose between `west`, `east`, `north`, `south`, and `center`. The `center` is the default value and means that the move is without splitting the layout. Depending on the region, the layout is split horizontally (`west` and `east`) or vertically (`north` and `south`).
 
 ```ts
 // split layout by moving the item to the east (right) panel.
@@ -144,7 +144,7 @@ This operation changes the structure of the panel by removing items from it, ins
 
 #### Moving Within Different Panels
 
-For moving items between panels you would use the `StateHelper.moveItem()` method and you then should specify the source panel and the target panel.
+For moving items between panels, you would use the `StateHelper.moveItem()` method, and you should then specify the source and the target panel.
 
 ```ts
 // split layout by moving the item to the east (right) panel.
@@ -159,4 +159,7 @@ StateHelper.moveItemBetweenPanels(layout, 'from panel', 'to panel', 'item key', 
 const createdItem = StateHelper.createItem(layout, 'on panel', { label: 'test' }, { index: 1 });
 ```
 
-The resulting `createdItem` is a reference to the created item after the transaction commit. You can't use it to manipulate the item state.
+The resulting `createdItem` is a reference to the created item after the transaction was committed. You can't use it to manipulate the item state.
+
+Previous step: [Rendering](rendering.md)
+Next step: [Drag and drop](dnd.md)
