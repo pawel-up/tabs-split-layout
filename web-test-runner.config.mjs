@@ -36,7 +36,7 @@ export default /** @type {import("@web/test-runner").TestRunnerConfig} */ ({
   concurrentBrowsers: 3,
 
   plugins: [
-    esbuildPlugin({ ts: true, target: "es2020" }),
+    esbuildPlugin({ ts: true, tsconfig: "./tsconfig.json" }),
   ],
 
   /** Amount of test files per browser to test concurrently */

@@ -29,7 +29,7 @@ export default /** @type {import('@web/dev-server').DevServerConfig} */ ({
   // appIndex: 'demo/index.html',
 
   plugins: [
-    esbuildPlugin({ ts: true, target: "es2020" }),
+    esbuildPlugin({ ts: true, tsconfig: "./tsconfig.json" }),
     /** Use Hot Module Replacement by uncommenting. Requires @open-wc/dev-server-hmr plugin */
     // hmr && hmrPlugin({ exclude: ['**/*/node_modules/**/*'], presets: [presets.litElement] }),
   ],

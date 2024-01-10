@@ -512,7 +512,8 @@
               "type": {
                 "text": "Readonly<ManagerInit>"
               },
-              "description": "The original configuration options."
+              "description": "The original configuration options.",
+              "readonly": true
             },
             {
               "kind": "field",
@@ -528,7 +529,8 @@
               "type": {
                 "text": "boolean"
               },
-              "description": "When true then the manager won't trigger rendering function\nautomatically (which is the default behavior) and instead the hosting application\nmust listen to the `render` event and render the view when requested."
+              "description": "When true then the manager won't trigger rendering function\nautomatically (which is the default behavior) and instead the hosting application\nmust listen to the `render` event and render the view when requested.",
+              "readonly": true
             },
             {
               "kind": "field",
@@ -545,7 +547,8 @@
               "type": {
                 "text": "HTMLElement | null"
               },
-              "description": "The reference to an element where the Manager should render the layout.\nThis is only used when the `render` and `parent` properties are set on the \nManager's configuration object."
+              "description": "The reference to an element where the Manager should render the layout.\nThis is only used when the `render` and `parent` properties are set on the \nManager's configuration object.",
+              "readonly": true
             },
             {
               "kind": "method",
@@ -885,7 +888,8 @@
               "type": {
                 "text": "boolean"
               },
-              "description": "Checks whether this panel has other panels on it.\nIf so, this also means that the `hasItems` is `false`."
+              "description": "Checks whether this panel has other panels on it.\nIf so, this also means that the `hasItems` is `false`.",
+              "readonly": true
             },
             {
               "kind": "field",
@@ -893,7 +897,8 @@
               "type": {
                 "text": "boolean"
               },
-              "description": "Checks whether this panel has items on it.\nIf so, this also means that the `hasPanels` is `false`."
+              "description": "Checks whether this panel has items on it.\nIf so, this also means that the `hasPanels` is `false`.",
+              "readonly": true
             },
             {
               "kind": "method",
@@ -1324,7 +1329,8 @@
               "type": {
                 "text": "Panel | null"
               },
-              "description": "Reads the current panel for the given `state` and `key`.\nDo not cache this property as it may change outside of the \nscope of state management of a lit element, which won't \ntrigger an update."
+              "description": "Reads the current panel for the given `state` and `key`.\nDo not cache this property as it may change outside of the \nscope of state management of a lit element, which won't \ntrigger an update.",
+              "readonly": true
             },
             {
               "kind": "field",
@@ -1332,7 +1338,8 @@
               "type": {
                 "text": "string"
               },
-              "description": "Gets a computed value of the `aria-label` to be set on the `[role=tablist]`.\nBy default is sets \"Available tabs\" but if `data-aria-label` is set on this element\nthen this value is returned instead."
+              "description": "Gets a computed value of the `aria-label` to be set on the `[role=tablist]`.\nBy default is sets \"Available tabs\" but if `data-aria-label` is set on this element\nthen this value is returned instead.",
+              "readonly": true
             },
             {
               "kind": "field",
@@ -3554,7 +3561,8 @@
               "type": {
                 "text": "TransactionalState"
               },
-              "description": "The working state for the transaction.\nIt is used internally to conduct operations on the state and transferred to\nthe `currentState` when committed."
+              "description": "The working state for the transaction.\nIt is used internally to conduct operations on the state and transferred to\nthe `currentState` when committed.",
+              "readonly": true
             },
             {
               "kind": "field",
@@ -3570,7 +3578,8 @@
               "type": {
                 "text": "TransactionState"
               },
-              "description": "The status of this transaction.\nA transaction can be committed when its status is \"running.\""
+              "description": "The status of this transaction.\nA transaction can be committed when its status is \"running.\"",
+              "readonly": true
             },
             {
               "kind": "method",
@@ -4293,6 +4302,7 @@
                 "text": "boolean"
               },
               "description": "Checks whether this panel has other panels on it.\nIf so, this also means that the `hasItems` is `false`.",
+              "readonly": true,
               "inheritedFrom": {
                 "name": "Panel",
                 "module": "src/Panel.ts"
@@ -4305,6 +4315,7 @@
                 "text": "boolean"
               },
               "description": "Checks whether this panel has items on it.\nIf so, this also means that the `hasPanels` is `false`.",
+              "readonly": true,
               "inheritedFrom": {
                 "name": "Panel",
                 "module": "src/Panel.ts"
