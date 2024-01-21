@@ -28,6 +28,11 @@ export default [css`
   --_close-icon-color: var(--tabs-split-layout-tab-close-color, currentColor);
   --_close-icon-color-hover: var(--tabs-split-layout-tab-close-hover-color, currentColor);
 
+  --_add-icon-background: var(--tabs-split-layout-tab-add-background, transparent);
+  --_add-icon-background-hover: var(--tabs-split-layout-tab-add-hover-background, #CAC4D0);
+  --_add-icon-color: var(--tabs-split-layout-tab-add-color, currentColor);
+  --_add-icon-color-hover: var(--tabs-split-layout-tab-add-hover-color, currentColor);
+
   --_divider-color: var(--tabs-split-layout-tab-divider-color, #CAC4D0);
 
   --_drag-region-background: var(--tabs-split-layout-drag-region-background-color, #000000);
@@ -190,5 +195,36 @@ export default [css`
 
 .drag-region.south {
   top: var(--_drop_zone-margin);
+}
+
+.icon-button {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+}
+
+.add-button {
+  margin-left: 4px;
+  background-color: var(--_add-icon-background);
+  color: var(--_add-icon-color);
+  border-radius: 50%;
+  outline: var(--_tab-outline);
+  outline-offset: -2px;
+}
+
+.add-button:focus {
+  --_tab-outline: 2px var(--_tab-outline-color) solid;
+}
+
+.add-button:hover {
+  background-color: var(--_add-icon-background-hover);
+  color: var(--_add-icon-color-hover);
 }
 `];

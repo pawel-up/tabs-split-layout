@@ -359,7 +359,7 @@ export class TransactionalPanel extends Panel {
     if (cp.type) {
       delete cp.type;
     }
-    const { region = SplitRegion.center, pinned } = options;
+    const { region = SplitRegion.center, pinned, reason = 'api' } = options;
     const alreadyInPanel = !!init.key && region === SplitRegion.center && this.hasItem(init.key);
     if (alreadyInPanel) {
       if (init.key !== this.selected) {
@@ -409,7 +409,7 @@ export class TransactionalPanel extends Panel {
       }
       item.key = key;
       // The item may change here by the hosting application.
-      const event = this.transaction.currentState.notifyItemCreated(item);
+      const event = this.transaction.currentState.notifyItemCreated(item, reason);
       if (event.defaultPrevented) {
         throw new TransactionError(`The operation cancelled by the application.`);
       }

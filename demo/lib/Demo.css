@@ -66,6 +66,7 @@
     --tabs-split-layout-drag-region-background-color: #fff;
 
     --tabs-split-layout-tab-close-hover-background: #49454F;
+    --tabs-split-layout-tab-add-hover-background: var(--surface);
   }
 
   body .split-view.active {

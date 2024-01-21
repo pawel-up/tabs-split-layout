@@ -5,6 +5,7 @@ import { LayoutDirection, LayoutObjectType } from '../src/Enum.js';
 import { Panel, SerializedPanel } from '../src/Panel.js';
 import { Item, SerializedItem } from '../src/Item.js';
 import { Transaction } from '../src/transaction/Transaction.js';
+import { CreatedEventDetail } from '../src/type.js';
 
 describe('State', () => {
   describe('constructor()', () => {
@@ -463,10 +464,11 @@ describe('State', () => {
       const item = panel.addItem({ label: 'test' });
       const spy = sinon.spy();
       state.addEventListener('created', spy);
-      state.notifyItemCreated(item);
+      state.notifyItemCreated(item, 'dnd');
       assert.isTrue(spy.calledOnce, 'the event was called once');
-      const { detail } = spy.args[0][0] as CustomEvent;
-      assert.isTrue(detail === item, 'the detail is the item');
+      const { detail } = spy.args[0][0] as CustomEvent<CreatedEventDetail>;
+      assert.isTrue(detail.item === item, 'the detail.item has the item');
+      assert.equal(detail.reason, 'dnd', 'the detail.reason has the reason');
     });
   });
 

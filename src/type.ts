@@ -20,6 +20,11 @@ export interface TabsLayoutAddOptions {
    * When set it adds the tab as pinned.
    */
   pinned?: boolean;
+  /**
+   * For advanced usage. The `reason` property set on the `created` event.
+   * By default it is `api` which means a call via the library's API.
+   */
+  reason?: TabCreateReason;
 }
 
 export interface PanelSplitOptions {

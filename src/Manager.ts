@@ -3,11 +3,12 @@ import { StateEvent } from "./events/StateEvent.js";
 import { View } from "./View.js";
 import { Transaction } from "./transaction/Transaction.js";
 import type { State } from "./State.js";
-import type { ManagerInit, ManagerRenderOptions, PanelRenderCallback } from "./type.js";
+import type { CreatedEventDetail, ManagerInit, ManagerRenderOptions, PanelRenderCallback } from "./type.js";
 import type SplitView from "./SplitView.js";
 
 export const handleStateChange = Symbol('handleStateChange');
 export const handleStateRender = Symbol('handleStateRender');
+export const handleStateCreated = Symbol('handleStateCreated');
 export const handleFocusIn = Symbol('handleFocusIn');
 export const findViewFromEvent = Symbol('findViewFromEvent');
 export const notifyRender = Symbol('notifyRender');
@@ -22,6 +23,7 @@ export const manageStateEvents = Symbol('manageStateEvents');
  * 
  * @fires render - An event dispatched when the hosting application should trigger DOM update. Note, the event is not dispatched when auto rendering is used.
  * @fires change - When the state has changed through a user interaction or otherwise internal processing the the state should be stored by the application.
+ * @fires created - A custom event when an item was created. The detail object contains the `TransactionalItem` object which can be manipulated if needed.
  */
 export class Manager extends EventTarget {
   /**
@@ -106,6 +108,7 @@ export class Manager extends EventTarget {
     super();
     this[handleStateChange] = this[handleStateChange].bind(this);
     this[handleStateRender] = this[handleStateRender].bind(this);
+    this[handleStateCreated] = this[handleStateCreated].bind(this);
     this[handleFocusIn] = this[handleFocusIn].bind(this);
 
     this.#state = state;
@@ -120,9 +123,11 @@ export class Manager extends EventTarget {
     if (old) {
       old.removeEventListener('change', this[handleStateChange]);
       old.removeEventListener('render', this[handleStateRender]);
+      old.removeEventListener('created', this[handleStateCreated]);
     }
     value.addEventListener('change', this[handleStateChange]);
     value.addEventListener('render', this[handleStateRender]);
+    value.addEventListener('created', this[handleStateCreated]);
   }
 
   /**
@@ -220,6 +225,22 @@ export class Manager extends EventTarget {
 
   [handleStateRender](): void {
     this[notifyRender]();
+  }
+
+  /**
+   * Retargets the `created` event originating from the state.
+   * If the event is canceled then the original event is also canceled.
+   */
+  [handleStateCreated](e: Event): void {
+    const orig = e as CustomEvent<CreatedEventDetail>;
+    const event = new CustomEvent<CreatedEventDetail>('created', {
+      cancelable: true,
+      detail: orig.detail,
+    })
+    this.dispatchEvent(event);
+    if (event.defaultPrevented) {
+      orig.preventDefault();
+    }
   }
 
   /**
