@@ -11,7 +11,7 @@ import type { Manager } from "./Manager.js";
 import SplitViewLib from './lib/SplitView.lib.js';
 import Interactions from './lib/Interactions.js';
 import { StateHelper } from "./StateHelper.js";
-import { InteractionsConfig } from "./type.js";
+import type { InteractionsConfig } from "./type.js";
 
 export const handleStateChange = Symbol('handleStateChange');
 export const handleStateUpdate = Symbol('handleStateUpdate');
@@ -863,7 +863,7 @@ export default class SplitView extends LitElement {
     `;
   }
 
-  protected tabsTemplate(panel: Panel): TemplateResult | typeof nothing {
+  protected tabsTemplate(panel: Panel): TemplateResult {
     const items = panel.sortedItems();
     const hasSelectedItem = items.some(i => i.key === panel.selected);
     const listTabIndex = hasSelectedItem ? undefined : "0";
