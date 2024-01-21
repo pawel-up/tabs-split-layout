@@ -440,6 +440,10 @@
         },
         {
           "kind": "variable",
+          "name": "handleStateCreated"
+        },
+        {
+          "kind": "variable",
           "name": "handleFocusIn"
         },
         {
@@ -696,6 +700,24 @@
             },
             {
               "kind": "method",
+              "name": "[handleStateCreated]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "description": "Retargets the `created` event originating from the state.\nIf the event is canceled then the original event is also canceled."
+            },
+            {
+              "kind": "method",
               "name": "findView",
               "return": {
                 "type": {
@@ -749,6 +771,10 @@
                 "text": "StateEvent"
               },
               "description": "When the state has changed through a user interaction or otherwise internal processing the the state should be stored by the application."
+            },
+            {
+              "description": "A custom event when an item was created. The detail object contains the `TransactionalItem` object which can be manipulated if needed.",
+              "name": "created"
             }
           ],
           "superclass": {
@@ -771,6 +797,14 @@
           "name": "handleStateRender",
           "declaration": {
             "name": "handleStateRender",
+            "module": "src/Manager.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleStateCreated",
+          "declaration": {
+            "name": "handleStateCreated",
             "module": "src/Manager.ts"
           }
         },
@@ -1254,6 +1288,10 @@
           "name": "registeredPanels"
         },
         {
+          "kind": "variable",
+          "name": "handleAddTabClick"
+        },
+        {
           "kind": "class",
           "description": "A split layout element.\n\nIt works with the `State` instance to render layout for a panel.\n\n## Accessibility\n\nThe `[role=tablist]` element should have the `aria-label` set on it. It receives a default value but it also \ncan be set by the author when setting `data-aria-label` on the element.\n\nThe tab panels (rendered items) should have the `[role=\"tabpanel\"]` attribute set. If not, the view\nwon't make a connection between the `tab` and the `tabpanel`. Once the `[role=\"tabpanel\"]` is detected\nit adds the `aria-controls` attribute to the `[role=tab]` element. During this process, the `id` might be set\non the `[role=\"tabpanel\"]` element, if not already set.",
           "name": "SplitView",
@@ -1325,6 +1363,15 @@
             },
             {
               "kind": "field",
+              "name": "interactions",
+              "type": {
+                "text": "InteractionsConfig | undefined"
+              },
+              "description": "The configuration of user interactions, if any.\nThis is usually passed in the Manager's constructor.",
+              "attribute": "interactions"
+            },
+            {
+              "kind": "field",
               "name": "panel",
               "type": {
                 "text": "Panel | null"
@@ -1339,6 +1386,15 @@
                 "text": "string"
               },
               "description": "Gets a computed value of the `aria-label` to be set on the `[role=tablist]`.\nBy default is sets \"Available tabs\" but if `data-aria-label` is set on this element\nthen this value is returned instead.",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "shouldRenderAddButton",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Computed value. Returns true when the \"add\" button should be rendered\nand the interaction with it is active.",
               "readonly": true
             },
             {
@@ -1892,6 +1948,16 @@
             },
             {
               "kind": "method",
+              "name": "[handleAddTabClick]",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "A handler for the new tab click event.\nWhen `shouldRenderAddButton` is computed to `true` then \nit creates a new item with the `user` reason."
+            },
+            {
+              "kind": "method",
               "name": "dragRegionTemplate",
               "privacy": "protected",
               "return": {
@@ -1906,7 +1972,7 @@
               "privacy": "protected",
               "return": {
                 "type": {
-                  "text": "TemplateResult | typeof nothing"
+                  "text": "TemplateResult"
                 }
               },
               "parameters": [
@@ -1954,6 +2020,16 @@
                   }
                 }
               ]
+            },
+            {
+              "kind": "method",
+              "name": "renderAddTabButton",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              }
             },
             {
               "kind": "field",
@@ -2013,6 +2089,14 @@
               "default": "false",
               "description": "When set it adds the `overflow` hidden on the container that holds the tab contents.",
               "fieldName": "constrain"
+            },
+            {
+              "name": "interactions",
+              "type": {
+                "text": "InteractionsConfig | undefined"
+              },
+              "description": "The configuration of user interactions, if any.\nThis is usually passed in the Manager's constructor.",
+              "fieldName": "interactions"
             }
           ],
           "superclass": {
@@ -2257,6 +2341,14 @@
         },
         {
           "kind": "js",
+          "name": "handleAddTabClick",
+          "declaration": {
+            "name": "handleAddTabClick",
+            "module": "src/SplitView.ts"
+          }
+        },
+        {
+          "kind": "js",
           "name": "default",
           "declaration": {
             "name": "SplitView",
@@ -2494,7 +2586,7 @@
               "name": "notifyItemCreated",
               "return": {
                 "type": {
-                  "text": "CustomEvent"
+                  "text": "CustomEvent<CreatedEventDetail>"
                 }
               },
               "parameters": [
@@ -2504,6 +2596,12 @@
                     "text": "TransactionalItem"
                   },
                   "description": "The item that just been created."
+                },
+                {
+                  "name": "reason",
+                  "type": {
+                    "text": "TabCreateReason"
+                  }
                 }
               ],
               "description": "Notifies listeners about an item being created."
@@ -3247,6 +3345,10 @@
         },
         {
           "kind": "variable",
+          "name": "add"
+        },
+        {
+          "kind": "variable",
           "name": "close"
         }
       ],
@@ -3256,6 +3358,14 @@
           "name": "iconWrapper",
           "declaration": {
             "name": "iconWrapper",
+            "module": "src/lib/icons.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "add",
+          "declaration": {
+            "name": "add",
             "module": "src/lib/icons.ts"
           }
         },
@@ -4950,7 +5060,7 @@
               "name": "notifyItemCreated",
               "return": {
                 "type": {
-                  "text": "CustomEvent"
+                  "text": "CustomEvent<CreatedEventDetail>"
                 }
               },
               "parameters": [
@@ -4960,6 +5070,12 @@
                     "text": "TransactionalItem"
                   },
                   "description": "The item that just been created."
+                },
+                {
+                  "name": "reason",
+                  "type": {
+                    "text": "TabCreateReason"
+                  }
                 }
               ],
               "description": "Notifies listeners about an item being created.",

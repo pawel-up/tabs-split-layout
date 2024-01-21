@@ -1,6 +1,6 @@
 {
   "name": "@pawel-up/tabs-split-layout",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Split layout manager with tabs.",
   "license": "CC-BY-2.0",
   "main": "dist/index.js",
