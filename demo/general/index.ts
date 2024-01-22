@@ -1,8 +1,9 @@
 import { html, TemplateResult } from 'lit';
-import { Manager, State, SerializedState, Item, StateEvent, StateHelper, TransactionalItem } from '../../src/index.js';
+import { Manager, State, SerializedState, Item, StateEvent, StateHelper } from '../../src/index.js';
 import { TabCloseDirection } from '../../src/Enum.js';
 import { DemoPage } from '../lib/DemoPage.js';
 import '../../src/define/split-view.js';
+import { CreatedEventDetail } from '../../src/type.js';
 
 const storeKey = 'tabs-layout.demo.demo1';
 
@@ -20,12 +21,15 @@ class ComponentDemoPage extends DemoPage {
     const layout = new Manager(state, {
       constrain: true,
       dragTypes: ['item/custom', 'item/key'],
+      interactions: {
+        addTab: true,
+      },
     });
     this.state = state;
     this.layout = layout;
     layout.addEventListener('render', this.handlerStateChange.bind(this));
     layout.addEventListener('change', this.handlerLayoutChange.bind(this));
-    state.addEventListener('created', this.handlerStateCreated.bind(this));
+    layout.addEventListener('created', this.handlerStateCreated.bind(this));
     layout.connect();
   }
 
@@ -55,8 +59,12 @@ class ComponentDemoPage extends DemoPage {
     this.render();
   }
 
-  protected handlerStateCreated(e: CustomEvent<TransactionalItem>): void {
-    const item = e.detail;
+  protected handlerStateCreated(e: CustomEvent<CreatedEventDetail>): void {
+    const { item, reason } = e.detail;
+    if (reason === 'user') {
+      item.label = 'User item';
+      return;
+    }
     const custom = item.custom as { kind: string };
     if (custom.kind === 'data#itemA') {
       item.label = 'Item A';

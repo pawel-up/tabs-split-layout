@@ -61,6 +61,7 @@ export class View {
       .manager="${manager}"
       .direction="${panel.direction}"
       .dragTypes="${this.opts.dragTypes}" 
+      .interactions="${this.opts.interactions}" 
       ?constrain="${this.opts.constrain}"
       class="${classMap(classes)}"
     >${content}</${unsafeStatic(viewName)}>

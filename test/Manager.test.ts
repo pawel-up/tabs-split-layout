@@ -4,7 +4,7 @@ import { assert, fixture, html, nextFrame } from "@open-wc/testing";
 import sinon from 'sinon';
 import { State } from "../src/State.js";
 import { Manager, computeManualRendering, findViewFromEvent, handleFocusIn, manageStateEvents } from "../src/Manager.js";
-import type { ManagerInit, ManagerRenderOptions } from "../src/type.js";
+import type { CreatedEventDetail, ManagerInit, ManagerRenderOptions } from "../src/type.js";
 import type { Item } from "../src/Item.js";
 import ViewElement from '../src/SplitView.js';
 import '../src/define/split-view.js';
@@ -474,6 +474,53 @@ describe('Manager', () => {
     it('returns null when not found', () => {
       const view = layout.findView('p3');
       assert.isNull(view);
+    });
+  });
+
+  describe('Events', () => {
+    describe('created', () => {
+      let state: State;
+      let layout: Manager;
+
+      beforeEach(async () => {
+        state = new State();
+        layout = new Manager(state);
+      });
+
+      it('re-dispatches the state event', () => {
+        const tx = layout.transaction();
+        const p1 = tx.add();
+        const i1 = p1.addItem();
+        const spy = sinon.spy();
+        layout.addEventListener('created', spy);
+        state.notifyItemCreated(i1, 'user');
+        assert.isTrue(spy.calledOnce, 'the event was called');
+        const e = spy.args[0][0] as CustomEvent<CreatedEventDetail>;
+        assert.deepEqual(e.detail.item, i1, 'the event has the item');
+        assert.equal(e.detail.reason, 'user', 'the event has the reason');
+      });
+
+      it('does not cancel the original event', () => {
+        const tx = layout.transaction();
+        const p1 = tx.add();
+        const i1 = p1.addItem();
+        const spy = sinon.spy();
+        layout.addEventListener('created', spy);
+        const orig = state.notifyItemCreated(i1, 'user');
+        assert.isTrue(spy.calledOnce, 'the event was called');
+        assert.isFalse(orig.defaultPrevented, 'the original event is not canceled');
+      });
+
+      it('cancels the original event when canceling manager\'s event', () => {
+        const tx = layout.transaction();
+        const p1 = tx.add();
+        const i1 = p1.addItem();
+        layout.addEventListener('created', (e: Event): void => {
+          e.preventDefault();
+        });
+        const orig = state.notifyItemCreated(i1, 'user');
+        assert.isTrue(orig.defaultPrevented, 'the original event is canceled');
+      });
     });
   });
 });

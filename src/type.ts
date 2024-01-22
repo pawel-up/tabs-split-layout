@@ -2,6 +2,7 @@ import type { RenderOptions, TemplateResult } from "lit";
 import type { Item, SerializedItem } from "./Item.js";
 import type { Panel, SerializedPanel } from "./Panel.js";
 import type { LayoutDirection, LayoutObjectType, SplitPanelTarget, SplitRegion } from "./Enum.js";
+import type { TransactionalItem } from "./transaction/TransactionalItem.js";
 
 export interface TabsLayoutAddOptions {
   /**
@@ -19,6 +20,11 @@ export interface TabsLayoutAddOptions {
    * When set it adds the tab as pinned.
    */
   pinned?: boolean;
+  /**
+   * For advanced usage. The `reason` property set on the `created` event.
+   * By default it is `api` which means a call via the library's API.
+   */
+  reason?: TabCreateReason;
 }
 
 export interface PanelSplitOptions {
@@ -77,6 +83,11 @@ export interface ManagerInit {
    * If you need to register own name of the component, populate this with the registered name.
    */
   viewName?: string;
+
+  /**
+   * Configuration related to user interactions.
+   */
+  interactions?: InteractionsConfig;
 }
 
 export interface ManagerRenderOptions {
@@ -137,4 +148,43 @@ export interface ManagerRenderOptions {
    * ```
    */
   options?: RenderOptions;
+}
+
+export interface InteractionsConfig {
+  /**
+   * When set to true the view will render the "add" button after the last tab.
+   * The user can initiate this action after which a new tab is added to the panel.
+   * Synchronously, the `created` event is dispatched so that the application can set
+   * own properties on the tab object before it is rendered.
+   */
+  addTab?: boolean;
+}
+
+/**
+ * The reason why a tab was created.
+ * 
+ * - `api` - when the `addItem()` was called with the default value set for the reason
+ * - `dnd` - when the item was created as an effect of the user's drag-and-drop operation
+ * - `user` - when the item was created through user interaction with the UI (the "add" button).
+ */
+export type TabCreateReason = 'api' | 'dnd' | 'user';
+
+/**
+ * This is the definition of the detail object of the `created` event dispatched by 
+ * the state and the manager (essentially this is the same event).
+ * 
+ * It contains the `item` with the `TransactionalItem` which the application can change
+ * and the `reason` which describes the reason why the item was created.
+ */
+export interface CreatedEventDetail {
+  /**
+   * The item that was created. 
+   * You can change properties of the item here as this event is dispatched 
+   * inside a transaction.
+   */
+  item: TransactionalItem,
+  /**
+   * Describes why the item was created.
+   */
+  reason: TabCreateReason,
 }

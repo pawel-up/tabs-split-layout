@@ -4,13 +4,14 @@ import { eventOptions, property, state } from "lit/decorators.js";
 import { classMap, ClassInfo } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { LayoutDirection, SplitRegion } from "./Enum.js";
-import { close as closeIcon } from './lib/icons.js';
+import { add as addIcon, close as closeIcon } from './lib/icons.js';
 import type { Panel } from "./Panel.js";
 import type { Item } from "./Item.js";
 import type { Manager } from "./Manager.js";
 import SplitViewLib from './lib/SplitView.lib.js';
 import Interactions from './lib/Interactions.js';
 import { StateHelper } from "./StateHelper.js";
+import type { InteractionsConfig } from "./type.js";
 
 export const handleStateChange = Symbol('handleStateChange');
 export const handleStateUpdate = Symbol('handleStateUpdate');
@@ -41,6 +42,7 @@ export const registerPanel = Symbol('registerPanel');
 export const unregisterPanel = Symbol('unregisterPanel');
 export const setupPanels = Symbol('setupPanels');
 export const registeredPanels = Symbol('registeredPanels');
+export const handleAddTabClick = Symbol('handleAddTabClick');
 
 /**
  * A split layout element.
@@ -102,6 +104,12 @@ export default class SplitView extends LitElement {
   @property({ type: Boolean, reflect: true }) constrain = false;
 
   /**
+   * The configuration of user interactions, if any.
+   * This is usually passed in the Manager's constructor.
+   */
+  @property({ type: Object }) interactions?: InteractionsConfig;
+
+  /**
    * Reads the current panel for the given `state` and `key`.
    * Do not cache this property as it may change outside of the 
    * scope of state management of a lit element, which won't 
@@ -124,6 +132,18 @@ export default class SplitView extends LitElement {
     const { dataset } = this;
     const { ariaLabel } = dataset;
     return ariaLabel || 'Available tabs';
+  }
+
+  /**
+   * Computed value. Returns true when the "add" button should be rendered
+   * and the interaction with it is active.
+   */
+  get shouldRenderAddButton(): boolean {
+    const { interactions } = this;
+    if (!interactions) {
+      return false;
+    }
+    return !!interactions.addTab;
   }
 
   /**
@@ -415,7 +435,7 @@ export default class SplitView extends LitElement {
           // This likely belongs to another state. Should we support this? How?
           return;
         }
-        StateHelper.createItem(manager, key, item, { index: toIndex });
+        StateHelper.createItem(manager, key, item, { index: toIndex, reason: 'dnd' });
       } else {
         StateHelper.moveItem(manager, srcPanelKey, key, itemKey, {
           index: toIndex,
@@ -431,7 +451,7 @@ export default class SplitView extends LitElement {
     if (custom) {
       def.custom = JSON.parse(custom);
     }
-    StateHelper.createItem(manager, key, def, { index: toIndex });
+    StateHelper.createItem(manager, key, def, { index: toIndex, reason: 'dnd' });
   }
 
   /**
@@ -461,7 +481,7 @@ export default class SplitView extends LitElement {
           // This likely belongs to another state. Should we support this? How?
           return;
         }
-        StateHelper.createItem(manager, key, item, { region: this.dragRegion });
+        StateHelper.createItem(manager, key, item, { region: this.dragRegion, reason: 'dnd' });
       } else {
         // moving within the same panel, but to another region, or between panels.
         StateHelper.moveItem(manager, srcPanelKey, key, itemKey, {
@@ -478,7 +498,7 @@ export default class SplitView extends LitElement {
     if (custom) {
       def.custom = JSON.parse(custom);
     }
-    StateHelper.createItem(manager, key, def, { region: this.dragRegion });
+    StateHelper.createItem(manager, key, def, { region: this.dragRegion, reason: 'dnd' });
   }
 
   /**
@@ -802,6 +822,19 @@ export default class SplitView extends LitElement {
     this[registeredPanels].delete(key);
   }
 
+  /**
+   * A handler for the new tab click event.
+   * When `shouldRenderAddButton` is computed to `true` then 
+   * it creates a new item with the `user` reason.
+   */
+  [handleAddTabClick](): void {
+    const { shouldRenderAddButton, manager, key } = this;
+    if (!shouldRenderAddButton || !manager || !key) {
+      return;
+    }
+    StateHelper.createItem(manager, key, {}, { reason: 'user' });
+  }
+
   override render(): TemplateResult | typeof nothing {
     const { panel } = this;
     if (!panel) {
@@ -830,11 +863,8 @@ export default class SplitView extends LitElement {
     `;
   }
 
-  protected tabsTemplate(panel: Panel): TemplateResult | typeof nothing {
+  protected tabsTemplate(panel: Panel): TemplateResult {
     const items = panel.sortedItems();
-    if (!items.length) {
-      return nothing;
-    }
     const hasSelectedItem = items.some(i => i.key === panel.selected);
     const listTabIndex = hasSelectedItem ? undefined : "0";
     const size = items.length;
@@ -849,6 +879,7 @@ export default class SplitView extends LitElement {
       @focus="${this[handleTabListFocus]}"
     >
     ${items.map((tab, i) => this.tabTemplate(panel, tab, i + 1 === size, items[i + 1]?.key))}
+    ${this.renderAddTabButton()}
     </div>
     `;
   }
@@ -901,6 +932,21 @@ export default class SplitView extends LitElement {
       ${closable ? html`<span role="presentation" class="close-icon icon" @click="${this[handleTabCloseClick]}">${closeIcon}</span>` : ''}
     </div>
     <div class="tab-divider ${dividerHidden ? 'hidden' : ''}" role="presentation"></div>
+    `;
+  }
+
+  /**
+   * @returns The template for the "add" icon, when configured.
+   */
+  protected renderAddTabButton(): TemplateResult | typeof nothing {
+    const { shouldRenderAddButton } = this;
+    if (!shouldRenderAddButton) {
+      return nothing;
+    }
+    return html`
+    <button class="icon-button add-button" aria-label="New tab" title="Add new tab" @click="${this[handleAddTabClick]}">
+      <span class="icon" role="presentation">${addIcon}</span>
+    </button>
     `;
   }
 }

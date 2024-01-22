@@ -8,6 +8,7 @@ import type { Item } from "../src/Item.js";
 import type SplitView from "../src/SplitView.js";
 import '../src/define/split-view.js';
 import { DataTransfer, DragEvent } from './test-lib/MockedDataTransfer.js';
+import { handleAddTabClick } from "../src/SplitView.js";
 
 describe('SplitView', () => {
   function renderer(item: Item, visible: boolean): TemplateResult {
@@ -574,6 +575,17 @@ describe('SplitView', () => {
       assert.equal(tab2.getAttribute('data-dirty'), 'false', 'tab 2 has data-dirty = false');
       assert.equal(tab3.getAttribute('data-dirty'), 'true', 'tab 3 has data-dirty = true');
     });
+
+    it('does not render the "add tab" button when not configured', async () => {
+      const tx = layout.transaction();
+      const p1 = tx.add({ key: 'root' });
+      p1.addItem();
+      tx.commit();
+      await nextFrame();
+      const content = viewRoot.querySelector(`split-view`)!;
+      const button = content.shadowRoot!.querySelector(`.add-button`);
+      assert.isNull(button);
+    });
   });
 
   describe('drag over event', () => {
@@ -1093,6 +1105,63 @@ describe('SplitView', () => {
         assert.equal(parent1.items[2].index, 2, 'item 5 has new index');
         assert.deepEqual(item.custom, { external: true }, 'has the custom data');
       });
+    });
+  });
+
+  describe('add tab rendering', () => {
+    let state: State;
+    let layout: Manager;
+    let viewRoot: HTMLElement;
+
+    beforeEach(async () => {
+      viewRoot = await fixture(html`<div class="layout"></div>`) as HTMLElement;
+      state = new State();
+      layout = new Manager(state, {
+        render: {
+          renderer,
+          parent: '.layout',
+        },
+        interactions: {
+          addTab: true,
+        },
+      });
+    });
+
+    it('renders the add button', async () => {
+      const tx = layout.transaction();
+      const p1 = tx.add();
+      p1.addItem();
+      tx.commit();
+      await nextFrame();
+      const content = viewRoot.querySelector(`split-view`)!;
+      const button = content.shadowRoot!.querySelector(`.add-button`)!;
+      assert.ok(button, 'the button is rendered');
+    });
+
+    it('adds the tab when the button is clicked', async () => {
+      const tx = layout.transaction();
+      const p1 = tx.add();
+      tx.commit();
+      await nextFrame();
+      const content = viewRoot.querySelector(`split-view`)!;
+      const button = content.shadowRoot!.querySelector(`.add-button`) as HTMLButtonElement;
+      button.click();
+      const panel = state.panel(p1.key)!;
+      assert.lengthOf(panel.items, 1, 'creates an item on the panel');
+    });
+
+    it('does not add the tab when #shouldRenderAddButton is false', async () => {
+      const tx = layout.transaction();
+      const p1 = tx.add();
+      tx.commit();
+      await nextFrame();
+      const content = viewRoot.querySelector(`split-view`)!;
+      content.interactions = undefined;
+      await nextFrame();
+      assert.isFalse(content.shouldRenderAddButton, '#shouldRenderAddButton is false');
+      content[handleAddTabClick]();
+      const panel = state.panel(p1.key)!;
+      assert.lengthOf(panel.items, 0, 'the panel is empty');
     });
   });
 });

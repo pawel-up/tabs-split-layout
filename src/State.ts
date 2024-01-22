@@ -2,7 +2,7 @@ import { Item, SerializedItem } from "./Item.js";
 import { Panel, SerializedPanel } from "./Panel.js";
 import { PanelObject } from "./PanelObject.js";
 import type { TransactionalItem } from "./transaction/TransactionalItem.js";
-import { SerializedStateObject, StateObject } from "./type.js";
+import { CreatedEventDetail, SerializedStateObject, StateObject, TabCreateReason } from "./type.js";
 import { LayoutObjectType } from "./Enum.js";
 
 export interface SerializedState {
@@ -223,10 +223,10 @@ export class State extends EventTarget {
    * Notifies listeners about an item being created.
    * @param item The item that just been created.
    */
-  notifyItemCreated(item: TransactionalItem): CustomEvent {
-    const event = new CustomEvent('created', {
+  notifyItemCreated(item: TransactionalItem, reason: TabCreateReason): CustomEvent<CreatedEventDetail> {
+    const event = new CustomEvent<CreatedEventDetail>('created', {
       cancelable: true,
-      detail: item,
+      detail: { item, reason },
     })
     this.dispatchEvent(event);
     return event;

@@ -1,9 +1,11 @@
 import { assert } from "@open-wc/testing";
+import sinon from 'sinon';
 import { State } from "../../src/State.js";
 import { Transaction } from "../../src/transaction/Transaction.js";
 import { LayoutDirection, LayoutObjectType, PanelState, SplitRegion, TabCloseDirection } from "../../src/Enum.js";
 import { TransactionalPanel, decreaseItemIndex, increaseItemIndex, nextIndex } from "../../src/transaction/TransactionalPanel.js";
 import { TransactionalItem } from "../../src/transaction/TransactionalItem.js";
+import { CreatedEventDetail } from "../../src/type.js";
 
 describe('transaction/TransactionalPanel', () => {
   describe('remove()', () => {
@@ -770,6 +772,47 @@ describe('transaction/TransactionalPanel', () => {
         assert.equal(panel.selected, i1.key);
         const i2 = panel.addItem();
         assert.equal(panel.selected, i2.key);
+      });
+    });
+
+    describe('the created event', () => {
+      let state: State;
+      let transaction: Transaction;
+      let panel: TransactionalPanel;
+
+      beforeEach(() => {
+        state = new State();
+        transaction = new Transaction(state);
+        panel = transaction.add({ key: 'root' });
+      });
+
+      it('dispatches the event with the default reason', () => {
+        const spy = sinon.spy();
+        state.addEventListener('created', spy);
+        const i1 = panel.addItem();
+        assert.isTrue(spy.calledOnce, 'the event was called');
+        const e = spy.args[0][0] as CustomEvent<CreatedEventDetail>;
+        assert.deepEqual(e.detail.item, i1, 'the event has the item');
+        assert.equal(e.detail.reason, 'api', 'the event has the default reason');
+      });
+
+      it('dispatches the event with the configured reason', () => {
+        const spy = sinon.spy();
+        state.addEventListener('created', spy);
+        const i1 = panel.addItem({}, { reason: 'dnd' });
+        assert.isTrue(spy.calledOnce, 'the event was called');
+        const e = spy.args[0][0] as CustomEvent<CreatedEventDetail>;
+        assert.deepEqual(e.detail.item, i1, 'the event has the item');
+        assert.equal(e.detail.reason, 'dnd', 'the event has the configured reason');
+      });
+
+      it('throws when the event is canceled', () => {
+        state.addEventListener('created', (e: Event): void => {
+          e.preventDefault();
+        });
+        assert.throws(() => {
+          panel.addItem();
+        }, `The operation cancelled by the application.`);
       });
     });
   });
