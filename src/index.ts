@@ -14,4 +14,4 @@ export type { TemplateResult, SVGTemplateResult } from 'lit';
 export type { SerializedItem } from './Item.js';
 export type { SerializedPanel } from './Panel.js';
 export type { SerializedState } from './State.js';
-export type { ManagerInit, ManagerRenderOptions, PanelAddOptions, PanelRenderCallback } from './type.js';
+export type { ManagerInit, ManagerRenderOptions, PanelAddOptions, PanelRenderCallback, CreatedEventDetail } from './type.js';

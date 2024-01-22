@@ -196,6 +196,14 @@
             "name": "PanelRenderCallback",
             "module": "./type.js"
           }
+        },
+        {
+          "kind": "js",
+          "name": "CreatedEventDetail",
+          "declaration": {
+            "name": "CreatedEventDetail",
+            "module": "./type.js"
+          }
         }
       ]
     },

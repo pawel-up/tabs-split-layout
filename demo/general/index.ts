@@ -1,9 +1,8 @@
 import { html, TemplateResult } from 'lit';
-import { Manager, State, SerializedState, Item, StateEvent, StateHelper } from '../../src/index.js';
+import { Manager, State, SerializedState, Item, StateEvent, StateHelper, CreatedEventDetail } from '../../src/index.js';
 import { TabCloseDirection } from '../../src/Enum.js';
 import { DemoPage } from '../lib/DemoPage.js';
 import '../../src/define/split-view.js';
-import { CreatedEventDetail } from '../../src/type.js';
 
 const storeKey = 'tabs-layout.demo.demo1';
 
