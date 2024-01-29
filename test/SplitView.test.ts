@@ -387,7 +387,7 @@ describe('SplitView', () => {
     });
   });
 
-  describe('tab rendering', () => {
+  describe('tabs rendering', () => {
     let state: State;
     let layout: Manager;
     let viewRoot: HTMLElement;
@@ -585,6 +585,18 @@ describe('SplitView', () => {
       const content = viewRoot.querySelector(`split-view`)!;
       const button = content.shadowRoot!.querySelector(`.add-button`);
       assert.isNull(button);
+    });
+
+    it('does not render tabs on a panel that has other panels', async () => {
+      const tx = layout.transaction();
+      const p1 = tx.add({ key: 'root' });
+      const p2 = p1.addPanel();
+      p2.addItem();
+      tx.commit();
+      await nextFrame();
+      const content = viewRoot.querySelector(`split-view`)!;
+      const list = content.shadowRoot!.querySelector('.layout-tabs');
+      assert.notOk(list);
     });
   });
 

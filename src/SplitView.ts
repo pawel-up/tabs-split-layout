@@ -863,7 +863,11 @@ export default class SplitView extends LitElement {
     `;
   }
 
-  protected tabsTemplate(panel: Panel): TemplateResult {
+  protected tabsTemplate(panel: Panel): TemplateResult | typeof nothing {
+    if (panel.hasPanels) {
+      // do not render the tab list view if the current panel has only panels.
+      return nothing;
+    }
     const items = panel.sortedItems();
     const hasSelectedItem = items.some(i => i.key === panel.selected);
     const listTabIndex = hasSelectedItem ? undefined : "0";

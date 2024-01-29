@@ -1,6 +1,6 @@
 {
   "name": "@pawel-up/tabs-split-layout",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Split layout manager with tabs.",
   "license": "CC-BY-2.0",
   "main": "dist/index.js",
@@ -59,7 +59,7 @@
     "eslint-plugin-deprecation": "^2.0.0",
     "eslint-plugin-lit-a11y": "^4.1.1",
     "eslint-plugin-no-only-tests": "^3.1.0",
-    "husky": "^8.0.3",
+    "husky": "^9.0.6",
     "idb-keyval": "^6.2.1",
     "lint-staged": "^15.2.0",
     "sinon": "^17.0.1",

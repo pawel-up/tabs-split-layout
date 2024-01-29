@@ -1980,7 +1980,7 @@
               "privacy": "protected",
               "return": {
                 "type": {
-                  "text": "TemplateResult"
+                  "text": "TemplateResult | typeof nothing"
                 }
               },
               "parameters": [
