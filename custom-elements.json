@@ -10,205 +10,6 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/index.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "render",
-          "declaration": {
-            "name": "render",
-            "package": "lit"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "html",
-          "declaration": {
-            "name": "html",
-            "package": "lit"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "nothing",
-          "declaration": {
-            "name": "nothing",
-            "package": "lit"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "Item",
-          "declaration": {
-            "name": "Item",
-            "module": "./Item.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "Panel",
-          "declaration": {
-            "name": "Panel",
-            "module": "./Panel.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "Transaction",
-          "declaration": {
-            "name": "Transaction",
-            "module": "./transaction/Transaction.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "TransactionalItem",
-          "declaration": {
-            "name": "TransactionalItem",
-            "module": "./transaction/TransactionalItem.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "TransactionalPanel",
-          "declaration": {
-            "name": "TransactionalPanel",
-            "module": "./transaction/TransactionalPanel.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "TransactionalState",
-          "declaration": {
-            "name": "TransactionalState",
-            "module": "./transaction/TransactionalState.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "TransactionError",
-          "declaration": {
-            "name": "TransactionError",
-            "module": "./transaction/TransactionError.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "State",
-          "declaration": {
-            "name": "State",
-            "module": "./State.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "Manager",
-          "declaration": {
-            "name": "Manager",
-            "module": "./Manager.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "StateEvent",
-          "declaration": {
-            "name": "StateEvent",
-            "module": "./events/StateEvent.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "StateHelper",
-          "declaration": {
-            "name": "StateHelper",
-            "module": "./StateHelper.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "TemplateResult",
-          "declaration": {
-            "name": "TemplateResult",
-            "package": "lit"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "SVGTemplateResult",
-          "declaration": {
-            "name": "SVGTemplateResult",
-            "package": "lit"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "SerializedItem",
-          "declaration": {
-            "name": "SerializedItem",
-            "module": "./Item.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "SerializedPanel",
-          "declaration": {
-            "name": "SerializedPanel",
-            "module": "./Panel.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "SerializedState",
-          "declaration": {
-            "name": "SerializedState",
-            "module": "./State.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "ManagerInit",
-          "declaration": {
-            "name": "ManagerInit",
-            "module": "./type.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "ManagerRenderOptions",
-          "declaration": {
-            "name": "ManagerRenderOptions",
-            "module": "./type.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "PanelAddOptions",
-          "declaration": {
-            "name": "PanelAddOptions",
-            "module": "./type.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "PanelRenderCallback",
-          "declaration": {
-            "name": "PanelRenderCallback",
-            "module": "./type.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "CreatedEventDetail",
-          "declaration": {
-            "name": "CreatedEventDetail",
-            "module": "./type.js"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
       "path": "src/Item.ts",
       "declarations": [
         {
@@ -2064,7 +1865,8 @@
                 "text": "LayoutDirection | undefined"
               },
               "description": "The layout direction.",
-              "fieldName": "direction"
+              "fieldName": "direction",
+              "attribute": "direction"
             },
             {
               "name": "key",
@@ -2072,7 +1874,18 @@
                 "text": "string | undefined"
               },
               "description": "The identifier of this view. It is the key of the panel that generated the view.\nFor the view to generate any layout, the `state` property must be set.",
-              "fieldName": "key"
+              "fieldName": "key",
+              "attribute": "key"
+            },
+            {
+              "name": "constrain",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "When set it adds the `overflow` hidden on the container that holds the tab contents.",
+              "fieldName": "constrain",
+              "attribute": "constrain"
             },
             {
               "name": "manager",
@@ -2088,15 +1901,6 @@
                 "text": "string[] | undefined"
               },
               "fieldName": "dragTypes"
-            },
-            {
-              "name": "constrain",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false",
-              "description": "When set it adds the `overflow` hidden on the container that holds the tab contents.",
-              "fieldName": "constrain"
             },
             {
               "name": "interactions",
@@ -3087,12 +2891,6 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/type.ts",
-      "declarations": [],
-      "exports": []
-    },
-    {
-      "kind": "javascript-module",
       "path": "src/View.ts",
       "declarations": [
         {
@@ -3235,6 +3033,211 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "render",
+          "declaration": {
+            "name": "render",
+            "package": "lit"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "html",
+          "declaration": {
+            "name": "html",
+            "package": "lit"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "nothing",
+          "declaration": {
+            "name": "nothing",
+            "package": "lit"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Item",
+          "declaration": {
+            "name": "Item",
+            "module": "./Item.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Panel",
+          "declaration": {
+            "name": "Panel",
+            "module": "./Panel.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Transaction",
+          "declaration": {
+            "name": "Transaction",
+            "module": "./transaction/Transaction.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TransactionalItem",
+          "declaration": {
+            "name": "TransactionalItem",
+            "module": "./transaction/TransactionalItem.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TransactionalPanel",
+          "declaration": {
+            "name": "TransactionalPanel",
+            "module": "./transaction/TransactionalPanel.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TransactionalState",
+          "declaration": {
+            "name": "TransactionalState",
+            "module": "./transaction/TransactionalState.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TransactionError",
+          "declaration": {
+            "name": "TransactionError",
+            "module": "./transaction/TransactionError.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "State",
+          "declaration": {
+            "name": "State",
+            "module": "./State.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Manager",
+          "declaration": {
+            "name": "Manager",
+            "module": "./Manager.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "StateEvent",
+          "declaration": {
+            "name": "StateEvent",
+            "module": "./events/StateEvent.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "StateHelper",
+          "declaration": {
+            "name": "StateHelper",
+            "module": "./StateHelper.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TemplateResult",
+          "declaration": {
+            "name": "TemplateResult",
+            "package": "lit"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "SVGTemplateResult",
+          "declaration": {
+            "name": "SVGTemplateResult",
+            "package": "lit"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "SerializedItem",
+          "declaration": {
+            "name": "SerializedItem",
+            "module": "./Item.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "SerializedPanel",
+          "declaration": {
+            "name": "SerializedPanel",
+            "module": "./Panel.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "SerializedState",
+          "declaration": {
+            "name": "SerializedState",
+            "module": "./State.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ManagerInit",
+          "declaration": {
+            "name": "ManagerInit",
+            "module": "./type.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ManagerRenderOptions",
+          "declaration": {
+            "name": "ManagerRenderOptions",
+            "module": "./type.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PanelAddOptions",
+          "declaration": {
+            "name": "PanelAddOptions",
+            "module": "./type.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PanelRenderCallback",
+          "declaration": {
+            "name": "PanelRenderCallback",
+            "module": "./type.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CreatedEventDetail",
+          "declaration": {
+            "name": "CreatedEventDetail",
+            "module": "./type.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/type.ts",
+      "declarations": [],
+      "exports": []
+    },
+    {
+      "kind": "javascript-module",
       "path": "coverage/lcov-report/block-navigation.js",
       "declarations": [],
       "exports": []
@@ -3283,106 +3286,6 @@
           "declaration": {
             "name": "SplitViewElement",
             "module": "src/define/split-view.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/events/StateEvent.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "",
-          "name": "StateEvent",
-          "superclass": {
-            "name": "Event",
-            "module": "src/events/StateEvent.ts"
-          }
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "StateEvent",
-          "declaration": {
-            "name": "StateEvent",
-            "module": "src/events/StateEvent.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/lib/icons.ts",
-      "declarations": [
-        {
-          "kind": "function",
-          "name": "iconWrapper",
-          "return": {
-            "type": {
-              "text": ""
-            }
-          },
-          "parameters": [
-            {
-              "name": "tpl",
-              "type": {
-                "text": "SVGTemplateResult"
-              },
-              "description": "Icon definition"
-            },
-            {
-              "name": "width",
-              "default": "24"
-            },
-            {
-              "name": "height",
-              "default": "24"
-            },
-            {
-              "name": "top",
-              "default": "0"
-            },
-            {
-              "name": "left",
-              "default": "0"
-            }
-          ],
-          "description": "Wraps icon into an SVG container."
-        },
-        {
-          "kind": "variable",
-          "name": "add"
-        },
-        {
-          "kind": "variable",
-          "name": "close"
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "iconWrapper",
-          "declaration": {
-            "name": "iconWrapper",
-            "module": "src/lib/icons.ts"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "add",
-          "declaration": {
-            "name": "add",
-            "module": "src/lib/icons.ts"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "close",
-          "declaration": {
-            "name": "close",
-            "module": "src/lib/icons.ts"
           }
         }
       ]
@@ -3657,6 +3560,106 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/lib/icons.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "iconWrapper",
+          "return": {
+            "type": {
+              "text": ""
+            }
+          },
+          "parameters": [
+            {
+              "name": "tpl",
+              "type": {
+                "text": "SVGTemplateResult"
+              },
+              "description": "Icon definition"
+            },
+            {
+              "name": "width",
+              "default": "24"
+            },
+            {
+              "name": "height",
+              "default": "24"
+            },
+            {
+              "name": "top",
+              "default": "0"
+            },
+            {
+              "name": "left",
+              "default": "0"
+            }
+          ],
+          "description": "Wraps icon into an SVG container."
+        },
+        {
+          "kind": "variable",
+          "name": "add"
+        },
+        {
+          "kind": "variable",
+          "name": "close"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "iconWrapper",
+          "declaration": {
+            "name": "iconWrapper",
+            "module": "src/lib/icons.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "add",
+          "declaration": {
+            "name": "add",
+            "module": "src/lib/icons.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "close",
+          "declaration": {
+            "name": "close",
+            "module": "src/lib/icons.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/events/StateEvent.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "StateEvent",
+          "superclass": {
+            "name": "Event",
+            "module": "src/events/StateEvent.ts"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "StateEvent",
+          "declaration": {
+            "name": "StateEvent",
+            "module": "src/events/StateEvent.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/transaction/Transaction.ts",
       "declarations": [
         {
@@ -3753,6 +3756,31 @@
           "declaration": {
             "name": "Transaction",
             "module": "src/transaction/Transaction.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/transaction/TransactionError.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "TransactionError",
+          "superclass": {
+            "name": "Error",
+            "module": "src/transaction/TransactionError.ts"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "TransactionError",
+          "declaration": {
+            "name": "TransactionError",
+            "module": "src/transaction/TransactionError.ts"
           }
         }
       ]
@@ -5184,31 +5212,6 @@
           "declaration": {
             "name": "TransactionalState",
             "module": "src/transaction/TransactionalState.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/transaction/TransactionError.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "",
-          "name": "TransactionError",
-          "superclass": {
-            "name": "Error",
-            "module": "src/transaction/TransactionError.ts"
-          }
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "TransactionError",
-          "declaration": {
-            "name": "TransactionError",
-            "module": "src/transaction/TransactionError.ts"
           }
         }
       ]

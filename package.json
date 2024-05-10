@@ -1,6 +1,6 @@
 {
   "name": "@pawel-up/tabs-split-layout",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Split layout manager with tabs.",
   "license": "CC-BY-2.0",
   "main": "dist/index.js",
@@ -39,8 +39,8 @@
     "lit": "^3.1.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^18.4.3",
-    "@commitlint/config-conventional": "^18.4.3",
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
     "@custom-elements-manifest/analyzer": "^0.9.0",
     "@open-wc/eslint-config": "^12.0.2",
     "@open-wc/testing": "^4.0.0",
